@@ -7,7 +7,8 @@ import {
   Users, 
   BookOpen, 
   GraduationCap, 
-  LogOut 
+  LogOut,
+  User
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/actions/auth";
@@ -15,9 +16,11 @@ import { signOut } from "@/actions/auth";
 interface SidebarProps {
   organizationName: string;
   userEmail: string;
+  userName?: string;
+  isTeacher?: boolean;
 }
 
-const navItems = [
+const adminNavItems = [
   {
     title: "Übersicht",
     href: "/dashboard",
@@ -35,8 +38,17 @@ const navItems = [
   },
 ];
 
-export function Sidebar({ organizationName, userEmail }: SidebarProps) {
+const teacherNavItems = [
+  {
+    title: "Mein Portal",
+    href: "/my-portal",
+    icon: User,
+  },
+];
+
+export function Sidebar({ organizationName, userEmail, userName, isTeacher }: SidebarProps) {
   const pathname = usePathname();
+  const navItems = isTeacher ? teacherNavItems : adminNavItems;
 
   return (
     <aside className="w-64 border-r border-slate-200 bg-white flex flex-col h-screen sticky top-0 shrink-0">
@@ -49,14 +61,16 @@ export function Sidebar({ organizationName, userEmail }: SidebarProps) {
           <h2 className="font-bold text-slate-900 truncate text-sm leading-tight">
             {organizationName || "Sprachschule"}
           </h2>
-          <span className="text-xs text-slate-400 font-medium">Verwaltung</span>
+          <span className="text-xs text-slate-400 font-medium">
+            {isTeacher ? "Dozenten-Portal" : "Schulleitung"}
+          </span>
         </div>
       </div>
 
       {/* Navigation Links */}
       <nav className="flex-1 p-4 space-y-1.5">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
           const Icon = item.icon;
 
           return (
@@ -80,8 +94,12 @@ export function Sidebar({ organizationName, userEmail }: SidebarProps) {
       {/* User Footer & Logout */}
       <div className="p-4 border-t border-slate-100 bg-slate-50/50">
         <div className="mb-3 px-2">
-          <p className="text-xs font-semibold text-slate-700 truncate">{userEmail}</p>
-          <p className="text-[11px] text-slate-400">Schulleitung</p>
+          <p className="text-xs font-semibold text-slate-700 truncate">
+            {userName || userEmail}
+          </p>
+          <p className="text-[11px] text-slate-400">
+            {isTeacher ? "Lehrkraft (Dozent)" : "Schulleitung"}
+          </p>
         </div>
         <form action={signOut}>
           <button

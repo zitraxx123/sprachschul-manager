@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { 
+  createClient, 
+  getActiveOrganization, 
+  getCurrentTeacher, 
+  getCurrentMembership 
+} from "@/lib/supabase/server";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { deleteTeacher } from "@/actions/teachers";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -27,6 +32,12 @@ export default async function TeacherDetailPage({
   params,
   searchParams,
 }: TeacherDetailPageProps) {
+  const currentTeacher = await getCurrentTeacher();
+  const membership = await getCurrentMembership();
+  if (currentTeacher && membership?.role === "teacher") {
+    redirect("/my-portal");
+  }
+
   const { id: teacherId } = await params;
   const { month: selectedMonthParam } = await searchParams;
 

@@ -66,6 +66,7 @@ export type Database = {
         Row: {
           id: string;
           organization_id: string;
+          user_id: string | null;
           name: string;
           email: string | null;
           hourly_rate: number;
@@ -75,6 +76,7 @@ export type Database = {
         Insert: {
           id?: string;
           organization_id: string;
+          user_id?: string | null;
           name: string;
           email?: string | null;
           hourly_rate?: number;
@@ -84,6 +86,7 @@ export type Database = {
         Update: {
           id?: string;
           organization_id?: string;
+          user_id?: string | null;
           name?: string;
           email?: string | null;
           hourly_rate?: number;

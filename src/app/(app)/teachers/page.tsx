@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { 
+  createClient, 
+  getActiveOrganization, 
+  getCurrentTeacher, 
+  getCurrentMembership 
+} from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
 import { AddTeacherDialog } from "@/components/teachers/add-teacher-dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,6 +20,12 @@ export const metadata = {
 };
 
 export default async function TeachersPage() {
+  const teacher = await getCurrentTeacher();
+  const membership = await getCurrentMembership();
+  if (teacher && membership?.role === "teacher") {
+    redirect("/my-portal");
+  }
+
   const organization = await getActiveOrganization();
   const supabase = await createClient();
 
@@ -100,7 +112,20 @@ export default async function TeachersPage() {
                           <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">
                             {teacher.name.charAt(0).toUpperCase()}
                           </div>
-                          <span>{teacher.name}</span>
+                          <div>
+                            <div className="flex items-center space-x-1.5">
+                              <span>{teacher.name}</span>
+                              {teacher.user_id ? (
+                                <Badge variant="success" className="text-[10px] px-1.5 py-0 font-normal">
+                                  Portal aktiv
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-normal text-slate-500">
+                                  Kein Login
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-slate-500 text-xs">

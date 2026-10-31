@@ -13,7 +13,7 @@ export async function createTeacher(
   formData: FormData
 ): Promise<TeacherActionState> {
   const name = (formData.get("name") as string)?.trim();
-  const email = (formData.get("email") as string)?.trim() || null;
+  const email = (formData.get("email") as string)?.trim().toLowerCase() || null;
   const hourlyRateRaw = formData.get("hourly_rate") as string;
 
   if (!name) {

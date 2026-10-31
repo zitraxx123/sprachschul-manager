@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { 
+  createClient, 
+  getActiveOrganization, 
+  getCurrentTeacher, 
+  getCurrentMembership 
+} from "@/lib/supabase/server";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +19,12 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
+  const teacher = await getCurrentTeacher();
+  const membership = await getCurrentMembership();
+  if (teacher && membership?.role === "teacher") {
+    redirect("/my-portal");
+  }
+
   const organization = await getActiveOrganization();
   const supabase = await createClient();
 
