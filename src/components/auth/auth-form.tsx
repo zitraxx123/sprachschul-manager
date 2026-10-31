@@ -29,23 +29,23 @@ export function AuthForm() {
     <div className="w-full max-w-md mx-auto">
       {/* Brand Icon */}
       <div className="flex flex-col items-center mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md mb-3">
-          <GraduationCap className="w-8 h-8" />
+        <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm mb-3">
+          <GraduationCap className="w-6 h-6" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Sprachschul-Manager</h1>
-        <p className="text-sm text-slate-500 mt-1">Multi-Tenant Schulverwaltung & Honorarabrechnung</p>
+        <p className="text-sm text-slate-500 mt-1">Die Verwaltungssoftware für Ihre Sprachschule</p>
       </div>
 
       <Card className="shadow-lg border-slate-200">
         <CardHeader className="space-y-1 pb-4">
-          <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-lg mb-2">
+          <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg mb-2">
             <button
               type="button"
               onClick={() => setMode("login")}
               className={`py-2 text-sm font-medium rounded-md transition-all ${
                 mode === "login"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-900"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               Anmelden
@@ -55,8 +55,8 @@ export function AuthForm() {
               onClick={() => setMode("signup")}
               className={`py-2 text-sm font-medium rounded-md transition-all ${
                 mode === "signup"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-900"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               Registrieren

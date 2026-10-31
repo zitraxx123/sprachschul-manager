@@ -69,7 +69,14 @@ export type Database = {
           user_id: string | null;
           name: string;
           email: string | null;
+          phone: string | null;
+          birthday: string | null;
           hourly_rate: number;
+          rate_group: number | null;
+          rate_individual: number | null;
+          rate_45: number | null;
+          rate_60: number | null;
+          rate_90: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -79,7 +86,14 @@ export type Database = {
           user_id?: string | null;
           name: string;
           email?: string | null;
+          phone?: string | null;
+          birthday?: string | null;
           hourly_rate?: number;
+          rate_group?: number | null;
+          rate_individual?: number | null;
+          rate_45?: number | null;
+          rate_60?: number | null;
+          rate_90?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -89,7 +103,14 @@ export type Database = {
           user_id?: string | null;
           name?: string;
           email?: string | null;
+          phone?: string | null;
+          birthday?: string | null;
           hourly_rate?: number;
+          rate_group?: number | null;
+          rate_individual?: number | null;
+          rate_45?: number | null;
+          rate_60?: number | null;
+          rate_90?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -103,11 +124,348 @@ export type Database = {
           }
         ];
       };
+      students: {
+        Row: {
+          id: string;
+          organization_id: string;
+          course_id: string | null;
+          first_name: string;
+          last_name: string;
+          email: string | null;
+          phone: string | null;
+          parent_name: string | null;
+          parent_phone: string | null;
+          parent_email: string | null;
+          course_name: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          course_id?: string | null;
+          first_name: string;
+          last_name: string;
+          email?: string | null;
+          phone?: string | null;
+          parent_name?: string | null;
+          parent_phone?: string | null;
+          parent_email?: string | null;
+          course_name?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          course_id?: string | null;
+          first_name?: string;
+          last_name?: string;
+          email?: string | null;
+          phone?: string | null;
+          parent_name?: string | null;
+          parent_phone?: string | null;
+          parent_email?: string | null;
+          course_name?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "students_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "students_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      courses: {
+        Row: {
+          id: string;
+          organization_id: string;
+          name: string;
+          teacher_id: string | null;
+          room_id: string | null;
+          course_type: "group" | "individual";
+          description: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          name: string;
+          teacher_id?: string | null;
+          room_id?: string | null;
+          course_type?: "group" | "individual";
+          description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          name?: string;
+          teacher_id?: string | null;
+          room_id?: string | null;
+          course_type?: "group" | "individual";
+          description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "courses_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "courses_teacher_id_fkey";
+            columns: ["teacher_id"];
+            isOneToOne: false;
+            referencedRelation: "teachers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "courses_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      rooms: {
+        Row: {
+          id: string;
+          organization_id: string;
+          name: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          name: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          name?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rooms_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      course_schedules: {
+        Row: {
+          id: string;
+          course_id: string;
+          organization_id: string | null;
+          day_of_week: string;
+          start_time: string;
+          duration: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          organization_id?: string | null;
+          day_of_week: string;
+          start_time?: string;
+          duration?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          course_id?: string;
+          organization_id?: string | null;
+          day_of_week?: string;
+          start_time?: string;
+          duration?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "course_schedules_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "course_schedules_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      monthly_payments: {
+        Row: {
+          id: string;
+          organization_id: string;
+          student_id: string;
+          month_year: string;
+          amount_euro: number;
+          is_paid: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          student_id: string;
+          month_year: string;
+          amount_euro?: number;
+          is_paid?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          student_id?: string;
+          month_year?: string;
+          amount_euro?: number;
+          is_paid?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "monthly_payments_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "monthly_payments_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      attendance: {
+        Row: {
+          id: string;
+          organization_id: string;
+          lesson_id: string;
+          student_id: string;
+          status: "present" | "absent";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          lesson_id: string;
+          student_id: string;
+          status: "present" | "absent";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          lesson_id?: string;
+          student_id?: string;
+          status?: "present" | "absent";
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "attendance_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "attendance_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      student_courses: {
+        Row: {
+          id: string;
+          organization_id: string;
+          student_id: string;
+          course_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          student_id: string;
+          course_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          student_id?: string;
+          course_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_courses_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_courses_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_courses_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       lessons: {
         Row: {
           id: string;
           organization_id: string;
           teacher_id: string;
+          student_id: string | null;
+          course_id: string | null;
           student_name: string | null;
           lesson_date: string;
           duration_hours: number;
@@ -119,6 +477,8 @@ export type Database = {
           id?: string;
           organization_id: string;
           teacher_id: string;
+          student_id?: string | null;
+          course_id?: string | null;
           student_name?: string | null;
           lesson_date?: string;
           duration_hours: number;
@@ -130,6 +490,8 @@ export type Database = {
           id?: string;
           organization_id?: string;
           teacher_id?: string;
+          student_id?: string | null;
+          course_id?: string | null;
           student_name?: string | null;
           lesson_date?: string;
           duration_hours?: number;
@@ -146,10 +508,24 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "lessons_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "lessons_teacher_id_fkey";
             columns: ["teacher_id"];
             isOneToOne: false;
             referencedRelation: "teachers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lessons_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
             referencedColumns: ["id"];
           }
         ];
@@ -162,6 +538,16 @@ export type Database = {
       get_user_org_ids: {
         Args: Record<PropertyKey, never>;
         Returns: string[];
+      };
+      is_org_admin: {
+        Args: {
+          org_id: string;
+        };
+        Returns: boolean;
+      };
+      get_current_teacher_id: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
       };
     };
     Enums: {
@@ -176,8 +562,17 @@ export type Database = {
 export type Organization = Database["public"]["Tables"]["organizations"]["Row"];
 export type OrganizationMember = Database["public"]["Tables"]["organization_members"]["Row"];
 export type Teacher = Database["public"]["Tables"]["teachers"]["Row"];
+export type Student = Database["public"]["Tables"]["students"]["Row"];
+export type Course = Database["public"]["Tables"]["courses"]["Row"];
+export type Room = Database["public"]["Tables"]["rooms"]["Row"];
+export type CourseSchedule = Database["public"]["Tables"]["course_schedules"]["Row"];
+export type MonthlyPayment = Database["public"]["Tables"]["monthly_payments"]["Row"];
+export type Attendance = Database["public"]["Tables"]["attendance"]["Row"];
+export type StudentCourse = Database["public"]["Tables"]["student_courses"]["Row"];
 export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
 
 export type LessonWithTeacher = Lesson & {
   teacher?: Teacher;
+  student?: Student;
+  course?: Course;
 };

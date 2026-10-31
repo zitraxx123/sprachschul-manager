@@ -3,6 +3,9 @@ import { cookies } from "next/headers";
 import { Database, Organization, Teacher } from "@/types/database";
 import { getSupabaseUrl, getSupabaseAnonKey } from "./config";
 
+/**
+ * Creates Supabase server client for the current request context.
+ */
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -32,11 +35,15 @@ export async function createClient() {
  * Returns current authenticated user or null.
  */
 export async function getCurrentUser() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -44,68 +51,82 @@ export async function getCurrentUser() {
  * In a multi-tenant setup, this fetches the first organization the user is a member of.
  */
 export async function getActiveOrganization(): Promise<Organization | null> {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
+  try {
+    const user = await getCurrentUser();
+    if (!user) return null;
 
-  if (!user) return null;
+    const supabase = await createClient();
 
-  // 1. Get user's organization membership
-  const { data: member } = await supabase
-    .from("organization_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+    // 1. Get user's organization membership
+    const { data: member } = await supabase
+      .from("organization_members")
+      .select("organization_id")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
-  if (!member || !member.organization_id) return null;
+    if (!member || !member.organization_id) return null;
 
-  // 2. Fetch the organization record directly
-  const { data: org } = await supabase
-    .from("organizations")
-    .select("*")
-    .eq("id", member.organization_id)
-    .maybeSingle();
+    // 2. Fetch the organization record directly
+    const { data: org } = await supabase
+      .from("organizations")
+      .select("*")
+      .eq("id", member.organization_id)
+      .maybeSingle();
 
-  return org || null;
+    return org || null;
+  } catch {
+    return null;
+  }
 }
 
 /**
  * Returns current user's membership and role in active organization.
  */
 export async function getCurrentMembership() {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
-  if (!user) return null;
+  try {
+    const user = await getCurrentUser();
+    if (!user) return null;
 
-  const { data: member } = await supabase
-    .from("organization_members")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+    const supabase = await createClient();
 
-  return member;
+    const { data: member } = await supabase
+      .from("organization_members")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    return member;
+  } catch {
+    return null;
+  }
 }
 
 /**
  * Returns teacher profile if current user is linked to a teacher record.
  */
 export async function getCurrentTeacher(): Promise<Teacher | null> {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
-  if (!user) return null;
+  try {
+    const user = await getCurrentUser();
+    if (!user) return null;
 
-  const org = await getActiveOrganization();
-  if (!org) return null;
+    const org = await getActiveOrganization();
+    if (!org) return null;
 
-  const { data: teacher } = await supabase
-    .from("teachers")
-    .select("*")
-    .eq("organization_id", org.id)
-    .eq("user_id", user.id)
-    .maybeSingle();
+    const supabase = await createClient();
 
-  return teacher || null;
+    const { data: teacher } = await supabase
+      .from("teachers")
+      .select("*")
+      .eq("organization_id", org.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    return teacher || null;
+  } catch {
+    return null;
+  }
 }

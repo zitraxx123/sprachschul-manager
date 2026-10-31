@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { deleteLesson } from "@/actions/lessons";
+import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Trash2, Loader2 } from "lucide-react";
 
@@ -11,7 +12,12 @@ export function DeleteLessonButton({ lessonId }: { lessonId: string }) {
   function handleDelete() {
     if (confirm("Möchten Sie diese Unterrichtsstunde wirklich löschen?")) {
       startTransition(async () => {
-        await deleteLesson(lessonId);
+        try {
+          await deleteLesson(lessonId);
+          toast.success("Unterrichtsstunde gelöscht.");
+        } catch {
+          toast.error("Fehler beim Löschen der Unterrichtsstunde.");
+        }
       });
     }
   }

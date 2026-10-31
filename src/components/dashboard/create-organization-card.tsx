@@ -16,22 +16,22 @@ export function CreateOrganizationCard() {
 
   return (
     <div className="max-w-xl mx-auto py-12">
-      <Card className="border-blue-200 bg-white shadow-lg">
+      <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg">
         <CardHeader className="text-center pb-4">
-          <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 shadow-xs">
             <Building2 className="w-8 h-8" />
           </div>
-          <CardTitle className="text-2xl font-bold text-slate-900">
+          <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
             Sprachschule anlegen
           </CardTitle>
-          <CardDescription className="text-slate-500 max-w-md mx-auto">
+          <CardDescription className="text-slate-500 dark:text-slate-400 max-w-md mx-auto">
             Sie haben aktuell noch keine Schule eingerichtet. Geben Sie den Namen Ihrer Sprachschule
             ein, um das System zu starten.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {state?.error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 flex items-start space-x-2.5 text-sm text-red-700">
+            <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2.5 text-sm text-red-700 dark:text-red-300">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{state.error}</span>
             </div>
@@ -39,7 +39,7 @@ export function CreateOrganizationCard() {
 
           <form action={formAction} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-sm font-semibold text-slate-700">
+              <Label htmlFor="name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Name der Sprachschule
               </Label>
               <Input

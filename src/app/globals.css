@@ -16,6 +16,60 @@
     --border: #e2e8f0;
     --input: #e2e8f0;
     --ring: #2563eb;
+
+    /* Emil Kowalski / Motion tokens: custom high-punch easings */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .dark {
+    --background: #090d16;
+    --foreground: #f8fafc;
+    --card: #111827;
+    --card-foreground: #f8fafc;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --primary-hover: #2563eb;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #3b82f6;
+  }
+
+  /* 1. Mobile Native: kill gray/blue tap flash on iOS/Android */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 2. Mobile Native: prevent elastic bounce and pull-to-refresh chaining */
+  html,
+  body {
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 3. Mobile Native: 16px font-size minimum on mobile inputs to prevent iOS Safari auto-zoom */
+  @media (pointer: coarse) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* 4. Controls user-select & touch manipulation protection */
+  button,
+  [role="button"],
+  .tab,
+  .chip,
+  .drag-handle {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
   }
 }
 
@@ -23,5 +77,77 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Emil Design Eng: Tactile active press feedback for interactive controls */
+.active-press {
+  transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+.active-press:active {
+  transform: scale(0.97);
+}
+
+/* 6. Apple Safe Area Utilities */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 7. Hover gating: only apply hover transforms on true pointer devices to prevent sticky hover on touch */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift {
+    transition: transform 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  }
+}
+
+/* 8. Reduced Motion: respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm 15mm;
+    size: A4 portrait;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  .print\:block {
+    display: block !important;
+  }
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  .print\:border-none {
+    border: none !important;
+  }
 }
