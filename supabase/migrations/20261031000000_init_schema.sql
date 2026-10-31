@@ -64,8 +64,7 @@ create index if not exists idx_lessons_org_id on public.lessons(organization_id)
 create index if not exists idx_lessons_teacher_id on public.lessons(teacher_id);
 create index if not exists idx_lessons_date on public.lessons(lesson_date);
 
--- 6. Helper Function for RLS: get tenant IDs current user belongs to
--- Security definer ensures safe execution without recursive RLS loop
+-- 6. Helper Functions for RLS (SECURITY DEFINER + owned by postgres bypasses RLS recursion)
 create or replace function public.get_user_org_ids()
 returns setof uuid
 language sql
@@ -75,6 +74,26 @@ stable
 as $$
     select organization_id from public.organization_members where user_id = auth.uid();
 $$;
+
+alter function public.get_user_org_ids() owner to postgres;
+
+create or replace function public.is_org_admin(org_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+    select exists (
+        select 1
+        from public.organization_members
+        where organization_id = org_id
+          and user_id = auth.uid()
+          and role in ('owner', 'admin')
+    );
+$$;
+
+alter function public.is_org_admin(uuid) owner to postgres;
 
 -- 7. Automatically create Organization & Membership on User Signup (Auth trigger)
 create or replace function public.handle_new_user()
@@ -136,34 +155,38 @@ create policy "Authenticated users can create organizations"
 create policy "Owners and admins can update their organization"
     on public.organizations
     for update
-    using (
-        id in (
-            select organization_id from public.organization_members
-            where user_id = auth.uid() and role in ('owner', 'admin')
-        )
-    );
+    using (public.is_org_admin(id));
 
--- 9.2 Organization Members
-create policy "Users can view members of their organizations"
+-- 9.2 Organization Members (Non-recursive)
+create policy "Members select policy"
     on public.organization_members
     for select
-    using (organization_id in (select public.get_user_org_ids()));
-
-create policy "Owners and admins can manage members"
-    on public.organization_members
-    for all
     using (
-        organization_id in (
-            select organization_id from public.organization_members
-            where user_id = auth.uid() and role in ('owner', 'admin')
-        )
+        user_id = auth.uid()
+        or organization_id in (select public.get_user_org_ids())
     );
 
-create policy "Users can add themselves during organization creation"
+create policy "Members insert policy"
     on public.organization_members
     for insert
     to authenticated
-    with check (user_id = auth.uid());
+    with check (
+        user_id = auth.uid()
+        or public.is_org_admin(organization_id)
+    );
+
+create policy "Members update policy"
+    on public.organization_members
+    for update
+    using (public.is_org_admin(organization_id));
+
+create policy "Members delete policy"
+    on public.organization_members
+    for delete
+    using (
+        user_id = auth.uid()
+        or public.is_org_admin(organization_id)
+    );
 
 -- 9.3 Teachers
 create policy "Users can view teachers in their organization"
