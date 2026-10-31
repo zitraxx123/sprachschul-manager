@@ -5,6 +5,7 @@ import { DeleteLessonButton } from "@/components/lessons/delete-lesson-button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { BookOpen, Calendar, Clock, Euro } from "lucide-react";
 
 export const metadata = {
@@ -15,7 +16,9 @@ export default async function LessonsPage() {
   const organization = await getActiveOrganization();
   const supabase = await createClient();
 
-  if (!organization) return null;
+  if (!organization) {
+    return <CreateOrganizationCard />;
+  }
 
   // 1. Fetch Teachers for dropdown in AddLessonDialog
   const { data: teachers = [] } = await supabase

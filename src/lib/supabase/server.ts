@@ -1,13 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { Database, Organization } from "@/types/database";
+import { getSupabaseUrl, getSupabaseAnonKey } from "./config";
 
 export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    getSupabaseUrl(),
+    getSupabaseAnonKey(),
     {
       cookies: {
         getAll() {
@@ -48,15 +49,23 @@ export async function getActiveOrganization(): Promise<Organization | null> {
 
   if (!user) return null;
 
+  // 1. Get user's organization membership
   const { data: member } = await supabase
     .from("organization_members")
-    .select("organization_id, organizations(*)")
+    .select("organization_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: true })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (!member || !member.organizations) return null;
+  if (!member || !member.organization_id) return null;
 
-  return member.organizations as unknown as Organization;
+  // 2. Fetch the organization record directly
+  const { data: org } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("id", member.organization_id)
+    .maybeSingle();
+
+  return org || null;
 }

@@ -22,13 +22,39 @@ export async function signIn(
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  // Ensure user has an organization upon login (fallback if trigger or signup missed it)
+  if (data?.user) {
+    const { data: existingMember } = await supabase
+      .from("organization_members")
+      .select("id")
+      .eq("user_id", data.user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (!existingMember) {
+      const orgName = data.user.user_metadata?.organization_name || "Meine Sprachschule";
+      const orgId = crypto.randomUUID();
+
+      await supabase.from("organizations").insert({
+        id: orgId,
+        name: orgName,
+      });
+
+      await supabase.from("organization_members").insert({
+        organization_id: orgId,
+        user_id: data.user.id,
+        role: "owner",
+      });
+    }
   }
 
   revalidatePath("/", "layout");
@@ -41,7 +67,7 @@ export async function signUp(
 ): Promise<AuthState> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const organizationName = (formData.get("organizationName") as string) || "Meine Sprachschule";
+  const organizationName = (formData.get("organizationName") as string)?.trim() || "Meine Sprachschule";
 
   if (!email || !password) {
     return { error: "Bitte geben Sie alle Pflichtfelder ein." };
@@ -68,28 +94,28 @@ export async function signUp(
     return { error: error.message };
   }
 
-  // 2. Ensure organization exists (Fallback if PostgreSQL trigger was not run yet)
-  if (data.user) {
+  // 2. Ensure organization exists (without .select() to avoid RLS SELECT block)
+  if (data?.user) {
     const { data: existingMember } = await supabase
       .from("organization_members")
       .select("id")
       .eq("user_id", data.user.id)
+      .limit(1)
       .maybeSingle();
 
     if (!existingMember) {
-      const { data: newOrg } = await supabase
-        .from("organizations")
-        .insert({ name: organizationName })
-        .select()
-        .single();
+      const orgId = crypto.randomUUID();
 
-      if (newOrg) {
-        await supabase.from("organization_members").insert({
-          organization_id: newOrg.id,
-          user_id: data.user.id,
-          role: "owner",
-        });
-      }
+      await supabase.from("organizations").insert({
+        id: orgId,
+        name: organizationName,
+      });
+
+      await supabase.from("organization_members").insert({
+        organization_id: orgId,
+        user_id: data.user.id,
+        role: "owner",
+      });
     }
   }
 

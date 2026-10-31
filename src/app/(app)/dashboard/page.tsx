@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { Users, BookOpen, Euro, Plus, ArrowRight, UserCheck } from "lucide-react";
 
 export const metadata = {
@@ -16,14 +17,7 @@ export default async function DashboardPage() {
   const supabase = await createClient();
 
   if (!organization) {
-    return (
-      <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800">Keine Organisation zugewiesen</h2>
-        <p className="text-sm text-slate-500 mt-2">
-          Bitte loggen Sie sich erneut ein oder erstellen Sie eine Schule.
-        </p>
-      </div>
-    );
+    return <CreateOrganizationCard />;
   }
 
   // 1. Fetch teachers for this organization

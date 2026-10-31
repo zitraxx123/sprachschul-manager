@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { Users, Mail, ArrowRight } from "lucide-react";
 
 export const metadata = {
@@ -16,7 +17,9 @@ export default async function TeachersPage() {
   const organization = await getActiveOrganization();
   const supabase = await createClient();
 
-  if (!organization) return null;
+  if (!organization) {
+    return <CreateOrganizationCard />;
+  }
 
   // 1. Fetch teachers
   const { data: teachers = [] } = await supabase
