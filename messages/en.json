@@ -172,7 +172,7 @@
     "noBirthdaysIn14Days": "No birthdays in the next 14 days",
     "upcomingCount": "{count} upcoming",
     "turningAge": "(turning {age})",
-    "todayBirthdayBadge": "🎉 Birthday today!",
+    "todayBirthdayBadge": "Birthday today!",
     "tomorrowBadge": "Tomorrow",
     "inDaysBadge": "In {days} days",
     "courseDetails": "Course Details",
@@ -209,7 +209,10 @@
     "noEmail": "No email address on file",
     "unpaidStudentsCount": "pending",
     "monthlyPrice": "Monthly Price",
-    "customPrice": "Custom Price"
+    "customPrice": "Custom Price",
+    "callTeacher": "Call",
+    "emailTeacher": "Send email",
+    "birthdayMailSubject": "Happy Birthday!"
   },
   "students": {
     "title": "Student Management",
@@ -707,23 +710,110 @@
     "allTopics": "All Topics",
     "catCourses": "Courses & Schedule",
     "catStudents": "Students & Import",
-    "catAttendance": "Attendance",
     "catFinance": "Finances & Payroll",
-    "catRooms": "Rooms",
-    "catPortal": "Teacher Portal",
     "noResults": "No matching answers found",
     "noResultsDesc": "Try other search keywords or choose another category.",
     "needSupport": "Do you have further questions or need support?",
     "needSupportDesc": "Our support team is happy to assist you with configuration and data migration.",
-    "badge": "Knowledge Base & Guides",
-    "heroTitle": "How can we help you?",
-    "heroSubtitle": "Find quick answers regarding courses, student imports, attendance records, payroll, and room management for your language school.",
     "clearSearch": "Clear",
     "topicsCount": "{count, plural, =1 {# topic found} other {# topics found}}",
     "forQuery": " for \"{query}\"",
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
-    "resetFilters": "Reset filter"
+    "resetFilters": "Reset filter",
+    "supportResponse": "Usually answers within 2 hours.",
+    "emailLabel": "Email",
+    "availableLabel": "Available",
+    "availableHours": "Mon–Fri 09:00–18:00",
+    "supportMailSubject": "Help request Sprachschul-Manager",
+    "topicsLabel": "Topics",
+    "faq": {
+      "createCourse": {
+        "keywords": "course, new, create, schedule, room, assign teacher",
+        "q": "How do I create a new course?",
+        "intro": "A new course takes a few steps:",
+        "s1": "Open <b>Courses</b> in the sidebar and click <accent>“Create course”</accent>.",
+        "s2": "Enter the <b>course name</b> (e.g. <em>German B2</em>) and optionally a subject or level.",
+        "s3": "Choose the <b>course type</b>: <b>Group course</b> (several students, shared attendance list) or <b>Individual lesson</b> (1:1, highlighted in the weekly schedule).",
+        "s4": "Choose the <b>teacher</b> and, if needed, the <b>room</b> (e.g. <em>Room 1</em>, <em>Online Zoom</em>).",
+        "s5": "Set the <b>lesson days and times</b> (e.g. Monday and Wednesday, 18:00–19:30).",
+        "s6": "Add students under <b>“Assign students”</b> using the search.",
+        "cta": "Go to courses"
+      },
+      "courseScheduling": {
+        "keywords": "schedule, weekly, timetable, times, room change, duration",
+        "q": "How do I change recurring course times in the weekly schedule?",
+        "intro": "Times are managed in the course settings and appear in the weekly schedule automatically:",
+        "s1": "Open <b>Courses</b> and click <b>“Edit”</b> on the course.",
+        "s2": "Add as many weekdays as you need, each with a start and end time (e.g. Tue 10:00–11:30 and Thu 10:00–11:30).",
+        "s3": "If two courses overlap in the same room, saving is blocked.",
+        "s4": "In the <accent>weekly schedule on the dashboard</accent> you can filter by teacher or course type."
+      },
+      "rooms": {
+        "keywords": "rooms, room, classroom, online, zoom, occupancy, location",
+        "q": "How do I create and manage rooms?",
+        "intro": "Rooms assign courses to a classroom or an online meeting:",
+        "s1": "Click <b>Rooms</b> in the menu.",
+        "s2": "Click <accent>“Add room”</accent> and enter a name (e.g. <em>Room 101</em>, <em>Online Zoom A</em>).",
+        "s3": "Assign the room when you edit a course.",
+        "s4": "The room shows on every course card in the <b>weekly schedule</b>.",
+        "cta": "Go to rooms"
+      },
+      "portal": {
+        "keywords": "portal, teacher portal, own courses, log lessons, attendance",
+        "q": "What does a teacher see in “My Portal”?",
+        "intro": "Teachers get a simplified view without access to school finances or other teachers:",
+        "s1": "After login, <b>My Portal</b> opens right away.",
+        "s2": "The teacher sees their own weekly schedule, assigned courses and student lists.",
+        "s3": "With <accent>“Record lesson”</accent> they enter the topic covered and mark attendance.",
+        "s4": "Their fee updates automatically."
+      },
+      "importStudents": {
+        "keywords": "import, csv, excel, students, bulk, file, spreadsheet, template",
+        "q": "How do I import students from CSV or Excel?",
+        "intro": "Student lists from Excel, Numbers or Google Sheets can be imported in one go:",
+        "s1": "Open the <b>Students</b> page.",
+        "s2": "Click <accent>“Import students”</accent> at the top right.",
+        "s3": "Download the <b>template</b>. It has the columns <code>First name, Last name, Email, Phone, Course</code>.",
+        "s4": "Fill in your data and drop the file into the upload area.",
+        "s5": "Check the <b>preview</b> and confirm with <b>“Import now”</b>.",
+        "tip": "<b>Tip:</b> If a course named in the file doesn’t exist yet, the system can create it for you.",
+        "cta": "Go to students"
+      },
+      "attendance": {
+        "keywords": "attendance, register, absent, excused, absences, late",
+        "q": "How do attendance and absences work?",
+        "intro": "For every lesson you record who took part:",
+        "present": "Present",
+        "presentDesc": "Attended the lesson as planned.",
+        "absent": "Absent",
+        "absentDesc": "Unexcused absence. Shows a warning in the weekly schedule.",
+        "excused": "Excused",
+        "excusedDesc": "Called in sick or cancelled.",
+        "markTitle": "Marking in the weekly schedule",
+        "markBody": "If a lesson is in the past and at least one student was absent without excuse, the course card shows a <alert>red marker</alert>. Click the course to see who was absent.",
+        "cta": "Go to absences"
+      },
+      "monthlyFees": {
+        "keywords": "monthly fee, subscription, payment, paid, open, fees, money",
+        "q": "How are monthly fees calculated and recorded?",
+        "intro": "The school works with a <b>monthly subscription</b>:",
+        "s1": "Each student has a fixed monthly fee (e.g. €120.00 per month).",
+        "s2": "In the student overview and the dashboard finance module you see the status for the current month: <ok>Paid</ok> or <warn>Open</warn>.",
+        "s3": "When a payment arrives (transfer, standing order or cash), click <b>“Record payment”</b> in the student’s row.",
+        "s4": "The amount counts as paid immediately and feeds into the revenue statistics."
+      },
+      "payroll": {
+        "keywords": "fee, teacher, hourly rate, payroll, salary, wage, payout",
+        "q": "How do I calculate teacher pay?",
+        "intro": "Pay is based on the hours taught and the teacher’s hourly rate:",
+        "formulaTitle": "Calculation",
+        "formula": "Lesson hours × hourly rate (€/h) = monthly pay (€)",
+        "outro": "Under <b>Teachers</b> you can open a teacher’s file, see hours per month and create payroll reports.",
+        "cta": "Go to teachers"
+      }
+    },
+    "metaDescription": "Guides and answers on courses, schedules, student import, attendance and teacher pay."
   },
   "settings": {
     "title": "Settings",

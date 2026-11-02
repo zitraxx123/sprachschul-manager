@@ -172,7 +172,7 @@
     "noBirthdaysIn14Days": "Keine Geburtstage in den nächsten 14 Tagen",
     "upcomingCount": "{count} anstehend",
     "turningAge": "(wird {age})",
-    "todayBirthdayBadge": "🎉 Heute Geburtstag!",
+    "todayBirthdayBadge": "Heute Geburtstag!",
     "tomorrowBadge": "Morgen",
     "inDaysBadge": "In {days} Tagen",
     "courseDetails": "Kursdetails",
@@ -209,7 +209,10 @@
     "noEmail": "Keine E-Mail hinterlegt",
     "unpaidStudentsCount": "offen",
     "monthlyPrice": "Monatspreis",
-    "customPrice": "Individueller Preis"
+    "customPrice": "Individueller Preis",
+    "callTeacher": "Anrufen",
+    "emailTeacher": "E-Mail schreiben",
+    "birthdayMailSubject": "Alles Gute zum Geburtstag!"
   },
   "students": {
     "title": "Schülerverwaltung",
@@ -707,23 +710,110 @@
     "allTopics": "Alle Themen",
     "catCourses": "Kurse & Plan",
     "catStudents": "Schüler & Import",
-    "catAttendance": "Anwesenheit",
     "catFinance": "Finanzen & Honorare",
-    "catRooms": "Räume",
-    "catPortal": "Lehrerportal",
     "noResults": "Keine passenden Antworten gefunden",
     "noResultsDesc": "Versuchen Sie andere Suchbegriffe oder wählen Sie eine andere Kategorie aus.",
     "needSupport": "Haben Sie noch offene Fragen oder benötigen Sie Unterstützung?",
     "needSupportDesc": "Unser Schul-Support-Team hilft Ihnen gerne bei der Konfiguration oder Datenübernahme.",
-    "badge": "Wissensdatenbank & Anleitungen",
-    "heroTitle": "Wie können wir Ihnen helfen?",
-    "heroSubtitle": "Finden Sie schnelle Antworten zu Kursen, Schüler-Import, Anwesenheitsjournal, Zahlungen und der Raumverwaltung Ihrer Sprachschule.",
     "clearSearch": "Löschen",
     "topicsCount": "{count, plural, =1 {# Thema gefunden} other {# Themen gefunden}}",
     "forQuery": " für „{query}”",
     "expandAll": "Alle öffnen",
     "collapseAll": "Alle schließen",
-    "resetFilters": "Filter zurücksetzen"
+    "resetFilters": "Filter zurücksetzen",
+    "supportResponse": "Antwort in der Regel innerhalb von 2 Std.",
+    "emailLabel": "E-Mail",
+    "availableLabel": "Erreichbar",
+    "availableHours": "Mo–Fr 09:00–18:00",
+    "supportMailSubject": "Hilfe-Anfrage Sprachschul-Manager",
+    "topicsLabel": "Themen",
+    "faq": {
+      "createCourse": {
+        "keywords": "kurs, neu, anlegen, erstellen, stundenplan, raum, lehrer zuweisen",
+        "q": "Wie lege ich einen neuen Kurs an?",
+        "intro": "Ein neuer Kurs ist in wenigen Schritten angelegt:",
+        "s1": "Öffnen Sie in der Seitenleiste <b>Kurse</b> und klicken Sie auf <accent>„Kurs anlegen“</accent>.",
+        "s2": "Tragen Sie den <b>Kursnamen</b> ein (z. B. <em>Deutsch B2</em>) und optional Fach oder Niveau.",
+        "s3": "Wählen Sie den <b>Kurstyp</b>: <b>Gruppenkurs</b> (mehrere Teilnehmer, gemeinsame Anwesenheitsliste) oder <b>Einzelunterricht</b> (1:1, im Wochenplan farbig markiert).",
+        "s4": "Wählen Sie die <b>Lehrkraft</b> und bei Bedarf den <b>Raum</b> (z. B. <em>Raum 1</em>, <em>Online Zoom</em>).",
+        "s5": "Legen Sie die <b>Unterrichtstage und Uhrzeiten</b> fest (z. B. Montag und Mittwoch, 18:00–19:30 Uhr).",
+        "s6": "Weisen Sie unter <b>„Schüler zuweisen“</b> die Teilnehmer per Suche zu.",
+        "cta": "Zu den Kursen"
+      },
+      "courseScheduling": {
+        "keywords": "stundenplan, wochenplan, termine, zeitplan, uhrzeit, raumwechsel, dauer",
+        "q": "Wie ändere ich regelmäßige Kurstermine im Wochenplan?",
+        "intro": "Termine werden in den Kurseinstellungen gepflegt und erscheinen automatisch im Wochenplan:",
+        "s1": "Öffnen Sie <b>Kurse</b> und klicken Sie beim gewünschten Kurs auf <b>„Bearbeiten“</b>.",
+        "s2": "Fügen Sie beliebig viele Wochentage mit Start- und Endzeit hinzu (z. B. Di 10:00–11:30 und Do 10:00–11:30 Uhr).",
+        "s3": "Überschneiden sich zwei Kurse im selben Raum, wird das Speichern verhindert.",
+        "s4": "Im <accent>Wochenplan auf dem Dashboard</accent> filtern Sie nach Lehrkraft oder Kurstyp."
+      },
+      "rooms": {
+        "keywords": "räume, raum, zimmer, online, zoom, belegung, ort",
+        "q": "Wie erstelle und verwalte ich Unterrichtsräume?",
+        "intro": "Räume ordnen Kurse einem Klassenzimmer oder einem Online-Meeting zu:",
+        "s1": "Klicken Sie im Menü auf <b>Räume</b>.",
+        "s2": "Klicken Sie auf <accent>„Raum hinzufügen“</accent> und geben Sie den Namen ein (z. B. <em>Raum 101</em>, <em>Online Zoom A</em>).",
+        "s3": "Weisen Sie den Raum beim Bearbeiten eines Kurses zu.",
+        "s4": "Der Raum erscheint auf jeder Kurskarte im <b>Wochenplan</b>.",
+        "cta": "Zur Raumverwaltung"
+      },
+      "portal": {
+        "keywords": "portal, lehrerportal, lehrkraft, eigene kurse, stunden eintragen, anwesenheit führen",
+        "q": "Was sieht eine Lehrkraft im Portal „Mein Portal“?",
+        "intro": "Lehrkräfte erhalten einen vereinfachten Zugang ohne Einblick in Schulfinanzen oder andere Lehrkräfte:",
+        "s1": "Nach dem Login öffnet sich sofort <b>Mein Portal</b>.",
+        "s2": "Die Lehrkraft sieht den eigenen Wochenplan, die zugewiesenen Kurse und die Schülerlisten.",
+        "s3": "Mit <accent>„Stunde erfassen“</accent> trägt sie das behandelte Thema ein und markiert die Anwesenheit.",
+        "s4": "Der Honoraranspruch wird automatisch aktualisiert."
+      },
+      "importStudents": {
+        "keywords": "import, csv, excel, schüler, massenimport, datei, tabelle, vorlage",
+        "q": "Wie importiere ich Schüler per CSV oder Excel?",
+        "intro": "Schülerlisten aus Excel, Numbers oder Google Tabellen lassen sich in einem Schritt übernehmen:",
+        "s1": "Öffnen Sie die Seite <b>Schüler</b>.",
+        "s2": "Klicken Sie oben rechts auf <accent>„Schüler importieren“</accent>.",
+        "s3": "Laden Sie die <b>Vorlage</b> herunter. Sie enthält die Spalten <code>Vorname, Nachname, Email, Telefon, Kurs</code>.",
+        "s4": "Tragen Sie Ihre Daten ein und ziehen Sie die Datei in das Upload-Feld.",
+        "s5": "Prüfen Sie die <b>Vorschau</b> und bestätigen Sie mit <b>„Jetzt importieren“</b>.",
+        "tip": "<b>Tipp:</b> Existiert ein genannter Kurs noch nicht, kann das System ihn auf Wunsch automatisch anlegen.",
+        "cta": "Zur Schülerverwaltung"
+      },
+      "attendance": {
+        "keywords": "anwesenheit, journal, abwesend, entschuldigt, fehlzeiten, verspätung",
+        "q": "Wie funktioniert die Erfassung von Anwesenheit und Fehlzeiten?",
+        "intro": "Für jeden Unterrichtstermin wird erfasst, wer teilgenommen hat:",
+        "present": "Anwesend",
+        "presentDesc": "Hat regulär am Unterricht teilgenommen.",
+        "absent": "Abwesend",
+        "absentDesc": "Unentschuldigtes Fehlen. Löst einen Hinweis im Wochenplan aus.",
+        "excused": "Entschuldigt",
+        "excusedDesc": "Hat sich krank- oder abgemeldet.",
+        "markTitle": "Kennzeichnung im Wochenplan",
+        "markBody": "Liegt ein Termin in der Vergangenheit und hat mindestens ein Teilnehmer unentschuldigt gefehlt, zeigt die Kurskarte einen <alert>roten Hinweis</alert>. Ein Klick auf den Kurs nennt die Namen der Abwesenden.",
+        "cta": "Zur Fehlzeiten-Übersicht"
+      },
+      "monthlyFees": {
+        "keywords": "monatsbeitrag, abo, monatsabo, zahlung, bezahlt, offen, beiträge, geld",
+        "q": "Wie werden Monatsbeiträge berechnet und verbucht?",
+        "intro": "Die Schule arbeitet mit einem <b>Monatsabo</b>:",
+        "s1": "Jeder Schüler hat einen festen Monatsbeitrag (z. B. 120,00 € pro Monat).",
+        "s2": "In der Schülerübersicht und im Finanzmodul des Dashboards sehen Sie den Status des aktuellen Monats: <ok>Bezahlt</ok> oder <warn>Offen</warn>.",
+        "s3": "Geht eine Zahlung ein (Überweisung, Dauerauftrag oder bar), klicken Sie in der Zeile des Schülers auf <b>„Zahlung verbuchen“</b>.",
+        "s4": "Der Betrag zählt sofort als bezahlt und fließt in die Umsatzstatistik ein."
+      },
+      "payroll": {
+        "keywords": "honorar, lehrer, stundensatz, abrechnung, gehalt, stundenlohn, lohn, auszahlung",
+        "q": "Wie rechne ich Honorare für Lehrkräfte ab?",
+        "intro": "Das Honorar ergibt sich aus den gehaltenen Stunden und dem Stundensatz der Lehrkraft:",
+        "formulaTitle": "Berechnung",
+        "formula": "Unterrichtsstunden × Stundensatz (€/Std.) = Monatshonorar (€)",
+        "outro": "Unter <b>Lehrkräfte</b> öffnen Sie die Akte einer Lehrkraft, sehen die Stunden je Monat und erstellen Abrechnungsberichte.",
+        "cta": "Zu den Lehrkräften"
+      }
+    },
+    "metaDescription": "Anleitungen und Antworten zu Kursen, Stundenplan, Schülerimport, Anwesenheiten und Honoraren."
   },
   "settings": {
     "title": "Einstellungen",

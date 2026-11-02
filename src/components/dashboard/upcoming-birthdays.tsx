@@ -112,92 +112,79 @@ export function UpcomingBirthdays({ teachers }: UpcomingBirthdaysProps) {
             <span className="font-medium text-slate-500 dark:text-slate-400">{tDashboard("noBirthdaysIn14Days")}</span>
           </div>
         ) : (
-          <div className="space-y-2">
+          <ul className="divide-y divide-slate-100 dark:divide-slate-800">
             {upcomingList.map((item) => (
-              <div
+              <li
                 key={item.teacher.id}
-                className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-all ${
-                  item.isToday
-                    ? "bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-white dark:from-amber-950/40 dark:via-orange-950/30 dark:to-slate-900 border-amber-300 dark:border-amber-800 shadow-sm ring-1 ring-amber-200 dark:ring-amber-950"
-                    : item.isTomorrow
-                    ? "bg-amber-50/40 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800"
-                    : "bg-slate-50/70 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                }`}
+                className="py-3 first:pt-0 last:pb-0 flex items-center gap-3"
               >
-                {/* Teacher Info */}
-                <div className="flex items-center space-x-3 min-w-0">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-sm ${
-                      item.isToday
-                        ? "bg-amber-600 text-white"
-                        : "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300"
-                    }`}
-                  >
-                    {item.isToday ? "🎂" : item.teacher.name.charAt(0).toUpperCase()}
-                  </div>
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm shrink-0 ${
+                    item.isToday
+                      ? "bg-amber-600 text-white"
+                      : "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300"
+                  }`}
+                >
+                  {item.isToday ? (
+                    <Cake strokeWidth={1.5} className="w-4 h-4" aria-hidden />
+                  ) : (
+                    item.teacher.name.charAt(0).toUpperCase()
+                  )}
+                </div>
 
-                  <div className="min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate">
-                        {item.teacher.name}
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">
+                    {item.teacher.name}
+                    {item.turningAge && (
+                      <span className="ml-1.5 text-[11px] font-normal text-slate-500 dark:text-slate-400">
+                        {tDashboard("turningAge", { age: item.turningAge })}
                       </span>
-                      {item.turningAge && (
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                          {tDashboard("turningAge", { age: item.turningAge })}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center space-x-2 mt-0.5">
-                      <span className="font-medium text-slate-700 dark:text-slate-300">{item.dateStr}</span>
-                    </div>
-                  </div>
+                    )}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {item.dateStr}
+                    {" · "}
+                    <span
+                      className={
+                        item.isToday
+                          ? "font-semibold text-amber-700 dark:text-amber-400"
+                          : "text-slate-600 dark:text-slate-300"
+                      }
+                    >
+                      {item.isToday
+                        ? tDashboard("todayBirthdayBadge")
+                        : item.isTomorrow
+                        ? tDashboard("tomorrowBadge")
+                        : tDashboard("inDaysBadge", { days: item.daysUntil })}
+                    </span>
+                  </p>
                 </div>
 
-                {/* Status Badge & Quick Contact Actions */}
-                <div className="flex items-center justify-between sm:justify-end space-x-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
-                  <div>
-                    {item.isToday ? (
-                      <Badge className="bg-amber-600 hover:bg-amber-600 text-white font-bold text-xs px-2.5 py-1 shadow-sm animate-pulse">
-                        {tDashboard("todayBirthdayBadge")}
-                      </Badge>
-                    ) : item.isTomorrow ? (
-                      <Badge className="bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-800 font-semibold text-xs">
-                        {tDashboard("tomorrowBadge")}
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-white dark:bg-slate-800 font-medium text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 text-xs">
-                        {tDashboard("inDaysBadge", { days: item.daysUntil })}
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Contact Links */}
-                  <div className="flex items-center space-x-2">
-                    {item.teacher.phone && (
-                      <a
-                        href={`tel:${item.teacher.phone}`}
-                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all active:scale-95 touch-manipulation"
-                        title={`Tel: ${item.teacher.phone}`}
-                        aria-label="Telefon"
-                      >
-                        <Phone strokeWidth={1.5} className="w-4 h-4" />
-                      </a>
-                    )}
-                    {item.teacher.email && (
-                      <a
-                        href={`mailto:${item.teacher.email}?subject=Happy%20Birthday!`}
-                        className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all active:scale-95 touch-manipulation"
-                        title={`E-Mail: ${item.teacher.email}`}
-                        aria-label="E-Mail"
-                      >
-                        <Mail strokeWidth={1.5} className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  {item.teacher.phone && (
+                    <a
+                      href={`tel:${item.teacher.phone}`}
+                      className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-hidden"
+                      title={`${tDashboard("callTeacher")}: ${item.teacher.phone}`}
+                      aria-label={`${tDashboard("callTeacher")}: ${item.teacher.name}`}
+                    >
+                      <Phone strokeWidth={1.5} className="w-4 h-4" />
+                    </a>
+                  )}
+                  {item.teacher.email && (
+                    <a
+                      href={`mailto:${item.teacher.email}?subject=${encodeURIComponent(tDashboard("birthdayMailSubject"))}`}
+                      className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-hidden"
+                      title={`${tDashboard("emailTeacher")}: ${item.teacher.email}`}
+                      aria-label={`${tDashboard("emailTeacher")}: ${item.teacher.name}`}
+                    >
+                      <Mail strokeWidth={1.5} className="w-4 h-4" />
+                    </a>
+                  )}
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </CardContent>
     </Card>

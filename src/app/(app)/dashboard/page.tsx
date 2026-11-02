@@ -397,6 +397,7 @@ export default async function DashboardPage() {
             currentMonthLabel={currentMonthLabel}
             schoolName={organization.name}
           />
+          <UpcomingBirthdays teachers={teachers || []} />
         </div>
       </div>
 
@@ -651,9 +652,6 @@ export default async function DashboardPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Upcoming Birthdays Notification Block (next 14 days) */}
-      <UpcomingBirthdays teachers={teachers || []} />
     </div>
   );
 }
