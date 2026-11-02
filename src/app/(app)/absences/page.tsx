@@ -23,6 +23,7 @@ import {
   ShieldCheck, 
   Calendar 
 } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 
 interface AbsencesPageProps {
   searchParams: Promise<{
@@ -40,13 +41,19 @@ export const metadata = {
 export default async function AbsencesPage({ searchParams }: AbsencesPageProps) {
   const { range, from, to, teacher_id: teacherId } = await searchParams;
 
-  const organization = await getActiveOrganization();
+  const [organization, currentTeacher, membership, tAbsences, tCommon, locale] = await Promise.all([
+    getActiveOrganization(),
+    getCurrentTeacher(),
+    getCurrentMembership(),
+    getTranslations("absences"),
+    getTranslations("common"),
+    getLocale(),
+  ]);
+
   if (!organization) {
     return <CreateOrganizationCard />;
   }
 
-  const currentTeacher = await getCurrentTeacher();
-  const membership = await getCurrentMembership();
   const isTeacher = !!(currentTeacher && membership?.role === "teacher");
 
   const supabase = await createClient();
@@ -75,25 +82,25 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
       {/* 1. Header with Mode Badge & Print Action */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Fehlzeiten &amp; Abwesenheitsbericht
+          <div className="flex items-center space-x-2">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              {tAbsences("title")}
             </h1>
             {isTeacher ? (
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
-                <User className="w-3 h-3 mr-1" />
-                Ihre Kurse ({currentTeacher?.name})
+              <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-xs">
+                <User strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                {tAbsences("yourCourses", { teacher: currentTeacher?.name || "" })}
               </Badge>
             ) : (
-              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
-                <ShieldCheck className="w-3 h-3 mr-1" />
-                Schulleitung (Gesamtschule)
+              <Badge variant="outline" className="bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 text-xs">
+                <ShieldCheck strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                {tAbsences("schoolLeadership")}
               </Badge>
             )}
           </div>
-          <p className="text-sm text-slate-500 mt-1">
-            Auswertung aller unentschuldigten und erfassten Fehlzeiten aus dem Klassenbuch für:{" "}
-            <strong className="text-slate-800">{rangeInfo.label}</strong>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {tAbsences("subtitle")}{" "}
+            <strong className="text-slate-800 dark:text-slate-200">{rangeInfo.label}</strong>
           </p>
         </div>
 
@@ -105,40 +112,40 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
       {/* 2. KPI Summary Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Absences */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
           <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-            <UserX className="w-6 h-6" />
+            <UserX strokeWidth={1.5} className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Gesamte Fehlzeiten</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tAbsences("totalAbsences")}</p>
             <p className="text-2xl font-extrabold text-rose-600 dark:text-rose-400">
-              {totalAbsences} <span className="text-xs text-slate-400 font-normal">im Zeitraum</span>
+              {totalAbsences} <span className="text-xs text-slate-400 font-normal">{tAbsences("inPeriod")}</span>
             </p>
           </div>
         </div>
 
         {/* Affected Students */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
           <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-            <Users className="w-6 h-6" />
+            <Users strokeWidth={1.5} className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Betroffene Schüler</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tAbsences("affectedStudents")}</p>
             <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
-              {uniqueStudentsCount} <span className="text-xs text-slate-400 font-normal">Schüler</span>
+              {uniqueStudentsCount} <span className="text-xs text-slate-400 font-normal">{tAbsences("studentsCount", { count: uniqueStudentsCount })}</span>
             </p>
           </div>
         </div>
 
         {/* Affected Courses */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
           <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <Layers className="w-6 h-6" />
+            <Layers strokeWidth={1.5} className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Betroffene Kurse / Gruppen</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tAbsences("affectedCourses")}</p>
             <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
-              {uniqueCoursesCount} <span className="text-xs text-slate-400 font-normal">Kurse</span>
+              {uniqueCoursesCount} <span className="text-xs text-slate-400 font-normal">{tAbsences("coursesCount", { count: uniqueCoursesCount })}</span>
             </p>
           </div>
         </div>
@@ -160,28 +167,28 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <CardTitle className="text-base font-semibold">
-                Protokollierte Abwesenheiten ({totalAbsences})
+                {tAbsences("recordedAbsences", { count: totalAbsences })}
               </CardTitle>
               <CardDescription>
-                Zeitraum: {rangeInfo.label} • Dokumentiert über die Anwesenheitserfassung
+                {tAbsences("recordedViaAttendance", { range: rangeInfo.label })}
               </CardDescription>
             </div>
             {totalAbsences > 0 && (
               <Badge variant="destructive" className="self-start sm:self-auto font-mono text-xs">
-                {totalAbsences} {totalAbsences === 1 ? "Fehlzeit" : "Fehlzeiten"}
+                {totalAbsences} {totalAbsences === 1 ? tAbsences("absenceSingular") : tAbsences("absencePlural")}
               </Badge>
             )}
           </div>
         </CardHeader>
         <CardContent>
           {totalAbsences === 0 ? (
-            <div className="text-center py-14 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-              <CheckCircle2 className="w-12 h-12 mx-auto text-emerald-500 mb-2" />
-              <p className="text-sm font-bold text-slate-800">
-                Keine Fehlzeiten im gewählten Zeitraum
+            <div className="text-center py-14 bg-slate-50/50 dark:bg-slate-800/40 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+              <CheckCircle2 strokeWidth={1.5} className="w-12 h-12 mx-auto text-emerald-500 mb-2" />
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                {tAbsences("noAbsencesInPeriod")}
               </p>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                Für {rangeInfo.label} wurden keine unentschuldigten Abwesenheiten für Ihre Auswahl dokumentiert.
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
+                {tAbsences("noAbsencesInPeriodDesc", { range: rangeInfo.label })}
               </p>
             </div>
           ) : (
@@ -191,43 +198,43 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Datum</TableHead>
-                      <TableHead>Schüler</TableHead>
-                      <TableHead>Kurs / Gruppe</TableHead>
-                      <TableHead>Lehrkraft</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Unterrichtsnotiz</TableHead>
+                      <TableHead>{tAbsences("tableDate")}</TableHead>
+                      <TableHead>{tAbsences("tableStudent")}</TableHead>
+                      <TableHead>{tAbsences("tableCourse")}</TableHead>
+                      <TableHead>{tAbsences("tableTeacher")}</TableHead>
+                      <TableHead>{tAbsences("tableStatus")}</TableHead>
+                      <TableHead className="text-right">{tAbsences("tableNotes")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {absences.map((record) => (
                       <TableRow key={record.attendanceId}>
                         {/* Datum */}
-                        <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
-                          <div className="flex items-center space-x-1.5">
-                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{formatDate(record.lessonDate)}</span>
+                        <TableCell className="font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                          <div className="flex items-center space-x-2">
+                            <Calendar strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                            <span>{formatDate(record.lessonDate, locale)}</span>
                           </div>
                         </TableCell>
 
                         {/* Schüler */}
-                        <TableCell className="font-medium text-slate-900">
-                          <div className="flex items-center space-x-2.5">
-                            <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-800 font-bold text-xs flex items-center justify-center shrink-0">
+                        <TableCell className="font-medium text-slate-900 dark:text-slate-100">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-bold text-xs flex items-center justify-center shrink-0">
                               {record.studentName.charAt(0)}
                             </div>
                             <div className="min-w-0">
                               <p className="text-xs font-bold leading-tight">{record.studentName}</p>
-                              <div className="text-[11px] text-slate-400 space-y-0.5 mt-0.5">
+                              <div className="text-[11px] text-slate-400 dark:text-slate-500 space-y-0.5 mt-0.5">
                                 {record.studentEmail && (
                                   <div className="flex items-center space-x-1">
-                                    <Mail className="w-3 h-3 text-slate-400" />
+                                    <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                                     <span>{record.studentEmail}</span>
                                   </div>
                                 )}
                                 {record.studentPhone && (
                                   <div className="flex items-center space-x-1">
-                                    <Phone className="w-3 h-3 text-slate-400" />
+                                    <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                                     <span>{record.studentPhone}</span>
                                   </div>
                                 )}
@@ -238,19 +245,19 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
 
                         {/* Kurs */}
                         <TableCell>
-                          <Badge variant="outline" className="bg-slate-50 font-medium text-xs">
-                            <Layers className="w-3 h-3 mr-1 text-blue-500" />
+                          <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 font-medium text-xs">
+                            <Layers strokeWidth={1.5} className="w-4 h-4 mr-1 text-blue-500" />
                             <span>{record.courseName}</span>
                           </Badge>
                           <span className="block text-[11px] text-slate-400 mt-0.5">
-                            {record.durationHours} Std. Unterricht
+                            {tAbsences("lessonHoursBadge", { hours: record.durationHours })}
                           </span>
                         </TableCell>
 
                         {/* Lehrkraft */}
-                        <TableCell className="text-slate-700 text-xs font-medium">
-                          <div className="flex items-center space-x-1.5">
-                            <User className="w-3.5 h-3.5 text-slate-400" />
+                        <TableCell className="text-slate-700 dark:text-slate-300 text-xs font-medium">
+                          <div className="flex items-center space-x-2">
+                            <User strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                             <span>{record.teacherName}</span>
                           </div>
                         </TableCell>
@@ -258,8 +265,8 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                         {/* Status */}
                         <TableCell>
                           <Badge variant="destructive" className="space-x-1 py-1 font-semibold text-[10px]">
-                            <UserX className="w-3 h-3" />
-                            <span>Abwesend</span>
+                            <UserX strokeWidth={1.5} className="w-4 h-4" />
+                            <span>{tAbsences("unexcused")}</span>
                           </Badge>
                         </TableCell>
 
@@ -278,7 +285,7 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                 {absences.map((record) => (
                   <div 
                     key={record.attendanceId} 
-                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                    className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center space-x-3 min-w-0">
@@ -292,12 +299,12 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                           <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             {record.studentPhone ? (
                               <a href={`tel:${record.studentPhone}`} className="flex items-center space-x-1 text-blue-600 dark:text-blue-400 hover:underline">
-                                <Phone className="w-3 h-3 shrink-0" />
+                                <Phone strokeWidth={1.5} className="w-4 h-4 shrink-0" />
                                 <span>{record.studentPhone}</span>
                               </a>
                             ) : record.studentEmail ? (
                               <a href={`mailto:${record.studentEmail}`} className="flex items-center space-x-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 truncate">
-                                <Mail className="w-3 h-3 text-slate-400 shrink-0" />
+                                <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
                                 <span className="truncate">{record.studentEmail}</span>
                               </a>
                             ) : null}
@@ -306,27 +313,27 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                       </div>
 
                       <Badge variant="destructive" className="shrink-0 text-xs py-1 px-2 font-semibold">
-                        <UserX className="w-3.5 h-3.5 mr-1" />
-                        <span>Abwesend</span>
+                        <UserX strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                        <span>{tAbsences("unexcused")}</span>
                       </Badge>
                     </div>
 
                     <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                       <div className="flex items-center space-x-1 font-semibold text-slate-900 dark:text-slate-100">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{formatDate(record.lessonDate)}</span>
+                        <Calendar strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                        <span>{formatDate(record.lessonDate, locale)}</span>
                       </div>
                       <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 font-medium py-0.5 border-slate-200 dark:border-slate-700">
-                        <Layers className="w-3 h-3 mr-1 text-blue-500 dark:text-blue-400" />
+                        <Layers strokeWidth={1.5} className="w-4 h-4 mr-1 text-blue-500 dark:text-blue-400" />
                         <span>{record.courseName}</span>
                       </Badge>
                       <span className="text-slate-400">•</span>
-                      <span>Dozent: {record.teacherName}</span>
+                      <span>{tCommon("teacher")}: {record.teacherName}</span>
                     </div>
 
                     {record.notes && (
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/50 p-2.5 rounded-xl">
-                        <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">Notiz:</span>
+                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/50 p-3 rounded-xl">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">{tAbsences("noteLabel")}</span>
                         <p className="italic">&quot;{record.notes}&quot;</p>
                       </div>
                     )}

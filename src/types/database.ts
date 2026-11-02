@@ -13,18 +13,27 @@ export type Database = {
         Row: {
           id: string;
           name: string;
+          logo_url: string | null;
+          late_cancellation_hours: number;
+          late_cancellation_pay_percent: number;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           name: string;
+          logo_url?: string | null;
+          late_cancellation_hours?: number;
+          late_cancellation_pay_percent?: number;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
+          logo_url?: string | null;
+          late_cancellation_hours?: number;
+          late_cancellation_pay_percent?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -137,6 +146,7 @@ export type Database = {
           parent_phone: string | null;
           parent_email: string | null;
           course_name: string | null;
+          custom_monthly_price: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -152,6 +162,7 @@ export type Database = {
           parent_phone?: string | null;
           parent_email?: string | null;
           course_name?: string | null;
+          custom_monthly_price?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -167,6 +178,7 @@ export type Database = {
           parent_phone?: string | null;
           parent_email?: string | null;
           course_name?: string | null;
+          custom_monthly_price?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -196,6 +208,8 @@ export type Database = {
           room_id: string | null;
           course_type: "group" | "individual";
           description: string | null;
+          max_capacity: number;
+          monthly_price: number;
           created_at: string;
           updated_at: string;
         };
@@ -207,6 +221,8 @@ export type Database = {
           room_id?: string | null;
           course_type?: "group" | "individual";
           description?: string | null;
+          max_capacity?: number;
+          monthly_price?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -218,6 +234,8 @@ export type Database = {
           room_id?: string | null;
           course_type?: "group" | "individual";
           description?: string | null;
+          max_capacity?: number;
+          monthly_price?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -419,6 +437,7 @@ export type Database = {
           organization_id: string;
           student_id: string;
           course_id: string;
+          status: "active" | "trial" | "waiting";
           created_at: string;
         };
         Insert: {
@@ -426,6 +445,7 @@ export type Database = {
           organization_id: string;
           student_id: string;
           course_id: string;
+          status?: "active" | "trial" | "waiting";
           created_at?: string;
         };
         Update: {
@@ -433,6 +453,7 @@ export type Database = {
           organization_id?: string;
           student_id?: string;
           course_id?: string;
+          status?: "active" | "trial" | "waiting";
           created_at?: string;
         };
         Relationships: [
@@ -464,12 +485,14 @@ export type Database = {
           id: string;
           organization_id: string;
           teacher_id: string;
+          original_teacher_id: string | null;
           student_id: string | null;
           course_id: string | null;
           student_name: string | null;
           lesson_date: string;
           duration_hours: number;
           notes: string | null;
+          status: "completed" | "cancelled_by_student" | "cancelled_late";
           created_at: string;
           updated_at: string;
         };
@@ -477,12 +500,14 @@ export type Database = {
           id?: string;
           organization_id: string;
           teacher_id: string;
+          original_teacher_id?: string | null;
           student_id?: string | null;
           course_id?: string | null;
           student_name?: string | null;
           lesson_date?: string;
           duration_hours: number;
           notes?: string | null;
+          status?: "completed" | "cancelled_by_student" | "cancelled_late";
           created_at?: string;
           updated_at?: string;
         };
@@ -490,12 +515,14 @@ export type Database = {
           id?: string;
           organization_id?: string;
           teacher_id?: string;
+          original_teacher_id?: string | null;
           student_id?: string | null;
           course_id?: string | null;
           student_name?: string | null;
           lesson_date?: string;
           duration_hours?: number;
           notes?: string | null;
+          status?: "completed" | "cancelled_by_student" | "cancelled_late";
           created_at?: string;
           updated_at?: string;
         };
@@ -517,6 +544,13 @@ export type Database = {
           {
             foreignKeyName: "lessons_teacher_id_fkey";
             columns: ["teacher_id"];
+            isOneToOne: false;
+            referencedRelation: "teachers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lessons_original_teacher_id_fkey";
+            columns: ["original_teacher_id"];
             isOneToOne: false;
             referencedRelation: "teachers";
             referencedColumns: ["id"];
@@ -569,7 +603,9 @@ export type CourseSchedule = Database["public"]["Tables"]["course_schedules"]["R
 export type MonthlyPayment = Database["public"]["Tables"]["monthly_payments"]["Row"];
 export type Attendance = Database["public"]["Tables"]["attendance"]["Row"];
 export type StudentCourse = Database["public"]["Tables"]["student_courses"]["Row"];
+export type StudentCourseStatus = Database["public"]["Tables"]["student_courses"]["Row"]["status"];
 export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
+export type LessonStatus = Database["public"]["Tables"]["lessons"]["Row"]["status"];
 
 export type LessonWithTeacher = Lesson & {
   teacher?: Teacher;

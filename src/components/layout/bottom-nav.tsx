@@ -11,25 +11,33 @@ import {
   Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface BottomNavProps {
   isTeacher?: boolean;
 }
 
-const adminTabs = [
-  { title: "Übersicht", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Kurse", href: "/courses", icon: Layers },
-  { title: "Schüler", href: "/students", icon: Users },
-  { title: "Lehrer", href: "/teachers", icon: GraduationCap },
-  { title: "Fehlzeiten", href: "/absences", icon: UserX },
+interface BottomTabConfig {
+  key: "dashboard" | "courses" | "students" | "teachers" | "absences" | "myPortal";
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const adminTabs: BottomTabConfig[] = [
+  { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "courses", href: "/courses", icon: Layers },
+  { key: "students", href: "/students", icon: Users },
+  { key: "teachers", href: "/teachers", icon: GraduationCap },
+  { key: "absences", href: "/absences", icon: UserX },
 ];
 
-const teacherTabs = [
-  { title: "Wochenplan", href: "/my-portal", icon: Calendar },
-  { title: "Fehlzeiten", href: "/absences", icon: UserX },
+const teacherTabs: BottomTabConfig[] = [
+  { key: "myPortal", href: "/my-portal", icon: Calendar },
+  { key: "absences", href: "/absences", icon: UserX },
 ];
 
 export function BottomNav({ isTeacher = false }: BottomNavProps) {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const tabs = isTeacher ? teacherTabs : adminTabs;
 
@@ -56,11 +64,11 @@ export function BottomNav({ isTeacher = false }: BottomNavProps) {
             >
               <div 
                 className={cn(
-                  "p-1 rounded-xl transition-all duration-150",
+                  "p-1 rounded-lg transition-all duration-150",
                   isActive ? "bg-blue-50/80 dark:bg-blue-950/60 scale-105" : "group-active:scale-95"
                 )}
               >
-                <Icon className={cn("w-5 h-5", isActive ? "stroke-[2.2px] text-blue-600 dark:text-blue-400" : "stroke-[1.8px]")} />
+                <Icon className={cn("w-5 h-5", isActive ? "stroke-[2px] text-blue-600 dark:text-blue-400" : "stroke-[1.5px]")} />
               </div>
               <span 
                 className={cn(
@@ -68,7 +76,7 @@ export function BottomNav({ isTeacher = false }: BottomNavProps) {
                   isActive ? "font-bold text-blue-600 dark:text-blue-400" : "font-medium text-slate-500 dark:text-slate-400"
                 )}
               >
-                {tab.title}
+                {t(tab.key)}
               </span>
             </Link>
           );

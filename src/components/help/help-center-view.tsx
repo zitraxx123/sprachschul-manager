@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { 
   HelpCircle, 
   Search, 
@@ -66,9 +67,9 @@ const FAQ_DATA: FaqItem[] = [
         </ol>
         <div className="pt-2">
           <Link href="/courses">
-            <Button size="sm" variant="outline" className="text-xs space-x-1.5">
+            <Button size="sm" variant="outline" className="text-xs space-x-2">
               <span>Zu den Kursen</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -86,7 +87,7 @@ const FAQ_DATA: FaqItem[] = [
         <p>
           Die Anwesenheit wird für jeden Unterrichtstermin präzise erfasst, um den Lernfortschritt zu sichern und Abwesenheiten sofort zu erkennen:
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 my-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 my-3">
           <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs">
             <span className="font-bold text-emerald-800 dark:text-emerald-300 block mb-0.5">✓ Anwesend</span>
             Schüler hat regulär am Unterricht teilgenommen.
@@ -106,9 +107,9 @@ const FAQ_DATA: FaqItem[] = [
         </p>
         <div className="pt-2">
           <Link href="/absences">
-            <Button size="sm" variant="outline" className="text-xs space-x-1.5">
+            <Button size="sm" variant="outline" className="text-xs space-x-2">
               <span>Zur Fehlzeiten-Übersicht</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -148,9 +149,9 @@ const FAQ_DATA: FaqItem[] = [
         </div>
         <div className="pt-2">
           <Link href="/students">
-            <Button size="sm" variant="outline" className="text-xs space-x-1.5">
+            <Button size="sm" variant="outline" className="text-xs space-x-2">
               <span>Zur Schülerverwaltung</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -168,7 +169,7 @@ const FAQ_DATA: FaqItem[] = [
         <p>
           Für Sprachschulen nutzt das System ein modernes, transparentes <strong>Monatsabo-Modell</strong>:
         </p>
-        <ul className="list-disc pl-5 space-y-1.5">
+        <ul className="list-disc pl-5 space-y-2">
           <li>
             Jeder Schüler hat einen festen monatlichen Schulbeitrag (z. B. 120,00 € / Monat).
           </li>
@@ -202,7 +203,7 @@ const FAQ_DATA: FaqItem[] = [
           <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
             Berechnungsformel
           </p>
-          <div className="font-mono text-sm bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400">
+          <div className="font-mono text-sm bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400">
             Unterrichtsstunden (Std.) &times; Stundensatz (€ / Std.) = Fälliges Monatshonorar (€)
           </div>
         </div>
@@ -211,9 +212,9 @@ const FAQ_DATA: FaqItem[] = [
         </p>
         <div className="pt-2">
           <Link href="/teachers">
-            <Button size="sm" variant="outline" className="text-xs space-x-1.5">
+            <Button size="sm" variant="outline" className="text-xs space-x-2">
               <span>Zu den Lehrkräften</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -231,7 +232,7 @@ const FAQ_DATA: FaqItem[] = [
         <p>
           Räume ermöglichen eine übersichtliche Zuweisung von Klassenräumen oder Online-Meetings:
         </p>
-        <ol className="list-decimal pl-5 space-y-1.5">
+        <ol className="list-decimal pl-5 space-y-2">
           <li>
             Klicken Sie im Menü auf <strong className="text-slate-900 dark:text-slate-100">Räume</strong>.
           </li>
@@ -247,9 +248,9 @@ const FAQ_DATA: FaqItem[] = [
         </ol>
         <div className="pt-2">
           <Link href="/rooms">
-            <Button size="sm" variant="outline" className="text-xs space-x-1.5">
+            <Button size="sm" variant="outline" className="text-xs space-x-2">
               <span>Zur Raumverwaltung</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -267,7 +268,7 @@ const FAQ_DATA: FaqItem[] = [
         <p>
           Lehrkräfte erhalten einen eigenen, vereinfachten Zugang ohne Einblick in Schulfinanzen oder andere Lehrer:
         </p>
-        <ul className="list-disc pl-5 space-y-1.5">
+        <ul className="list-disc pl-5 space-y-2">
           <li>
             Nach dem Login öffnet sich sofort <strong className="text-slate-900 dark:text-slate-100">Mein Portal</strong>.
           </li>
@@ -287,14 +288,14 @@ const FAQ_DATA: FaqItem[] = [
 ];
 
 const CATEGORIES = [
-  { id: "all", label: "Alle Themen", icon: Sparkles },
-  { id: "courses", label: "Kurse & Plan", icon: LayersIcon },
-  { id: "students", label: "Schüler & Import", icon: Users },
-  { id: "attendance", label: "Anwesenheit", icon: BookOpen },
-  { id: "finance", label: "Finanzen & Honorare", icon: Euro },
-  { id: "rooms", label: "Räume", icon: DoorOpen },
-  { id: "portal", label: "Lehrerportal", icon: GraduationCap },
-];
+  { id: "all", labelKey: "allTopics", icon: Sparkles },
+  { id: "courses", labelKey: "catCourses", icon: LayersIcon },
+  { id: "students", labelKey: "catStudents", icon: Users },
+  { id: "attendance", labelKey: "catAttendance", icon: BookOpen },
+  { id: "finance", labelKey: "catFinance", icon: Euro },
+  { id: "rooms", labelKey: "catRooms", icon: DoorOpen },
+  { id: "portal", labelKey: "catPortal", icon: GraduationCap },
+] as const;
 
 function LayersIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -318,11 +319,21 @@ function LayersIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function HelpCenterView() {
+  const tHelp = useTranslations("help");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [openItemIds, setOpenItemIds] = useState<Set<string>>(
     new Set(["create-course", "attendance-tracking", "import-students"])
   );
+
+  const categoryLabelMap: Record<string, string> = {
+    courses: tHelp("catCourses"),
+    students: tHelp("catStudents"),
+    attendance: tHelp("catAttendance"),
+    finance: tHelp("catFinance"),
+    rooms: tHelp("catRooms"),
+    portal: tHelp("catPortal"),
+  };
 
   function toggleAccordion(id: string) {
     setOpenItemIds((prev) => {
@@ -363,36 +374,36 @@ export function HelpCenterView() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900 text-white p-6 sm:p-10 shadow-lg border border-blue-600/30">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900 text-white p-6 sm:p-10 shadow-lg border border-blue-600/30">
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-white/20">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Wissensdatenbank &amp; Anleitungen</span>
+            <HelpCircle strokeWidth={1.5} className="w-4 h-4" />
+            <span>{tHelp("badge")}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Wie können wir Ihnen helfen?
+            {tHelp("heroTitle")}
           </h1>
           <p className="text-sm sm:text-base text-blue-100 mt-2 leading-relaxed">
-            Finden Sie schnelle Antworten zu Kursen, Schüler-Import, Anwesenheitsjournal, Zahlungen und der Raumverwaltung Ihrer Sprachschule.
+            {tHelp("heroSubtitle")}
           </p>
 
           {/* Search Box */}
           <div className="mt-6 relative">
-            <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search strokeWidth={1.5} className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Frage oder Stichwort suchen (z. B. 'Kurs anlegen', 'CSV Import', 'Fehlzeiten')..."
-              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-slate-400 shadow-md border-0 focus:ring-4 focus:ring-blue-400/40 text-sm font-medium outline-hidden"
+              placeholder={tHelp("searchPlaceholder")}
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-md border-0 focus:ring-4 focus:ring-blue-400/40 text-sm font-medium outline-hidden"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 px-2 py-1 rounded-lg"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 px-2 py-1 rounded-lg"
               >
-                Löschen
+                {tHelp("clearSearch")}
               </button>
             )}
           </div>
@@ -411,14 +422,14 @@ export function HelpCenterView() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0 ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0 ${
                 isActive
                   ? "bg-blue-600 text-white border-blue-600 shadow-xs ring-2 ring-blue-600/20"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
-              <span>{cat.label}</span>
+              <span>{tHelp(cat.labelKey)}</span>
             </button>
           );
         })}
@@ -427,24 +438,24 @@ export function HelpCenterView() {
       {/* Accordion Controls Bar */}
       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
         <span>
-          {filteredFaqs.length} {filteredFaqs.length === 1 ? "Thema gefunden" : "Themen gefunden"}
-          {searchQuery && ` für „${searchQuery}”`}
+          {tHelp("topicsCount", { count: filteredFaqs.length })}
+          {searchQuery && tHelp("forQuery", { query: searchQuery })}
         </span>
         <div className="space-x-2">
           <button
             type="button"
             onClick={expandAll}
-            className="hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+            className="hover:text-blue-600 dark:hover:text-blue-400 font-medium cursor-pointer"
           >
-            Alle öffnen
+            {tHelp("expandAll")}
           </button>
           <span>•</span>
           <button
             type="button"
             onClick={collapseAll}
-            className="hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+            className="hover:text-blue-600 dark:hover:text-blue-400 font-medium cursor-pointer"
           >
-            Alle schließen
+            {tHelp("collapseAll")}
           </button>
         </div>
       </div>
@@ -453,14 +464,14 @@ export function HelpCenterView() {
       {filteredFaqs.length === 0 ? (
         <Card className="text-center py-12">
           <CardContent className="space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
-              <Search className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+              <Search strokeWidth={1.5} className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
-              Keine passenden Anleitungen gefunden
+              {tHelp("noResults")}
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-              Versuchen Sie es mit einem anderen Suchbegriff oder wählen Sie oben eine andere Kategorie.
+              {tHelp("noResultsDesc")}
             </p>
             <Button
               variant="outline"
@@ -471,7 +482,7 @@ export function HelpCenterView() {
               }}
               className="text-xs mt-2"
             >
-              Filter zurücksetzen
+              {tHelp("resetFilters")}
             </Button>
           </CardContent>
         </Card>
@@ -482,16 +493,16 @@ export function HelpCenterView() {
             return (
               <div
                 key={faq.id}
-                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden transition-all duration-200"
+                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden transition-all duration-200"
               >
                 <button
                   type="button"
                   onClick={() => toggleAccordion(faq.id)}
-                  className="w-full p-4 sm:p-5 flex items-start justify-between text-left hover:bg-slate-50/60 dark:hover:bg-slate-800/50 transition-colors"
+                  className="w-full p-4 sm:p-5 flex items-start justify-between text-left hover:bg-slate-50/60 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
                 >
                   <div className="pr-4 space-y-1">
                     <Badge variant="secondary" className="text-[10px] font-medium mb-1">
-                      {faq.categoryLabel}
+                      {categoryLabelMap[faq.category] || faq.categoryLabel}
                     </Badge>
                     <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
                       {faq.question}
@@ -502,7 +513,7 @@ export function HelpCenterView() {
                       isOpen ? "rotate-180 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400" : ""
                     }`}
                   >
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown strokeWidth={1.5} className="w-4 h-4" />
                   </div>
                 </button>
 
@@ -522,18 +533,18 @@ export function HelpCenterView() {
         <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Haben Sie weitere Fragen oder Anregungen?
+              {tHelp("needSupport")}
             </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Unser Schulbetreuer-Team unterstützt Sie jederzeit bei der Einrichtung oder Datenübernahme.
+              {tHelp("needSupportDesc")}
             </p>
           </div>
           <a
             href="mailto:support@sprachschule-app.de?subject=Hilfe-Anfrage%20Sprachschul-Manager"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shrink-0 shadow-xs transition-colors"
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shrink-0 shadow-xs transition-colors"
           >
-            <span>Support kontaktieren</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{tHelp("contactSupport")}</span>
+            <ExternalLink strokeWidth={1.5} className="w-4 h-4" />
           </a>
         </CardContent>
       </Card>

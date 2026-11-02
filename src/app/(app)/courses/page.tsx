@@ -15,9 +15,10 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Layers, Users, Calendar, User, Clock, FileText, DoorOpen } from "lucide-react";
+import { Layers, Users, Calendar, User, Clock, DoorOpen } from "lucide-react";
 import { CourseSchedule, Teacher, Room } from "@/types/database";
 import { formatTimeRange } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
   title: "Kurse & Gruppen • Sprachschul-Manager",
@@ -30,10 +31,14 @@ interface CoursesPageProps {
 export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const { tab = "all" } = (await searchParams) || {};
 
-  const [teacher, membership, organization] = await Promise.all([
+  const [teacher, membership, organization, tCourses, tStudents, tCommon, tSchedule] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
     getActiveOrganization(),
+    getTranslations("courses"),
+    getTranslations("students"),
+    getTranslations("common"),
+    getTranslations("schedule"),
   ]);
 
   if (teacher && membership?.role === "teacher") {
@@ -99,12 +104,18 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     room_id: string | null;
     course_type: "group" | "individual";
     description: string | null;
+    max_capacity: number;
+    monthly_price: number;
     created_at: string;
     updated_at: string;
     teachers: Teacher | null;
     rooms: Room | null;
     course_schedules: CourseSchedule[];
-    student_courses: Array<{ students: { id: string; first_name: string; last_name: string; email: string | null; phone: string | null; parent_name: string | null; parent_phone: string | null } }>;
+    student_courses: Array<{
+      status?: "active" | "trial" | "waiting";
+      student_id?: string;
+      students: { id: string; first_name: string; last_name: string; email: string | null; phone: string | null; parent_name: string | null; parent_phone: string | null };
+    }>;
   }>;
 
   const formattedStudents = (allStudents || []).map((s) => ({
@@ -129,16 +140,29 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     return true;
   });
 
+  function getDayLabel(day: string): string {
+    const map: Record<string, string> = {
+      Montag: tSchedule("monday"),
+      Dienstag: tSchedule("tuesday"),
+      Mittwoch: tSchedule("wednesday"),
+      Donnerstag: tSchedule("thursday"),
+      Freitag: tSchedule("friday"),
+      Samstag: tSchedule("saturday"),
+      Sonntag: tSchedule("sunday"),
+    };
+    return map[day] || day;
+  }
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Kurse &amp; Unterrichtsgruppen
+            {tCourses("title")} • {organization.name}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Verwaltung von Gruppen- und Einzelkursen, flexiblen Stundenplänen und Dozentenzuweisung.
+            {tCourses("subtitle")}
           </p>
         </div>
 
@@ -153,40 +177,40 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
           <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-            <Layers className="w-5 h-5" />
+            <Layers strokeWidth={1.5} className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Gesamte Kurse</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tCourses("allTab")}</p>
             <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{totalCourses}</p>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
           <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-            <Users className="w-5 h-5" />
+            <Users strokeWidth={1.5} className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Gruppenkurse</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tCourses("groupTab")}</p>
             <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{groupCourses.length}</p>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-            <User className="w-5 h-5" />
+            <User strokeWidth={1.5} className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Einzelunterricht</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tCourses("individualTab")}</p>
             <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{individualCourses.length}</p>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
           <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-            <Calendar className="w-5 h-5" />
+            <Calendar strokeWidth={1.5} className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Lehrkräfte im Einsatz</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tCommon("teachers")}</p>
             <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{teachers?.length || 0}</p>
           </div>
         </div>
@@ -197,10 +221,10 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
             <CardTitle className="text-base font-semibold">
-              {tab === "group" ? "Gruppenkurse" : tab === "individual" ? "Einzelunterricht" : "Alle Kurse"} ({displayedCourses.length})
+              {tab === "group" ? tCourses("groupTab") : tab === "individual" ? tCourses("individualTab") : tCourses("allTab")} ({displayedCourses.length})
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              Filtern Sie nach Unterrichtsform oder verwalten Sie Teilnehmer und Termine.
+              {tCourses("subtitle")}
             </CardDescription>
           </div>
 
@@ -214,7 +238,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              Alle ({totalCourses})
+              {tCommon("all")} ({totalCourses})
             </Link>
             <Link
               href="/courses?tab=group"
@@ -224,7 +248,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              Gruppen ({groupCourses.length})
+              {tCourses("group")} ({groupCourses.length})
             </Link>
             <Link
               href="/courses?tab=individual"
@@ -234,7 +258,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              1:1 Einzel ({individualCourses.length})
+              {tCourses("individual")} ({individualCourses.length})
             </Link>
           </div>
         </CardHeader>
@@ -242,48 +266,51 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
           {displayedCourses.length === 0 ? (
             <EmptyState
               icon={Layers}
-              title={tab === "all" ? "Noch keine Kurse angelegt" : "Keine Kurse in dieser Kategorie"}
-              description={
-                tab === "individual"
-                  ? "Legen Sie einen neuen Einzelunterricht an, um individuelle Förderungen zu organisieren."
-                  : "Legen Sie Ihren ersten Kurs an, um Unterrichtstage, Zeiten und Dozenten zu organisieren."
-              }
+              title={tCourses("emptyTitle")}
+              description={tCourses("emptyDesc")}
             >
               <AddCourseDialog
-          teachers={(teachers as Teacher[]) || []}
-          rooms={rooms}
-          students={formattedStudents}
-        />
+                teachers={(teachers as Teacher[]) || []}
+                rooms={rooms}
+                students={formattedStudents}
+              />
             </EmptyState>
           ) : (
             <>
-              {/* Desktop Table View (Hidden on mobile) */}
+              {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto -mx-6 px-6">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Kurs &amp; Beschreibung</TableHead>
-                      <TableHead>Kursart</TableHead>
-                      <TableHead>Lehrkraft</TableHead>
-                      <TableHead>Stundenplan (Tage &amp; Zeiten)</TableHead>
-                      <TableHead>Teilnehmer</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{tCommon("courses")}</TableHead>
+                      <TableHead>{tCourses("courseType")}</TableHead>
+                      <TableHead>{tCourses("teacher")}</TableHead>
+                      <TableHead>{tCourses("schedule")}</TableHead>
+                      <TableHead>{tCourses("studentsCount")}</TableHead>
+                      <TableHead className="text-right">{tCommon("actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {displayedCourses.map((course) => {
                       const teacherData = course.teachers;
-                      const enrolledStudents = (course.student_courses || [])
+                      const studentCoursesList = course.student_courses || [];
+                      const enrolledStudents = studentCoursesList
                         .map((sc) => sc.students)
                         .filter(Boolean);
-                      const enrolledCount = enrolledStudents.length;
+                      const activeStudents = studentCoursesList.filter((sc) => !sc.status || sc.status === "active");
+                      const trialStudents = studentCoursesList.filter((sc) => sc.status === "trial");
+                      const waitingStudents = studentCoursesList.filter((sc) => sc.status === "waiting");
+                      const maxCapacity = course.max_capacity || 10;
+                      const activeCount = activeStudents.length;
+                      const isFull = activeCount >= maxCapacity;
+
                       const schedules = course.course_schedules || [];
                       const isIndividual = course.course_type === "individual";
 
                       return (
                         <TableRow key={course.id}>
                           <TableCell className="font-semibold text-slate-900 dark:text-slate-100 max-w-xs">
-                            <div className="flex items-start space-x-2.5">
+                            <div className="flex items-start space-x-2">
                               <div
                                 className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 ${
                                   isIndividual
@@ -297,7 +324,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                                 <span className="font-bold text-slate-900 dark:text-slate-100 block leading-tight">{course.name}</span>
                                 {course.rooms && (
                                   <span className="inline-flex items-center text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                                    <DoorOpen className="w-3 h-3 text-slate-400 dark:text-slate-500 mr-1" />
+                                    <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-slate-400 dark:text-slate-500 mr-1" />
                                     {course.rooms.name}
                                   </span>
                                 )}
@@ -312,40 +339,40 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                           <TableCell>
                             {isIndividual ? (
                               <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-xs font-semibold py-0.5">
-                                <User className="w-3 h-3 mr-1" />
-                                Einzelunterricht
+                                <User strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                                {tCourses("individual")}
                               </Badge>
                             ) : (
                               <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-xs font-semibold py-0.5">
-                                <Users className="w-3 h-3 mr-1" />
-                                Gruppenkurs
+                                <Users strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                                {tCourses("group")}
                               </Badge>
                             )}
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300 font-medium">
                             {teacherData ? (
-                              <div className="flex items-center space-x-1.5">
-                                <User className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                              <div className="flex items-center space-x-2">
+                                <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 dark:text-slate-500" />
                                 <span>{teacherData.name}</span>
                               </div>
                             ) : (
-                              <span className="text-slate-400 dark:text-slate-500 italic">Nicht zugewiesen</span>
+                              <span className="text-slate-400 dark:text-slate-500 italic">{tCourses("noTeacher")}</span>
                             )}
                           </TableCell>
                           <TableCell>
                             {schedules.length === 0 ? (
-                              <span className="text-xs text-slate-400 dark:text-slate-500 italic">Keine Zeiten hinterlegt</span>
+                              <span className="text-xs text-slate-400 dark:text-slate-500 italic">{tCommon("notSpecified")}</span>
                             ) : (
-                              <div className="flex flex-wrap gap-1.5 max-w-sm">
+                              <div className="flex flex-wrap gap-2 max-w-sm">
                                 {schedules.map((s) => (
                                   <Badge
                                     key={s.id}
                                     variant="outline"
                                     className="font-medium bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 text-xs py-0.5"
                                   >
-                                    <Clock className="w-3 h-3 mr-1 text-slate-400 dark:text-slate-500" />
+                                    <Clock strokeWidth={1.5} className="w-4 h-4 mr-1 text-slate-400 dark:text-slate-500" />
                                     <span>
-                                      {s.day_of_week}, {formatTimeRange(s.start_time, s.duration)} ({s.duration} Std.)
+                                      {getDayLabel(s.day_of_week)}, {formatTimeRange(s.start_time, s.duration)} ({s.duration} {tCommon("hourShort")})
                                     </span>
                                   </Badge>
                                 ))}
@@ -353,13 +380,37 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 font-medium text-xs">
-                              <Users className="w-3 h-3 mr-1 text-blue-500" />
-                              {enrolledCount} {enrolledCount === 1 ? "Schüler" : "Schüler"}
-                            </Badge>
+                            <div className="space-y-1">
+                              <Badge
+                                variant="outline"
+                                className={`font-semibold text-xs py-0.5 ${
+                                  isFull
+                                    ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800"
+                                    : "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+                                }`}
+                              >
+                                <Users strokeWidth={1.5} className="w-4 h-4 mr-1 text-blue-500" />
+                                {activeCount} / {maxCapacity} {tCommon("students")}
+                              </Badge>
+
+                              {(trialStudents.length > 0 || waitingStudents.length > 0) && (
+                                <div className="flex flex-wrap gap-1 text-[10px]">
+                                  {trialStudents.length > 0 && (
+                                    <span className="inline-flex items-center px-1.5 py-0.2 rounded bg-amber-100/90 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-semibold border border-amber-200 dark:border-amber-900">
+                                      +{trialStudents.length} {tStudents("statusTrial")}
+                                    </span>
+                                  )}
+                                  {waitingStudents.length > 0 && (
+                                    <span className="inline-flex items-center px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700">
+                                      +{waitingStudents.length} {tStudents("statusWaiting")}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="flex items-center justify-end space-x-1.5">
+                            <div className="flex items-center justify-end space-x-2">
                               <EditCourseDialog
                                 course={course}
                                 schedules={schedules}
@@ -371,6 +422,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                               <ManageCourseStudentsDialog
                                 courseId={course.id}
                                 courseName={course.name}
+                                maxCapacity={maxCapacity}
                                 allStudents={formattedStudents}
                                 assignedStudentIds={enrolledStudents.map((s) => s.id)}
                               />
@@ -388,22 +440,26 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
               <div className="md:hidden space-y-3">
                 {displayedCourses.map((course) => {
                   const teacherData = course.teachers;
-                  const enrolledStudents = (course.student_courses || [])
+                  const studentCoursesList = course.student_courses || [];
+                  const enrolledStudents = studentCoursesList
                     .map((sc) => sc.students)
                     .filter(Boolean);
-                  const enrolledCount = enrolledStudents.length;
+                  const activeStudents = studentCoursesList.filter((sc) => !sc.status || sc.status === "active");
+                  const maxCapacity = course.max_capacity || 10;
+                  const activeCount = activeStudents.length;
+
                   const schedules = course.course_schedules || [];
                   const isIndividual = course.course_type === "individual";
 
                   return (
                     <div 
                       key={course.id} 
-                      className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center space-x-3 min-w-0">
+                        <div className="flex items-start space-x-3 min-w-0">
                           <div
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 ${
                               isIndividual
                                 ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300"
                                 : "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300"
@@ -412,74 +468,62 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                             {course.name.charAt(0)}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base leading-tight">
+                            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base leading-tight truncate">
                               {course.name}
                             </h3>
-                            <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                              <User className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-                              <span className="truncate">{teacherData?.name || "Keine Lehrkraft"}</span>
+                            <div className="flex items-center space-x-2 mt-1">
+                              {isIndividual ? (
+                                <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] py-0 font-bold">
+                                  {tCourses("individual")}
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-[10px] py-0 font-bold">
+                                  {tCourses("group")}
+                                </Badge>
+                              )}
+                              {course.rooms && (
+                                <span className="inline-flex items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                                  <DoorOpen strokeWidth={1.5} className="w-4 h-4 mr-0.5 text-slate-400 dark:text-slate-500" />
+                                  {course.rooms.name}
+                                </span>
+                              )}
                             </div>
-                            {course.rooms && (
-                              <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                <DoorOpen className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-                                <span className="truncate">{course.rooms.name}</span>
-                              </div>
-                            )}
                           </div>
                         </div>
 
-                        {/* Course Type Badge */}
-                        {isIndividual ? (
-                          <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-xs shrink-0 font-semibold">
-                            Einzel
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-xs shrink-0 font-semibold">
-                            Gruppe
-                          </Badge>
-                        )}
+                        <Badge variant="outline" className="font-semibold text-xs py-0.5 shrink-0">
+                          {activeCount} / {maxCapacity}
+                        </Badge>
                       </div>
 
-                      {course.description && (
-                        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 flex items-start space-x-2">
-                          <FileText className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0 mt-0.5" />
-                          <p className="line-clamp-2">{course.description}</p>
+                      {/* Teacher & Schedule on Mobile */}
+                      <div className="text-xs space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-300">
+                          <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{tCourses("teacher")}: <strong>{teacherData?.name || tCourses("noTeacher")}</strong></span>
                         </div>
-                      )}
 
-                      {/* Schedules & Enrolled */}
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
-                            Unterrichtstermine:
-                          </span>
-                          <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400">
-                            {enrolledCount} {enrolledCount === 1 ? "Schüler" : "Schüler"}
-                          </span>
-                        </div>
-                        {schedules.length === 0 ? (
-                          <span className="text-xs text-slate-400 dark:text-slate-500 italic">Keine Termine</span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1.5">
+                        {schedules.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
                             {schedules.map((s) => (
-                              <Badge
+                              <span
                                 key={s.id}
-                                variant="outline"
-                                className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 text-xs py-0.5"
+                                className="inline-flex items-center text-[10px] font-medium bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700"
                               >
-                                <Clock className="w-3 h-3 mr-1 text-slate-400 dark:text-slate-500" />
-                                <span>{s.day_of_week}, {formatTimeRange(s.start_time, s.duration)} ({s.duration} Std.)</span>
-                              </Badge>
+                                <Clock strokeWidth={1.5} className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                                {getDayLabel(s.day_of_week)}, {formatTimeRange(s.start_time, s.duration)}
+                              </span>
                             ))}
                           </div>
                         )}
                       </div>
 
-                      {/* Actions */}
-                      <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                      {/* Actions on Mobile */}
+                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                         <ManageCourseStudentsDialog
                           courseId={course.id}
                           courseName={course.name}
+                          maxCapacity={maxCapacity}
                           allStudents={formattedStudents}
                           assignedStudentIds={enrolledStudents.map((s) => s.id)}
                         />

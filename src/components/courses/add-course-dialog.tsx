@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { createCourse, CourseActionState } from "@/actions/courses";
+import { getAvailableRoomsForSchedules, OccupiedRoomInfo } from "@/actions/rooms";
 import { Teacher, Room } from "@/types/database";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -23,7 +25,8 @@ import {
   AlertCircle, 
   Trash2, 
   FileText,
-  DoorOpen
+  DoorOpen,
+  Euro
 } from "lucide-react";
 
 export interface StudentOption {
@@ -58,6 +61,10 @@ interface ScheduleDraft {
 }
 
 export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCourseDialogProps) {
+  const t = useTranslations("courses");
+  const tCommon = useTranslations("common");
+  const tSchedule = useTranslations("schedule");
+
   const [isOpen, setIsOpen] = useState(false);
   const [courseType, setCourseType] = useState<"group" | "individual">("group");
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
@@ -65,13 +72,75 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
     { tempId: "init-1", day_of_week: "Montag", start_time: "18:00", duration: 1.5 },
   ]);
 
+  const [selectedRoomId, setSelectedRoomId] = useState<string>("");
+  const [availableRooms, setAvailableRooms] = useState<Room[]>(rooms);
+  const [occupiedRooms, setOccupiedRooms] = useState<OccupiedRoomInfo[]>([]);
+  const [isCheckingRooms, setIsCheckingRooms] = useState(false);
+
+  function getDayLabel(day: string): string {
+    const map: Record<string, string> = {
+      Montag: tSchedule("monday"),
+      Dienstag: tSchedule("tuesday"),
+      Mittwoch: tSchedule("wednesday"),
+      Donnerstag: tSchedule("thursday"),
+      Freitag: tSchedule("friday"),
+      Samstag: tSchedule("saturday"),
+      Sonntag: tSchedule("sunday"),
+    };
+    return map[day] || day;
+  }
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function checkAvailability() {
+      const validSchedules = schedules.filter((s) => s.day_of_week && s.start_time);
+      if (validSchedules.length === 0) {
+        setAvailableRooms(rooms);
+        setOccupiedRooms([]);
+        return;
+      }
+
+      setIsCheckingRooms(true);
+      try {
+        const res = await getAvailableRoomsForSchedules({
+          schedules: validSchedules.map((s) => ({
+            day_of_week: s.day_of_week,
+            start_time: s.start_time,
+            duration: Number(s.duration || 1.0),
+          })),
+        });
+
+        if (!isCancelled && res.success) {
+          setAvailableRooms(res.availableRooms);
+          setOccupiedRooms(res.occupiedRooms);
+
+          if (selectedRoomId && !res.availableRooms.some((r) => r.id === selectedRoomId)) {
+            setSelectedRoomId("");
+          }
+        }
+      } catch (err) {
+        console.error("Error checking room availability:", err);
+      } finally {
+        if (!isCancelled) setIsCheckingRooms(false);
+      }
+    }
+
+    checkAvailability();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [schedules, rooms]);
+
   const [state, formAction, isPending] = useActionState<CourseActionState | null, FormData>(
     async (prev, formData) => {
       const res = await createCourse(prev, formData);
       if (res?.success) {
-        toast.success("Kurs erfolgreich erstellt!");
+        toast.success(tCommon("saved"));
         setIsOpen(false);
         setSelectedStudentIds([]);
+        setSelectedRoomId("");
         setSchedules([
           { tempId: "init-1", day_of_week: "Montag", start_time: "18:00", duration: 1.5 },
         ]);
@@ -97,7 +166,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
 
   function handleRemoveDay(tempId: string) {
     if (schedules.length <= 1) {
-      toast.error("Ein Kurs muss mindestens einen Unterrichtstag haben.");
+      toast.error(t("daysPerWeek"));
       return;
     }
     setSchedules((prev) => prev.filter((s) => s.tempId !== tempId));
@@ -112,17 +181,17 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
   return (
     <div>
       {!isOpen ? (
-        <Button onClick={() => setIsOpen(true)} className="space-x-1.5 shadow-xs">
-          <Plus className="w-4 h-4" />
-          <span>Kurs erstellen</span>
+        <Button onClick={() => setIsOpen(true)} className="space-x-2 shadow-xs">
+          <Plus strokeWidth={1.5} className="w-4 h-4" />
+          <span>{t("addCourse")}</span>
         </Button>
       ) : (
         <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl mb-6 ring-1 ring-blue-500/10">
           <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">Neuen Kurs anlegen</CardTitle>
+              <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">{t("addCourse")}</CardTitle>
               <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Reguläre Unterrichtsgruppe mit Raum, flexiblem Stundenplan und direkter Schülerzuweisung
+                {t("subtitle")}
               </CardDescription>
             </div>
             <Button
@@ -132,13 +201,13 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
               onClick={() => setIsOpen(false)}
               className="h-8 w-8 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             >
-              <X className="w-4 h-4" />
+              <X strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </CardHeader>
           <CardContent className="pt-5">
             {state?.error && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2.5 text-xs text-red-700 dark:text-red-300">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2 text-xs text-red-700 dark:text-red-300">
+                <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{state.error}</span>
               </div>
             )}
@@ -163,10 +232,10 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                 value={JSON.stringify(selectedStudentIds)}
               />
 
-              {/* Course Type Selector (Gruppenkurs vs Einzelunterricht) */}
-              <div className="space-y-1.5">
+              {/* Course Type Selector */}
+              <div className="space-y-2">
                 <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Kursart (Unterrichtsform) *
+                  {t("courseType")} *
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div
@@ -186,17 +255,17 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                           : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300"
                       }`}
                     >
-                      <Users className="w-4 h-4" />
+                      <Users strokeWidth={1.5} className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">Gruppenkurs</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{t("group")}</span>
                         {courseType === "group" && (
-                          <span className="text-[10px] bg-blue-600 text-white font-semibold px-1.5 py-0.2 rounded">Aktiv</span>
+                          <span className="text-[10px] bg-blue-600 text-white font-semibold px-1.5 py-0.2 rounded">{tCommon("active")}</span>
                         )}
                       </div>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                        Mehrere Teilnehmer. Vergütung nach Gruppensatz der Lehrkraft.
+                        {t("groupDesc")}
                       </p>
                     </div>
                   </div>
@@ -204,7 +273,6 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                   <div
                     onClick={() => {
                       setCourseType("individual");
-                      // If changing to individual and more than 1 student selected, keep only first
                       if (selectedStudentIds.length > 1) {
                         setSelectedStudentIds(selectedStudentIds.slice(0, 1));
                       }
@@ -222,120 +290,183 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                           : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300"
                       }`}
                     >
-                      <User className="w-4 h-4" />
+                      <User strokeWidth={1.5} className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">Einzelunterricht (1:1)</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{t("individual")}</span>
                         {courseType === "individual" && (
-                          <span className="text-[10px] bg-emerald-600 text-white font-semibold px-1.5 py-0.2 rounded">Aktiv</span>
+                          <span className="text-[10px] bg-emerald-600 text-white font-semibold px-1.5 py-0.2 rounded">{tCommon("active")}</span>
                         )}
                       </div>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                        1 Teilnehmer. Vergütung nach speziellem Einzelsatz der Lehrkraft.
+                        {t("individualDesc")}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Course Name, Teacher & Room */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                {/* Course Name */}
-                <div className="space-y-1.5 sm:col-span-1">
-                  <Label htmlFor="name" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                    <Layers className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Kursname *</span>
+              {/* Course Name, Capacity, Monthly Price, Teacher & Room */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                    <Layers strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{tCommon("name")} *</span>
                   </Label>
                   <Input
                     id="name"
                     name="name"
-                    placeholder="z. B. Deutsch B2"
+                    placeholder="Deutsch B2"
                     required
                     disabled={isPending}
                     className="h-10"
                   />
                 </div>
 
-                {/* Teacher Dropdown */}
-                <div className="space-y-1.5 sm:col-span-1">
-                  <Label htmlFor="teacher_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Lehrkraft</span>
+                <div className="space-y-2">
+                  <Label htmlFor="max_capacity" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                    <Users strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{t("maxCapacity")} *</span>
+                  </Label>
+                  <Input
+                    id="max_capacity"
+                    name="max_capacity"
+                    type="number"
+                    min="1"
+                    max="100"
+                    defaultValue={courseType === "individual" ? 1 : 10}
+                    key={courseType}
+                    required
+                    disabled={isPending}
+                    className="h-10 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="monthly_price" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                    <Euro strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{t("monthlyPrice")} *</span>
+                  </Label>
+                  <Input
+                    id="monthly_price"
+                    name="monthly_price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="150.00"
+                    defaultValue="0"
+                    disabled={isPending}
+                    className="h-10 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="teacher_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                    <User strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{t("teacher")}</span>
                   </Label>
                   <select
                     id="teacher_id"
                     name="teacher_id"
                     disabled={isPending}
-                    className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                     defaultValue=""
                   >
-                    <option value="" className="bg-white dark:bg-slate-800 text-slate-500">-- Keine Lehrkraft --</option>
-                    {teachers.map((t) => (
-                      <option key={t.id} value={t.id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                        {t.name}
+                    <option value="" className="bg-white dark:bg-slate-800 text-slate-500">-- {t("noTeacher")} --</option>
+                    {teachers.map((tItem) => (
+                      <option key={tItem.id} value={tItem.id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        {tItem.name}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Room Dropdown (Raum) */}
-                <div className="space-y-1.5 sm:col-span-1">
-                  <Label htmlFor="room_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                    <DoorOpen className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Raum / Ort</span>
-                  </Label>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="room_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                      <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                      <span>{t("room")}</span>
+                    </Label>
+                    {isCheckingRooms ? (
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <Loader2 strokeWidth={1.5} className="w-3.5 h-3.5 animate-spin" />
+                        {t("checkingRooms")}
+                      </span>
+                    ) : occupiedRooms.length > 0 ? (
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+                        {occupiedRooms.length} {t("roomsOccupied")}
+                      </span>
+                    ) : null}
+                  </div>
                   <select
                     id="room_id"
                     name="room_id"
                     disabled={isPending}
+                    value={selectedRoomId}
+                    onChange={(e) => setSelectedRoomId(e.target.value)}
                     className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-                    defaultValue=""
                   >
-                    <option value="" className="bg-white dark:bg-slate-800 text-slate-500">-- Kein Raum zugewiesen --</option>
-                    {rooms.map((r) => (
-                      <option key={r.id} value={r.id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                        {r.name}
+                    {availableRooms.length === 0 ? (
+                      <option value="" disabled className="bg-white dark:bg-slate-800 text-slate-400">
+                        {t("noRoomsFree")}
                       </option>
-                    ))}
+                    ) : (
+                      <>
+                        <option value="" className="bg-white dark:bg-slate-800 text-slate-500">
+                          -- {t("noRoom")} --
+                        </option>
+                        {availableRooms.map((r) => (
+                          <option key={r.id} value={r.id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                            {r.name}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </select>
+                  {availableRooms.length === 0 && (
+                    <p className="text-[11px] text-red-600 dark:text-red-400 flex items-center gap-1 font-medium mt-1">
+                      <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0" />
+                      {t("noRoomsFree")}
+                    </p>
+                  )}
                 </div>
               </div>
 
               {/* Description */}
-              <div className="space-y-1.5">
-                <Label htmlFor="description" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                  <FileText className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Kursbeschreibung (optional)</span>
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                  <FileText strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                  <span>{t("description")}</span>
                 </Label>
                 <textarea
                   id="description"
                   name="description"
                   rows={2}
-                  placeholder="z. B. Vorbereitung auf das Goethe-Zertifikat B2, Grammatik- und Konversationstraining..."
+                  placeholder={t("descriptionPlaceholder")}
                   disabled={isPending}
-                  className="flex w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+                  className="flex w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
                 />
               </div>
 
               {/* Flexible Schedule (Stundenplan) */}
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 space-y-3">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <Calendar strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <div>
-                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100">Stundenplan</span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{t("schedule")}</span>
                       <span className="text-[11px] text-slate-400 dark:text-slate-500 block">
-                        Fügen Sie die regelmäßigen Unterrichtstage und Zeiten hinzu
+                        {t("regularSchedule")}
                       </span>
                     </div>
                   </div>
                   <Badge variant="outline" className="text-xs bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold border-slate-200 dark:border-slate-700">
-                    {schedules.length} {schedules.length === 1 ? "Tag" : "Tage"} / Woche
+                    {schedules.length} {t("daysPerWeek")}
                   </Badge>
                 </div>
 
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   {schedules.map((schedule, index) => (
                     <div
                       key={schedule.tempId}
@@ -359,7 +490,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                         >
                           {DAYS_OF_WEEK.map((day) => (
                             <option key={day} value={day} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                              {day}
+                              {getDayLabel(day)}
                             </option>
                           ))}
                         </select>
@@ -377,7 +508,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                             disabled={isPending}
                             className="h-9 text-xs pl-7 bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-slate-200 dark:border-slate-700"
                           />
-                          <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5 pointer-events-none" />
+                          <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400 absolute left-2 top-2.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -395,12 +526,12 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                           disabled={isPending}
                           className="flex h-9 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-2 py-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         >
-                          <option value="0.75" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">45 Min (0.75 Std.)</option>
-                          <option value="1" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">60 Min (1.0 Std.)</option>
-                          <option value="1.5" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">90 Min (1.5 Std.)</option>
-                          <option value="2" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">120 Min (2.0 Std.)</option>
-                          <option value="2.5" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">150 Min (2.5 Std.)</option>
-                          <option value="3" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">180 Min (3.0 Std.)</option>
+                          <option value="0.75" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration45")}</option>
+                          <option value="1" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration60")}</option>
+                          <option value="1.5" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration90")}</option>
+                          <option value="2" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration120")}</option>
+                          <option value="2.5" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration150")}</option>
+                          <option value="3" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{tSchedule("duration180")}</option>
                         </select>
                       </div>
 
@@ -413,9 +544,9 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                           disabled={isPending || schedules.length <= 1}
                           onClick={() => handleRemoveDay(schedule.tempId)}
                           className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 disabled:opacity-30"
-                          title="Tag entfernen"
+                          title={t("removeDay")}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 strokeWidth={1.5} className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -431,20 +562,20 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                     disabled={isPending}
                     className="w-full sm:w-auto h-8 text-xs font-medium border-dashed border-slate-300 dark:border-slate-700 text-blue-600 dark:text-blue-400 hover:border-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-950/30"
                   >
-                    <Plus className="w-3.5 h-3.5 mr-1" />
-                    Weiteren Tag hinzufügen
+                    <Plus strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                    {t("addDay")}
                   </Button>
                 </div>
               </div>
 
               {/* Schüler zuweisen (Modern Combobox Multi-Select) */}
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4">
                 <StudentCombobox
                   students={students}
                   selectedIds={selectedStudentIds}
                   onChange={setSelectedStudentIds}
                   singleSelect={courseType === "individual"}
-                  placeholder="Schüler suchen (z. B. Max Mustermann)..."
+                  placeholder={t("searchStudentPlaceholder")}
                   disabled={isPending}
                 />
               </div>
@@ -457,16 +588,16 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                   onClick={() => setIsOpen(false)}
                   disabled={isPending}
                 >
-                  Abbrechen
+                  {tCommon("cancel")}
                 </Button>
                 <Button type="submit" disabled={isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
                   {isPending ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Speichern...
+                      <Loader2 strokeWidth={1.5} className="w-4 h-4 mr-2 animate-spin" />
+                      {tCommon("saving")}
                     </>
                   ) : (
-                    "Kurs anlegen"
+                    t("addCourse")
                   )}
                 </Button>
               </div>

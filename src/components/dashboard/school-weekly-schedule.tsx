@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -78,14 +79,14 @@ interface SchoolWeeklyScheduleProps {
 }
 
 const GERMAN_DAYS = [
-  "Montag",
-  "Dienstag",
-  "Mittwoch",
-  "Donnerstag",
-  "Freitag",
-  "Samstag",
-  "Sonntag",
-];
+  { value: "Montag", key: "monday" },
+  { value: "Dienstag", key: "tuesday" },
+  { value: "Mittwoch", key: "wednesday" },
+  { value: "Donnerstag", key: "thursday" },
+  { value: "Freitag", key: "friday" },
+  { value: "Samstag", key: "saturday" },
+  { value: "Sonntag", key: "sunday" },
+] as const;
 
 interface ScheduleInstance {
   course: CourseWithFullDetails;
@@ -121,6 +122,15 @@ export function SchoolWeeklySchedule({
   const [filterType, setFilterType] = useState<"all" | "group" | "individual">("all");
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>("all");
 
+  const tDashboard = useTranslations("dashboard");
+  const tSchedule = useTranslations("schedule");
+  const tPortal = useTranslations("portal");
+  const tLessons = useTranslations("lessons");
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
+
+  const jsLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
+
   const weekDays = useMemo(() => {
     const today = new Date();
     const currentDayOfWeek = today.getDay(); // 0 is Sunday, 1 is Monday...
@@ -129,20 +139,21 @@ export function SchoolWeeklySchedule({
     const monday = new Date(today);
     monday.setDate(today.getDate() - mondayOffset + currentWeekOffset * 7);
 
-    return GERMAN_DAYS.map((dayName, idx) => {
+    return GERMAN_DAYS.map((dayItem, idx) => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + idx);
       const dateStr = d.toISOString().split("T")[0];
       const isToday = d.toDateString() === today.toDateString();
       return {
-        name: dayName,
+        dbName: dayItem.value,
+        name: tSchedule(dayItem.key),
         date: d,
         dateStr,
-        displayDate: d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }),
+        displayDate: d.toLocaleDateString(jsLocale, { day: "2-digit", month: "2-digit" }),
         isToday,
       };
     });
-  }, [currentWeekOffset]);
+  }, [currentWeekOffset, jsLocale, tSchedule]);
 
   const weekRangeLabel = `${weekDays[0].displayDate} – ${weekDays[6].displayDate}.${weekDays[6].date.getFullYear()}`;
 
@@ -176,13 +187,9 @@ export function SchoolWeeklySchedule({
   // Filter courses by selected type AND teacher
   const filteredCourses = useMemo(() => {
     return courses.filter((c) => {
-      // 1. Type filter
       if (filterType === "group" && (c.course_type || "group") !== "group") return false;
       if (filterType === "individual" && c.course_type !== "individual") return false;
-
-      // 2. Teacher filter
       if (selectedTeacherId !== "all" && c.teacher_id !== selectedTeacherId) return false;
-
       return true;
     });
   }, [courses, filterType, selectedTeacherId]);
@@ -199,29 +206,31 @@ export function SchoolWeeklySchedule({
             <div>
               <div className="flex items-center space-x-2">
                 <CardTitle className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  Wochenplan
+                  {tDashboard("weekPlanTitle")}
                 </CardTitle>
                 <Badge variant="outline" className="font-mono text-xs bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:border-slate-700">
                   {weekRangeLabel}
                 </Badge>
               </div>
               <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Schulweites Stundenraster mit Raumbelegung und Fehlzeiten-Erkennung
+                {tDashboard("weekPlanDesc")}
               </CardDescription>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             {/* 1. Teacher Filter Dropdown */}
-            <div className="flex items-center space-x-1.5 bg-slate-100/90 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
-              <GraduationCap className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+            <div className="flex items-center space-x-2 bg-slate-100/90 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
+              <GraduationCap strokeWidth={1.5} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <select
                 value={selectedTeacherId}
                 onChange={(e) => setSelectedTeacherId(e.target.value)}
                 className="bg-transparent font-medium text-slate-800 dark:text-slate-200 text-xs focus:outline-none cursor-pointer pr-1"
-                aria-label="Nach Lehrkraft filtern"
+                aria-label="Filter"
               >
-                <option value="all" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">Alle Lehrkräfte ({teacherOptions.length})</option>
+                <option value="all" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                  {tDashboard("filterAllTeachers", { count: teacherOptions.length })}
+                </option>
                 {teacherOptions.map((t) => (
                   <option key={t.id} value={t.id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                     {t.name}
@@ -241,7 +250,7 @@ export function SchoolWeeklySchedule({
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
-                Alle
+                {tCommon("all")}
               </button>
               <button
                 type="button"
@@ -252,7 +261,7 @@ export function SchoolWeeklySchedule({
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
-                Gruppen
+                {tDashboard("filterGroups")}
               </button>
               <button
                 type="button"
@@ -263,7 +272,7 @@ export function SchoolWeeklySchedule({
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
-                1:1 Einzel
+                {tDashboard("filterIndividual")}
               </button>
             </div>
 
@@ -274,9 +283,9 @@ export function SchoolWeeklySchedule({
                 size="sm"
                 onClick={() => setCurrentWeekOffset((prev) => prev - 1)}
                 className="h-8 w-8 p-0 text-slate-600 dark:text-slate-300 dark:border-slate-700"
-                title="Vorherige Woche"
+                title={tPortal("previousWeek")}
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft strokeWidth={1.5} className="w-4 h-4" />
               </Button>
 
               <Button
@@ -285,7 +294,7 @@ export function SchoolWeeklySchedule({
                 onClick={() => setCurrentWeekOffset(0)}
                 className="h-8 text-xs font-semibold text-slate-700 dark:text-slate-300 px-2.5"
               >
-                {currentWeekOffset === 0 ? "Diese Woche" : "Heute"}
+                {currentWeekOffset === 0 ? tPortal("thisWeek") : tPortal("today")}
               </Button>
 
               <Button
@@ -293,41 +302,39 @@ export function SchoolWeeklySchedule({
                 size="sm"
                 onClick={() => setCurrentWeekOffset((prev) => prev + 1)}
                 className="h-8 w-8 p-0 text-slate-600 dark:text-slate-300 dark:border-slate-700"
-                title="Nächste Woche"
+                title={tPortal("nextWeek")}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight strokeWidth={1.5} className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </div>
       </CardHeader>
 
-      {/* Weekly 7-Day Grid (Horizontal swipe on mobile, 7-column grid on desktop) */}
+      {/* Weekly 7-Day Grid */}
       <CardContent className="p-4 sm:p-5 bg-slate-50/50 dark:bg-slate-950/60">
         <div className="md:hidden flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-1 pb-2">
-          <span>&larr; Wischen für Wochentage &rarr;</span>
-          <span className="font-semibold text-blue-600 dark:text-blue-400">7-Tage-Woche</span>
+          <span>&larr; {tPortal("swipeHint")} &rarr;</span>
+          <span className="font-semibold text-blue-600 dark:text-blue-400">{tPortal("sevenDayWeek")}</span>
         </div>
 
         <div className="flex md:grid md:grid-cols-7 gap-3 overflow-x-auto pb-4 pt-1 px-1 -mx-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-smooth touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {weekDays.map((day) => {
-            // Find all matching schedules for this day
             const instances: ScheduleInstance[] = [];
             filteredCourses.forEach((c) => {
               (c.course_schedules || []).forEach((sched) => {
-                if (sched.day_of_week === day.name) {
+                if (sched.day_of_week === day.dbName) {
                   instances.push({ course: c, schedule: sched });
                 }
               });
             });
 
-            // Sort by start_time (e.g. "09:00", "14:00", "18:00")
             instances.sort((a, b) => a.schedule.start_time.localeCompare(b.schedule.start_time));
 
             return (
               <div
-                key={day.name}
-                className={`w-[84vw] max-w-[320px] sm:w-[280px] md:w-auto shrink-0 md:shrink snap-center md:snap-align-none rounded-2xl border p-3 flex flex-col min-h-[230px] transition-all ${
+                key={day.dbName}
+                className={`w-[84vw] max-w-[320px] sm:w-[280px] md:w-auto shrink-0 md:shrink snap-center md:snap-align-none rounded-xl border p-3 flex flex-col min-h-[230px] transition-all ${
                   day.isToday
                     ? "bg-blue-50/60 dark:bg-blue-950/40 border-blue-300 dark:border-blue-800 ring-2 ring-blue-100 dark:ring-blue-950 shadow-sm"
                     : "bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs"
@@ -335,7 +342,7 @@ export function SchoolWeeklySchedule({
               >
                 {/* Day Header */}
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center space-x-1.5">
+                  <div className="flex items-center space-x-2">
                     <span className={`text-xs font-bold ${day.isToday ? "text-blue-600 dark:text-blue-400 font-black" : "text-slate-800 dark:text-slate-200"}`}>
                       {day.name}
                     </span>
@@ -355,24 +362,22 @@ export function SchoolWeeklySchedule({
                 </div>
 
                 {/* Day Lessons List */}
-                <div className="space-y-2.5 flex-1">
+                <div className="space-y-2 flex-1">
                   {instances.length === 0 ? (
                     <div className="h-full flex items-center justify-center text-center p-3">
-                      <span className="text-[11px] text-slate-300 dark:text-slate-600 italic">Kein Unterricht</span>
+                      <span className="text-[11px] text-slate-300 dark:text-slate-600 italic">{tPortal("noLessonOnDay")}</span>
                     </div>
                   ) : (
                     instances.map(({ course, schedule }, idx) => {
                       const isIndividual = course.course_type === "individual";
                       const enrolledCount = course.student_courses?.length || 0;
-                      const teacherName = course.teachers?.name || "Keine Lehrkraft";
+                      const teacherName = course.teachers?.name || tLessons("unknownTeacher");
 
-                      // 1. Calculate whether this schedule on this specific day is in the past
                       const [startH, startM] = schedule.start_time.split(":").map((v) => parseInt(v, 10));
                       const scheduledDateTime = new Date(day.date);
                       scheduledDateTime.setHours(isNaN(startH) ? 0 : startH, isNaN(startM) ? 0 : startM, 0, 0);
                       const isPast = scheduledDateTime.getTime() < Date.now();
 
-                      // 2. Check for recorded absences for this course on this date
                       const courseAbsences = absencesMap.get(`${course.id}_${day.dateStr}`) || [];
                       const hasAbsences = isPast && courseAbsences.length > 0;
 
@@ -389,7 +394,7 @@ export function SchoolWeeklySchedule({
                               isPast,
                             })
                           }
-                          className={`group cursor-pointer rounded-xl p-2.5 border transition-all text-left shadow-2xs hover:shadow-md active:scale-[0.99] relative ${
+                          className={`group cursor-pointer rounded-xl p-3 border transition-all text-left shadow-2xs hover:shadow-md active:scale-[0.99] relative ${
                             hasAbsences
                               ? "bg-gradient-to-br from-white to-rose-50/40 dark:from-slate-800 dark:to-rose-950/30 border-rose-300 dark:border-rose-900/60 hover:border-rose-400 ring-1 ring-rose-200 dark:ring-rose-950"
                               : isIndividual
@@ -397,24 +402,20 @@ export function SchoolWeeklySchedule({
                               : "bg-gradient-to-br from-white to-blue-50/40 dark:from-slate-800 dark:to-slate-800/80 border-slate-200 dark:border-slate-700/80 hover:border-blue-400 dark:hover:border-blue-500"
                           }`}
                         >
-                          {/* Time & Duration Header + Red Dot / Warning Badge */}
+                          {/* Time & Duration Header */}
                           <div className="flex items-baseline justify-between gap-1 mb-1.5">
-                            <div className="flex items-center space-x-1.5 font-bold text-xs text-slate-900 dark:text-slate-100 tracking-tight">
-                              <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                            <div className="flex items-center space-x-2 font-bold text-xs text-slate-900 dark:text-slate-100 tracking-tight">
+                              <Clock strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                               <span>{formatTimeRange(schedule.start_time, schedule.duration)}</span>
                             </div>
 
-                            <div className="flex items-center space-x-1.5 shrink-0">
+                            <div className="flex items-center space-x-2 shrink-0">
                               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-                                {schedule.duration} Std.
+                                {schedule.duration} {tCommon("hourShort")}
                               </span>
 
-                              {/* Red dot if lesson had absences */}
                               {hasAbsences && (
-                                <span
-                                  className="relative flex h-2 w-2 shrink-0 ml-1"
-                                  title={`${courseAbsences.length} Schüler hat/haben an diesem Termin gefehlt`}
-                                >
+                                <span className="relative flex h-2 w-2 shrink-0 ml-1">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
                                 </span>
@@ -427,23 +428,22 @@ export function SchoolWeeklySchedule({
                             {course.name}
                           </p>
 
-                          {/* Teacher Name & Room (Door Icon) */}
+                          {/* Teacher Name & Room */}
                           <div className="space-y-0.5 mt-1.5">
                             <div className="flex items-center space-x-1 text-[11px] text-slate-500 dark:text-slate-400">
-                              <User className="w-3 h-3 text-slate-400 shrink-0" />
+                              <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
                               <span className="truncate">{teacherName}</span>
                             </div>
 
-                            {/* Room Info: Door icon + Room Name */}
                             {course.rooms?.name ? (
                               <div className="flex items-center space-x-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                <DoorOpen className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                                <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                                 <span className="truncate">{course.rooms.name}</span>
                               </div>
                             ) : (
                               <div className="flex items-center space-x-1 text-[10px] text-slate-400 dark:text-slate-500">
-                                <DoorOpen className="w-3 h-3 text-slate-300 dark:text-slate-600 shrink-0" />
-                                <span className="italic">Kein Raum</span>
+                                <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-slate-300 dark:text-slate-600 shrink-0" />
+                                <span className="italic">{tPortal("notAssigned")}</span>
                               </div>
                             )}
                           </div>
@@ -455,20 +455,20 @@ export function SchoolWeeklySchedule({
                                 variant="outline"
                                 className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 font-bold px-1.5 py-0 text-[9px]"
                               >
-                                1:1 Einzel
+                                {tPortal("individualShort")}
                               </Badge>
                             ) : (
                               <Badge
                                 variant="outline"
                                 className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 font-bold px-1.5 py-0 text-[9px]"
                               >
-                                Gruppe
+                                {tPortal("groupShort")}
                               </Badge>
                             )}
 
                             <span className="text-slate-400 dark:text-slate-500 flex items-center space-x-0.5">
-                              <Users className="w-2.5 h-2.5 mr-0.5" />
-                              <span>{enrolledCount} Schüler</span>
+                              <Users strokeWidth={1.5} className="w-3.5 h-3.5 mr-0.5" />
+                              <span>{enrolledCount} {tCommon("students")}</span>
                             </span>
                           </div>
                         </div>
@@ -485,7 +485,7 @@ export function SchoolWeeklySchedule({
       {/* Course Details Modal Dialog */}
       {selectedInstance && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-3xl sm:max-w-xl sm:rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Bar */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -499,29 +499,29 @@ export function SchoolWeeklySchedule({
                       : "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
                   }`}
                 >
-                  <Layers className="w-5 h-5" />
+                  <Layers strokeWidth={1.5} className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center space-x-2">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Kursdetails
+                      {tDashboard("courseDetails")}
                     </span>
                     {selectedInstance.course.course_type === "individual" ? (
                       <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 text-[10px] py-0 font-bold">
-                        1:1 Einzelunterricht
+                        {tPortal("individualRateBadge")}
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-800 text-[10px] py-0 font-bold">
-                        Gruppenkurs
+                        {tPortal("groupRateBadge")}
                       </Badge>
                     )}
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
                     {selectedInstance.course.name}
                   </h3>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    <Clock className="w-3.5 h-3.5 text-blue-500" />
-                    <span>{selectedInstance.displayDate} • {formatTimeRange(selectedInstance.schedule.start_time, selectedInstance.schedule.duration)} ({selectedInstance.schedule.duration} Std.)</span>
+                  <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <Clock strokeWidth={1.5} className="w-4 h-4 text-blue-500" />
+                    <span>{selectedInstance.displayDate} • {formatTimeRange(selectedInstance.schedule.start_time, selectedInstance.schedule.duration)} ({selectedInstance.schedule.duration} {tCommon("hours")})</span>
                   </div>
                 </div>
               </div>
@@ -529,44 +529,44 @@ export function SchoolWeeklySchedule({
               <button
                 onClick={() => setSelectedInstance(null)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg active:scale-95 transition-all shrink-0"
-                aria-label="Schließen"
+                aria-label={tCommon("close")}
               >
-                <X className="w-5 h-5" />
+                <X strokeWidth={1.5} className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
             <div className="p-5 sm:p-6 space-y-4 overflow-y-auto max-h-[72vh]">
-              {/* Absences Alert Box (If this lesson had absences) */}
+              {/* Absences Alert Box */}
               {selectedInstance.absences.length > 0 && (
                 <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-gradient-to-br from-rose-50/90 via-red-50/40 to-white dark:from-rose-950/60 dark:via-red-950/40 dark:to-slate-900 shadow-2xs space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-rose-800 dark:text-rose-300">
                       <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0">
-                        <AlertTriangle className="w-4 h-4" />
+                        <AlertTriangle strokeWidth={1.5} className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="text-xs font-bold block">
-                          Erfasste Fehlzeiten an diesem Termin
+                          {tDashboard("recordedAbsencesForLesson")}
                         </span>
                         <span className="text-[11px] text-rose-600 dark:text-rose-400 block">
-                          {selectedInstance.absences.length} {selectedInstance.absences.length === 1 ? "Schüler hat" : "Schüler haben"} gefehlt:
+                          {selectedInstance.absences.length} {tCommon("students")}
                         </span>
                       </div>
                     </div>
 
                     <Badge className="bg-rose-600 text-white font-bold text-[10px] px-2 py-0.5 shadow-2xs">
-                      ⚠️ {selectedInstance.absences.length} Abwesend
+                      ⚠️ {selectedInstance.absences.length} {tPortal("absentCheckbox")}
                     </Badge>
                   </div>
 
-                  <div className="space-y-1.5 pt-1">
+                  <div className="space-y-2 pt-1">
                     {selectedInstance.absences.map((abs) => (
                       <div
                         key={abs.studentId}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-rose-100 dark:border-rose-900/40 shadow-2xs text-xs"
+                        className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-rose-100 dark:border-rose-900/40 shadow-2xs text-xs"
                       >
-                        <div className="flex items-center space-x-2.5 min-w-0">
+                        <div className="flex items-center space-x-2 min-w-0">
                           <span className="w-6 h-6 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-bold text-[10px] flex items-center justify-center shrink-0">
                             {abs.studentName.charAt(0)}
                           </span>
@@ -580,13 +580,13 @@ export function SchoolWeeklySchedule({
                             <a
                               href={`tel:${abs.studentPhone}`}
                               className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 p-1 rounded hover:bg-slate-50 dark:hover:bg-slate-700"
-                              title={`Anrufen: ${abs.studentPhone}`}
+                              title={`Tel: ${abs.studentPhone}`}
                             >
-                              <Phone className="w-3.5 h-3.5" />
+                              <Phone strokeWidth={1.5} className="w-4 h-4" />
                             </a>
                           )}
                           <Badge variant="outline" className="bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800 font-bold text-[10px]">
-                            Unentschuldigt abwesend
+                            {tDashboard("unexcusedAbsent")}
                           </Badge>
                         </div>
                       </div>
@@ -595,22 +595,22 @@ export function SchoolWeeklySchedule({
                 </div>
               )}
 
-              {/* Room Box (Klassenzimmer / Ort) */}
+              {/* Room Box */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-1">
-                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
-                  <DoorOpen className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                  <span>Klassenzimmer / Ort</span>
+                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
+                  <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span>{tDashboard("classroomLocation")}</span>
                 </span>
                 <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                  {selectedInstance.course.rooms?.name || "Kein Raum zugewiesen"}
+                  {selectedInstance.course.rooms?.name || tPortal("notAssigned")}
                 </p>
               </div>
 
               {/* Teacher Info Box */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
-                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
-                  <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                  <span>Dozent / Lehrkraft</span>
+                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
+                  <User strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span>{tCommon("teacher")}</span>
                 </span>
 
                 {selectedInstance.course.teachers ? (
@@ -618,9 +618,6 @@ export function SchoolWeeklySchedule({
                     <div>
                       <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                         {selectedInstance.course.teachers.name}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Verantwortliche Lehrkraft für diesen Kurs
                       </p>
                     </div>
 
@@ -630,7 +627,7 @@ export function SchoolWeeklySchedule({
                           href={`tel:${selectedInstance.course.teachers.phone}`}
                           className="h-8 px-2.5 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-semibold flex items-center space-x-1 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                         >
-                          <Phone className="w-3 h-3" />
+                          <Phone strokeWidth={1.5} className="w-4 h-4" />
                           <span>{selectedInstance.course.teachers.phone}</span>
                         </a>
                       )}
@@ -639,37 +636,37 @@ export function SchoolWeeklySchedule({
                           href={`mailto:${selectedInstance.course.teachers.email}`}
                           className="h-8 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center space-x-1 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
-                          <Mail className="w-3 h-3" />
+                          <Mail strokeWidth={1.5} className="w-4 h-4" />
                           <span>E-Mail</span>
                         </a>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">Keine Lehrkraft zugeordnet</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">{tLessons("unknownTeacher")}</p>
                 )}
               </div>
 
               {/* Schedule Days Box */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2.5">
-                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
+                <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <CalendarIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                  <span>Regulärer Stundenplan (Alle Termine)</span>
+                  <span>{tDashboard("regularSchedule")}</span>
                 </span>
 
                 {selectedInstance.course.course_schedules.length === 0 ? (
-                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">Keine Termine hinterlegt</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">{tPortal("noLessonOnDay")}</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {selectedInstance.course.course_schedules.map((s, idx) => (
                       <div
                         key={s.id || idx}
-                        className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs"
+                        className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs"
                       >
                         <span className="font-bold text-slate-900 dark:text-slate-100">{s.day_of_week}</span>
                         <div className="flex items-center space-x-1 text-slate-700 dark:text-slate-300 font-mono font-medium">
-                          <Clock className="w-3.5 h-3.5 text-blue-500" />
-                          <span>{formatTimeRange(s.start_time, s.duration)} ({s.duration} Std.)</span>
+                          <Clock strokeWidth={1.5} className="w-4 h-4 text-blue-500" />
+                          <span>{formatTimeRange(s.start_time, s.duration)} ({s.duration} {tCommon("hours")})</span>
                         </div>
                       </div>
                     ))}
@@ -679,10 +676,10 @@ export function SchoolWeeklySchedule({
 
               {/* Course Description */}
               {selectedInstance.course.description && (
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-1.5">
-                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
-                    <FileText className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Kursbeschreibung / Lehrinhalt</span>
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
+                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
+                    <FileText strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <span>{tDashboard("courseDescContent")}</span>
                   </span>
                   <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
                     {selectedInstance.course.description}
@@ -693,21 +690,21 @@ export function SchoolWeeklySchedule({
               {/* Students Enrolled List */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
-                    <Users className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Teilnehmerliste ({selectedInstance.course.student_courses?.length || 0})</span>
+                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
+                    <Users strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <span>{tDashboard("participantsList", { count: selectedInstance.course.student_courses?.length || 0 })}</span>
                   </span>
 
                   <Link href="/courses">
                     <span className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center">
-                      Kurs verwalten
-                      <ArrowRight className="w-3 h-3 ml-1" />
+                      {tDashboard("manageCourse")}
+                      <ArrowRight strokeWidth={1.5} className="w-4 h-4 ml-1" />
                     </span>
                   </Link>
                 </div>
 
                 {!selectedInstance.course.student_courses || selectedInstance.course.student_courses.length === 0 ? (
-                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">Noch keine Schüler für diesen Kurs eingeschrieben.</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 italic">{tDashboard("noStudentsEnrolled")}</p>
                 ) : (
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                     {selectedInstance.course.student_courses.map((sc, i) => {
@@ -716,9 +713,9 @@ export function SchoolWeeklySchedule({
                       return (
                         <div
                           key={student.id || i}
-                          className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800 text-xs"
+                          className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800 text-xs"
                         >
-                          <div className="flex items-center space-x-2.5 min-w-0">
+                          <div className="flex items-center space-x-2 min-w-0">
                             <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center shrink-0">
                               {student.first_name.charAt(0)}{student.last_name.charAt(0)}
                             </div>
@@ -728,7 +725,7 @@ export function SchoolWeeklySchedule({
                               </p>
                               {student.parent_name && (
                                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                                  Eltern: {student.parent_name}
+                                  {tDashboard("parents")}: {student.parent_name}
                                 </p>
                               )}
                             </div>
@@ -739,18 +736,18 @@ export function SchoolWeeklySchedule({
                               <a
                                 href={`tel:${student.phone}`}
                                 className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                                title={`Schüler anrufen: ${student.phone}`}
+                                title={`Tel: ${student.phone}`}
                               >
-                                <Phone className="w-3 h-3" />
+                                <Phone strokeWidth={1.5} className="w-4 h-4" />
                               </a>
                             )}
                             {student.parent_phone && (
                               <a
                                 href={`tel:${student.parent_phone}`}
                                 className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                                title={`Eltern anrufen: ${student.parent_phone}`}
+                                title={`Tel: ${student.parent_phone}`}
                               >
-                                <Phone className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                <Phone strokeWidth={1.5} className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                               </a>
                             )}
                           </div>
@@ -766,11 +763,11 @@ export function SchoolWeeklySchedule({
             <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/60 shrink-0">
               <Link href="/courses">
                 <Button variant="outline" size="sm" className="text-xs">
-                  Zu Kursen &amp; Stundenplan
+                  {tDashboard("goToCoursesAndSchedule")}
                 </Button>
               </Link>
               <Button size="sm" onClick={() => setSelectedInstance(null)} className="text-xs">
-                Schließen
+                {tCommon("close")}
               </Button>
             </div>
           </div>

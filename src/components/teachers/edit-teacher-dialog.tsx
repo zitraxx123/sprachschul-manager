@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { updateTeacher, TeacherActionState } from "@/actions/teachers";
 import { Teacher } from "@/types/database";
 import { toast } from "@/components/ui/toast";
@@ -32,6 +33,9 @@ interface EditTeacherDialogProps {
 }
 
 export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDialogProps) {
+  const t = useTranslations("teachers");
+  const tCommon = useTranslations("common");
+
   const [isOpen, setIsOpen] = useState(false);
   const hasAdvancedRates = Boolean(
     teacher.rate_group ||
@@ -46,7 +50,7 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
     async (prev, formData) => {
       const res = await updateTeacher(prev, formData);
       if (res?.success) {
-        toast.success("Lehrkraft erfolgreich aktualisiert!");
+        toast.success(tCommon("saved"));
         setIsOpen(false);
       } else if (res?.error) {
         toast.error(res.error);
@@ -65,9 +69,9 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
           size="icon"
           onClick={() => setIsOpen(true)}
           className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-          title="Lehrkraft bearbeiten"
+          title={t("editTeacher")}
         >
-          <Pencil className="w-3.5 h-3.5" />
+          <Pencil strokeWidth={1.5} className="w-4 h-4" />
         </Button>
       ) : (
         <Button
@@ -75,16 +79,16 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
           variant="outline"
           size="sm"
           onClick={() => setIsOpen(true)}
-          className="space-x-1.5 text-xs font-semibold"
+          className="space-x-2 text-xs font-semibold"
         >
-          <Pencil className="w-3.5 h-3.5 text-blue-600" />
-          <span>Profil bearbeiten</span>
+          <Pencil strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
+          <span>{t("editTeacher")}</span>
         </Button>
       )}
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-3xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Indicator */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -92,23 +96,20 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
             <div className="bg-slate-900 dark:bg-slate-950 text-white p-5 flex items-start justify-between shrink-0 border-b border-slate-800">
               <div>
                 <span className="text-[11px] text-blue-400 font-semibold uppercase tracking-wider">
-                  Dozentenprofil anpassen
+                  {t("editTeacherDesc")}
                 </span>
                 <h3 className="text-xl font-bold mt-0.5 text-white">
-                  {teacher.name} bearbeiten
+                  {t("editTeacher")}: {teacher.name}
                 </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Aktualisieren Sie Stammdaten, Kontaktdaten und Honorarsätze
-                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 disabled={isPending}
                 className="text-slate-400 hover:text-white p-2 rounded-xl transition-all active:scale-95 touch-manipulation"
-                aria-label="Schließen"
+                aria-label={tCommon("close")}
               >
-                <X className="w-5 h-5" />
+                <X strokeWidth={1.5} className="w-5 h-5" />
               </button>
             </div>
 
@@ -117,23 +118,23 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
               <input type="hidden" name="teacher_id" value={teacher.id} />
 
               {state?.error && (
-                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-start space-x-2 text-xs text-red-700">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-start space-x-2 text-xs text-red-700">
+                  <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{state.error}</span>
                 </div>
               )}
 
               {/* SECTION 1: Stammdaten & Kontakt */}
               <div className="space-y-3">
-                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
-                  1. Persönliche Daten &amp; Kontakt
+                <span className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider block">
+                  1. {t("name")} &amp; {tCommon("details")}
                 </span>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div className="space-y-1.5 sm:col-span-2">
-                    <Label htmlFor="edit_t_name" className="flex items-center space-x-1.5 text-xs font-semibold">
-                      <User className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Name der Lehrkraft *</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="edit_t_name" className="flex items-center space-x-2 text-xs font-semibold">
+                      <User strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                      <span>{t("name")} *</span>
                     </Label>
                     <Input
                       id="edit_t_name"
@@ -144,10 +145,10 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="edit_t_email" className="flex items-center space-x-1.5 text-xs font-semibold">
-                      <Mail className="w-3.5 h-3.5 text-slate-400" />
-                      <span>E-Mail (für Portal-Login)</span>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit_t_email" className="flex items-center space-x-2 text-xs font-semibold">
+                      <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                      <span>{tCommon("email")}</span>
                     </Label>
                     <Input
                       id="edit_t_email"
@@ -158,10 +159,10 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="edit_t_phone" className="flex items-center space-x-1.5 text-xs font-semibold">
-                      <Phone className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Telefon / Mobil</span>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit_t_phone" className="flex items-center space-x-2 text-xs font-semibold">
+                      <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                      <span>{tCommon("phone")}</span>
                     </Label>
                     <Input
                       id="edit_t_phone"
@@ -173,16 +174,16 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                     />
                   </div>
 
-                  <div className="space-y-1.5 sm:col-span-2">
-                    <Label htmlFor="edit_t_birthday" className="flex items-center space-x-1.5 text-xs font-semibold">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Geburtsdatum (TT.MM.JJJJ)</span>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="edit_t_birthday" className="flex items-center space-x-2 text-xs font-semibold">
+                      <Calendar strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                      <span>{t("birthday")}</span>
                     </Label>
                     <GermanDatePicker
                       id="edit_t_birthday"
                       name="birthday"
                       defaultValue={teacher.birthday || ""}
-                      placeholder="TT.MM.JJJJ (z. B. 15.04.1988)"
+                      placeholder="15.04.1988"
                       mode="birthday"
                       disabled={isPending}
                     />
@@ -193,19 +194,16 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
               {/* SECTION 2: Honorarsätze */}
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
                 <span className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider block">
-                  2. Honorarsätze (Abrechnung)
+                  2. {t("hourlyRate")}
                 </span>
 
                 {/* Basissatz */}
-                <div className="bg-blue-50/60 dark:bg-blue-950/40 p-4 rounded-xl border border-blue-200/80 dark:border-blue-900/60 space-y-1.5">
+                <div className="bg-blue-50/60 dark:bg-blue-950/40 p-4 rounded-xl border border-blue-200/80 dark:border-blue-900/60 space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="edit_t_hourly_rate" className="flex items-center space-x-1.5 text-xs font-bold text-blue-900 dark:text-blue-300">
-                      <Euro className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      <span>Basissatz (€ / Std.) *</span>
+                    <Label htmlFor="edit_t_hourly_rate" className="flex items-center space-x-2 text-xs font-bold text-blue-900 dark:text-blue-300">
+                      <Euro strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <span>{t("baseRate")} *</span>
                     </Label>
-                    <span className="text-[11px] font-medium text-blue-700 dark:text-blue-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/60">
-                      Standard
-                    </span>
                   </div>
                   <Input
                     id="edit_t_hourly_rate"
@@ -218,7 +216,7 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                     disabled={isPending}
                   />
                   <p className="text-[11px] text-blue-800/80 dark:text-blue-400/80">
-                    Gilt standardmäßig als Stundensatz für alle gehaltenen Einheiten.
+                    {t("baseRateDesc")}
                   </p>
                 </div>
 
@@ -227,29 +225,28 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                   <button
                     type="button"
                     onClick={() => setShowAdvancedRates(!showAdvancedRates)}
-                    className="flex items-center space-x-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 py-1 transition-colors touch-manipulation"
+                    className="flex items-center space-x-2 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 py-1 transition-colors touch-manipulation"
                   >
-                    <span>Spezifische Honorare überschreiben (Gruppen, Einzel, 45/60/90 Min.)</span>
+                    <span>{t("advancedRatesToggle")}</span>
                     {showAdvancedRates ? (
-                      <ChevronUp className="w-4 h-4" />
+                      <ChevronUp strokeWidth={1.5} className="w-4 h-4" />
                     ) : (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown strokeWidth={1.5} className="w-4 h-4" />
                     )}
                   </button>
 
                   {showAdvancedRates && (
-                    <div className="mt-3 p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700/80 space-y-4 animate-in fade-in duration-150">
+                    <div className="mt-3 p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/80 space-y-4 animate-in fade-in duration-150">
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Optional: Wenn Sie für bestimmte Formate abweichende Sätze zahlen, tragen Sie diese hier ein. 
-                        Nicht ausgefüllte Felder nutzen automatisch den Basissatz.
+                        {t("advancedRatesDesc")}
                       </p>
 
                       {/* Format Rates: Group & Individual */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-1">
                           <Label htmlFor="edit_t_rate_group" className="flex items-center space-x-1 text-xs font-medium text-slate-700 dark:text-slate-300">
-                            <Users className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Gruppenunterricht (€ / Std.)</span>
+                            <Users strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                            <span>{t("groupRate")}</span>
                           </Label>
                           <Input
                             id="edit_t_rate_group"
@@ -257,8 +254,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                             type="number"
                             step="0.50"
                             min="0"
-                            placeholder="z. B. 35.00"
-                            defaultValue={teacher.rate_group !== null ? teacher.rate_group : ""}
+                            placeholder="35.00"
+                            defaultValue={teacher.rate_group || ""}
                             disabled={isPending}
                             className="text-xs"
                           />
@@ -266,8 +263,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
 
                         <div className="space-y-1">
                           <Label htmlFor="edit_t_rate_individual" className="flex items-center space-x-1 text-xs font-medium text-slate-700 dark:text-slate-300">
-                            <UserCheck className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Einzelunterricht (€ / Std.)</span>
+                            <UserCheck strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                            <span>{t("individualRate")}</span>
                           </Label>
                           <Input
                             id="edit_t_rate_individual"
@@ -275,8 +272,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                             type="number"
                             step="0.50"
                             min="0"
-                            placeholder="z. B. 45.00"
-                            defaultValue={teacher.rate_individual !== null ? teacher.rate_individual : ""}
+                            placeholder="45.00"
+                            defaultValue={teacher.rate_individual || ""}
                             disabled={isPending}
                             className="text-xs"
                           />
@@ -285,14 +282,11 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
 
                       {/* Duration Fixed Rates: 45, 60, 90 mins */}
                       <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
-                        <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-2">
-                          Pauschalen nach Einheitsdauer (optional):
-                        </span>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           <div className="space-y-1">
                             <Label htmlFor="edit_t_rate_45" className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400">
-                              <Clock className="w-3 h-3 text-slate-400" />
-                              <span>45 Minuten (€)</span>
+                              <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                              <span>{t("rate45")}</span>
                             </Label>
                             <Input
                               id="edit_t_rate_45"
@@ -300,8 +294,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                               type="number"
                               step="0.50"
                               min="0"
-                              placeholder="z. B. 25.00"
-                              defaultValue={teacher.rate_45 !== null ? teacher.rate_45 : ""}
+                              placeholder="25.00"
+                              defaultValue={teacher.rate_45 || ""}
                               disabled={isPending}
                               className="text-xs"
                             />
@@ -309,8 +303,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
 
                           <div className="space-y-1">
                             <Label htmlFor="edit_t_rate_60" className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400">
-                              <Clock className="w-3 h-3 text-slate-400" />
-                              <span>60 Minuten (€)</span>
+                              <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                              <span>{t("rate60")}</span>
                             </Label>
                             <Input
                               id="edit_t_rate_60"
@@ -318,8 +312,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                               type="number"
                               step="0.50"
                               min="0"
-                              placeholder="z. B. 35.00"
-                              defaultValue={teacher.rate_60 !== null ? teacher.rate_60 : ""}
+                              placeholder="35.00"
+                              defaultValue={teacher.rate_60 || ""}
                               disabled={isPending}
                               className="text-xs"
                             />
@@ -327,8 +321,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
 
                           <div className="space-y-1">
                             <Label htmlFor="edit_t_rate_90" className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400">
-                              <Clock className="w-3 h-3 text-slate-400" />
-                              <span>90 Minuten (€)</span>
+                              <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                              <span>{t("rate90")}</span>
                             </Label>
                             <Input
                               id="edit_t_rate_90"
@@ -336,8 +330,8 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                               type="number"
                               step="0.50"
                               min="0"
-                              placeholder="z. B. 50.00"
-                              defaultValue={teacher.rate_90 !== null ? teacher.rate_90 : ""}
+                              placeholder="50.00"
+                              defaultValue={teacher.rate_90 || ""}
                               disabled={isPending}
                               className="text-xs"
                             />
@@ -357,16 +351,16 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                   onClick={() => setIsOpen(false)}
                   disabled={isPending}
                 >
-                  Abbrechen
+                  {tCommon("cancel")}
                 </Button>
-                <Button type="submit" disabled={isPending} className="bg-blue-600 hover:bg-blue-700 font-semibold">
+                <Button type="submit" disabled={isPending} className="bg-blue-600 hover:bg-blue-700 font-semibold text-white">
                   {isPending ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Speichern...
+                      <Loader2 strokeWidth={1.5} className="w-4 h-4 mr-2 animate-spin" />
+                      {tCommon("saving")}
                     </>
                   ) : (
-                    "Änderungen speichern"
+                    tCommon("save")
                   )}
                 </Button>
               </div>

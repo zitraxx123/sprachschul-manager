@@ -6,7 +6,7 @@ import {
   getCurrentTeacher, 
   getCurrentMembership 
 } from "@/lib/supabase/server";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { AddTeacherDialog } from "@/components/teachers/add-teacher-dialog";
 import { EditTeacherDialog } from "@/components/teachers/edit-teacher-dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,16 +16,20 @@ import { Button } from "@/components/ui/button";
 import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Users, Mail, Phone, Cake, ArrowRight } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Lehrkräfte • Sprachschul-Manager",
 };
 
 export default async function TeachersPage() {
-  const [teacher, membership, organization] = await Promise.all([
+  const [teacher, membership, organization, tTeachers, tCommon, locale] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
     getActiveOrganization(),
+    getTranslations("teachers"),
+    getTranslations("common"),
+    getLocale(),
   ]);
 
   if (teacher && membership?.role === "teacher") {
@@ -70,9 +74,9 @@ export default async function TeachersPage() {
       {/* Header & Add Action */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Lehrkräfte (Dozenten)</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Verwalten Sie Ihre Dozenten, vertragliche Stundensätze und Honorarabrechnungen.
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{tTeachers("title")}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {tTeachers("subtitle")}
           </p>
         </div>
 
@@ -82,17 +86,17 @@ export default async function TeachersPage() {
       {/* Teachers Table Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-semibold">Erfasste Dozenten ({teachers?.length || 0})</CardTitle>
+          <CardTitle className="text-base font-semibold">{tTeachers("totalCount")} ({teachers?.length || 0})</CardTitle>
           <CardDescription>
-            Klicken Sie auf &quot;Details &amp; Honorar&quot;, um die genaue Monatsabrechnung mit allen Unterrichtsstunden einzusehen.
+            {tTeachers("subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {!teachers || teachers.length === 0 ? (
             <EmptyState
               icon={Users}
-              title="Noch keine Dozenten vorhanden"
-              description="Legen Sie Ihre erste Lehrkraft an, um Stundensätze festzulegen und Kurse zuzuweisen."
+              title={tTeachers("emptyTitle")}
+              description={tTeachers("emptyDesc")}
             >
               <AddTeacherDialog />
             </EmptyState>
@@ -103,65 +107,65 @@ export default async function TeachersPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Dozent</TableHead>
-                      <TableHead>Kontakt</TableHead>
-                      <TableHead>Stundensatz</TableHead>
-                      <TableHead>Stunden (Lfd. Monat)</TableHead>
-                      <TableHead className="text-right">Auszahlung (Lfd. Monat)</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{tTeachers("name")}</TableHead>
+                      <TableHead>{tTeachers("email")}</TableHead>
+                      <TableHead>{tTeachers("hourlyRate")}</TableHead>
+                      <TableHead>{tTeachers("lessonsCount")}</TableHead>
+                      <TableHead className="text-right">{tTeachers("monthlyPayout")}</TableHead>
+                      <TableHead className="text-right">{tCommon("actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {teachers.map((teacher) => {
-                      const monthHours = monthlyHoursMap.get(teacher.id) || 0;
-                      const monthEarnings = monthHours * Number(teacher.hourly_rate);
+                    {teachers.map((t) => {
+                      const monthHours = monthlyHoursMap.get(t.id) || 0;
+                      const monthEarnings = monthHours * Number(t.hourly_rate);
 
                       return (
-                        <TableRow key={teacher.id}>
-                          <TableCell className="font-semibold text-slate-900">
-                            <div className="flex items-center space-x-2.5">
+                        <TableRow key={t.id}>
+                          <TableCell className="font-semibold text-slate-900 dark:text-slate-100">
+                            <div className="flex items-center space-x-2">
                               <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">
-                                {teacher.name.charAt(0).toUpperCase()}
+                                {t.name.charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <div className="flex items-center space-x-1.5">
-                                  <span>{teacher.name}</span>
-                                  {teacher.user_id ? (
+                                <div className="flex items-center space-x-2">
+                                  <span>{t.name}</span>
+                                  {t.user_id ? (
                                     <Badge variant="success" className="text-[10px] px-1.5 py-0 font-normal">
-                                      Portal aktiv
+                                      {tTeachers("portalActive")}
                                     </Badge>
                                   ) : (
                                     <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-normal text-slate-500">
-                                      Kein Login
+                                      {tTeachers("portalInactive")}
                                     </Badge>
                                   )}
                                 </div>
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-slate-500 text-xs">
+                          <TableCell className="text-slate-500 dark:text-slate-400 text-xs">
                             <div className="space-y-1">
-                              {teacher.email && (
-                                <div className="flex items-center space-x-1.5">
-                                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                                  <span>{teacher.email}</span>
+                              {t.email && (
+                                <div className="flex items-center space-x-2">
+                                  <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                                  <span>{t.email}</span>
                                 </div>
                               )}
-                              {teacher.phone && (
-                                <div className="flex items-center space-x-1.5">
-                                  <Phone className="w-3.5 h-3.5 text-slate-400" />
-                                  <a href={`tel:${teacher.phone}`} className="text-blue-600 hover:underline">
-                                    {teacher.phone}
+                              {t.phone && (
+                                <div className="flex items-center space-x-2">
+                                  <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                                  <a href={`tel:${t.phone}`} className="text-blue-600 dark:text-blue-400 hover:underline">
+                                    {t.phone}
                                   </a>
                                 </div>
                               )}
-                              {teacher.birthday && (
-                                <div className="flex items-center space-x-1.5 text-slate-400">
-                                  <Cake className="w-3.5 h-3.5 text-amber-500" />
-                                  <span>Geb.: {new Date(teacher.birthday).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}</span>
+                              {t.birthday && (
+                                <div className="flex items-center space-x-2 text-slate-400">
+                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                                  <span>{formatDate(t.birthday, locale)}</span>
                                 </div>
                               )}
-                              {!teacher.email && !teacher.phone && !teacher.birthday && (
+                              {!t.email && !t.phone && !t.birthday && (
                                 <span className="text-slate-400">—</span>
                               )}
                             </div>
@@ -169,28 +173,28 @@ export default async function TeachersPage() {
                           <TableCell>
                             <div>
                               <Badge variant="outline" className="font-mono">
-                                {formatCurrency(Number(teacher.hourly_rate))} / Std.
+                                {formatCurrency(Number(t.hourly_rate))} / {tCommon("hourShort")}
                               </Badge>
-                              {(teacher.rate_group || teacher.rate_individual || teacher.rate_45 || teacher.rate_60 || teacher.rate_90) && (
-                                <span className="block text-[10px] text-blue-600 font-medium mt-1">
-                                  + Differenzierte Sätze
+                              {(t.rate_group || t.rate_individual || t.rate_45 || t.rate_60 || t.rate_90) && (
+                                <span className="block text-[10px] text-blue-600 dark:text-blue-400 font-medium mt-1">
+                                  + {tTeachers("advancedRatesToggle")}
                                 </span>
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="text-slate-700 font-medium">
-                            {monthHours.toFixed(1)} Std.
+                          <TableCell className="text-slate-700 dark:text-slate-300 font-medium">
+                            {monthHours.toFixed(1)} {tCommon("hourShort")}
                           </TableCell>
-                          <TableCell className="text-right font-bold text-slate-900">
+                          <TableCell className="text-right font-bold text-slate-900 dark:text-slate-100">
                             {formatCurrency(monthEarnings)}
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="flex items-center justify-end space-x-1.5">
-                              <EditTeacherDialog teacher={teacher} variant="icon" />
-                              <Link href={`/teachers/${teacher.id}`}>
+                            <div className="flex items-center justify-end space-x-2">
+                              <EditTeacherDialog teacher={t} variant="icon" />
+                              <Link href={`/teachers/${t.id}`}>
                                 <Button variant="outline" size="sm" className="space-x-1 text-xs">
-                                  <span>Details &amp; Honorar</span>
-                                  <ArrowRight className="w-3.5 h-3.5" />
+                                  <span>{tTeachers("viewProfile")}</span>
+                                  <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
                                 </Button>
                               </Link>
                             </div>
@@ -204,48 +208,48 @@ export default async function TeachersPage() {
 
               {/* Mobile Native Card View (Shown on screens < md) */}
               <div className="md:hidden space-y-3">
-                {teachers.map((teacher) => {
-                  const monthHours = monthlyHoursMap.get(teacher.id) || 0;
-                  const monthEarnings = monthHours * Number(teacher.hourly_rate);
+                {teachers.map((t) => {
+                  const monthHours = monthlyHoursMap.get(t.id) || 0;
+                  const monthEarnings = monthHours * Number(t.hourly_rate);
 
                   return (
                     <div 
-                      key={teacher.id} 
-                      className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                      key={t.id} 
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center space-x-3 min-w-0">
                           <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold text-sm flex items-center justify-center shrink-0">
-                            {teacher.name.charAt(0).toUpperCase()}
+                            {t.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center space-x-1.5">
-                              <h3 className="font-bold text-slate-900 text-base leading-tight truncate">
-                                {teacher.name}
+                            <div className="flex items-center space-x-2">
+                              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base leading-tight truncate">
+                                {t.name}
                               </h3>
-                              {teacher.user_id ? (
+                              {t.user_id ? (
                                 <Badge variant="success" className="text-[10px] px-1.5 py-0 font-normal shrink-0">
-                                  Aktiv
+                                  {tCommon("active")}
                                 </Badge>
                               ) : null}
                             </div>
                             <div className="space-y-0.5 mt-0.5 text-xs text-slate-500">
-                              {teacher.phone && (
-                                <a href={`tel:${teacher.phone}`} className="flex items-center space-x-1 text-blue-600 hover:underline">
-                                  <Phone className="w-3 h-3 text-slate-400 shrink-0" />
-                                  <span>{teacher.phone}</span>
+                              {t.phone && (
+                                <a href={`tel:${t.phone}`} className="flex items-center space-x-1 text-blue-600 dark:text-blue-400 hover:underline">
+                                  <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
+                                  <span>{t.phone}</span>
                                 </a>
                               )}
-                              {teacher.email && (
-                                <a href={`mailto:${teacher.email}`} className="flex items-center space-x-1 text-slate-500 hover:text-slate-800 truncate">
-                                  <Mail className="w-3 h-3 text-slate-400 shrink-0" />
-                                  <span className="truncate">{teacher.email}</span>
+                              {t.email && (
+                                <a href={`mailto:${t.email}`} className="flex items-center space-x-1 text-slate-500 hover:text-slate-800 truncate">
+                                  <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
+                                  <span className="truncate">{t.email}</span>
                                 </a>
                               )}
-                              {teacher.birthday && (
+                              {t.birthday && (
                                 <div className="flex items-center space-x-1 text-slate-400">
-                                  <Cake className="w-3 h-3 text-amber-500 shrink-0" />
-                                  <span>Geb.: {new Date(teacher.birthday).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}</span>
+                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500 shrink-0" />
+                                  <span>{formatDate(t.birthday, locale)}</span>
                                 </div>
                               )}
                             </div>
@@ -254,35 +258,30 @@ export default async function TeachersPage() {
 
                         <div className="text-right shrink-0">
                           <Badge variant="outline" className="font-mono text-xs">
-                            {formatCurrency(Number(teacher.hourly_rate))}/Std.
+                            {formatCurrency(Number(t.hourly_rate))}/{tCommon("hourShort")}
                           </Badge>
-                          {(teacher.rate_group || teacher.rate_individual || teacher.rate_45 || teacher.rate_60 || teacher.rate_90) && (
-                            <span className="block text-[10px] text-blue-600 font-medium mt-0.5">
-                              Spezialtarife
-                            </span>
-                          )}
                         </div>
                       </div>
 
                       {/* Current Month Summary */}
-                      <div className="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-100 text-xs">
-                        <div className="bg-slate-50 p-2.5 rounded-xl">
-                          <span className="text-slate-400 block text-[11px]">Geleistete Stunden</span>
-                          <span className="font-bold text-slate-800 text-sm">{monthHours.toFixed(1)} Std.</span>
+                      <div className="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-100 dark:border-slate-800 text-xs">
+                        <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
+                          <span className="text-slate-400 block text-[11px]">{tTeachers("hoursDelivered")}</span>
+                          <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{monthHours.toFixed(1)} {tCommon("hourShort")}</span>
                         </div>
-                        <div className="bg-blue-50/70 p-2.5 rounded-xl">
-                          <span className="text-blue-600 block text-[11px] font-medium">Lfd. Honorar</span>
-                          <span className="font-bold text-blue-900 text-sm">{formatCurrency(monthEarnings)}</span>
+                        <div className="bg-blue-50/70 dark:bg-blue-950/60 p-3 rounded-xl">
+                          <span className="text-blue-600 dark:text-blue-400 block text-[11px] font-medium">{tTeachers("ongoingPayout")}</span>
+                          <span className="font-bold text-blue-900 dark:text-blue-200 text-sm">{formatCurrency(monthEarnings)}</span>
                         </div>
                       </div>
 
                       {/* Action */}
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <EditTeacherDialog teacher={teacher} variant="button" />
-                        <Link href={`/teachers/${teacher.id}`} className="flex-1">
+                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                        <EditTeacherDialog teacher={t} variant="button" />
+                        <Link href={`/teachers/${t.id}`} className="flex-1">
                           <Button variant="outline" className="w-full justify-between h-9 text-xs font-semibold">
-                            <span>Abrechnen</span>
-                            <ArrowRight className="w-4 h-4 text-blue-600" />
+                            <span>{tTeachers("viewProfile")}</span>
+                            <ArrowRight strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
                           </Button>
                         </Link>
                       </div>

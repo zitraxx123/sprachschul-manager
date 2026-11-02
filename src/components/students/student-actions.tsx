@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { deleteStudent } from "@/actions/students";
 import { Course, Student, CourseSchedule, MonthlyPayment } from "@/types/database";
 import { RecordPaymentDialog } from "@/components/students/record-payment-dialog";
@@ -30,17 +31,37 @@ export function StudentActions({
   currentMonthYear,
   isAlreadyPaid = false,
 }: StudentActionsProps) {
+  const t = useTranslations("students");
+  const tCommon = useTranslations("common");
   const [isPending, startTransition] = useTransition();
   const studentName = `${student.first_name} ${student.last_name}`;
 
+  // Automatically calculate expected monthly tuition fee:
+  // 1. If student has custom_monthly_price, use that
+  // 2. Otherwise sum the monthly_price of all enrolled courses
+  const calculatedPaymentAmount = (() => {
+    if (student.custom_monthly_price !== null && student.custom_monthly_price !== undefined) {
+      return Number(student.custom_monthly_price);
+    }
+    if (assignedCourseIds.length > 0 && courses.length > 0) {
+      const priceMap = new Map(courses.map((c) => [c.id, Number(c.monthly_price || 0)]));
+      const total = assignedCourseIds.reduce((sum, cId) => sum + (priceMap.get(cId) || 0), 0);
+      if (total > 0) return total;
+    }
+    if (payment?.amount_euro) {
+      return Number(payment.amount_euro);
+    }
+    return 0;
+  })();
+
   function handleDelete() {
-    if (confirm(`Möchten Sie den Schüler "${studentName}" wirklich löschen?`)) {
+    if (confirm(t("deleteConfirm"))) {
       startTransition(async () => {
         try {
           await deleteStudent(student.id);
-          toast.success(`Schüler "${studentName}" wurde gelöscht.`);
+          toast.success(t("deletedSuccess"));
         } catch {
-          toast.error("Fehler beim Löschen des Schülers.");
+          toast.error(t("deleteError"));
         }
       });
     }
@@ -60,9 +81,9 @@ export function StudentActions({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-slate-500 hover:text-blue-600 hover:bg-blue-50"
-          title="Schülerprofil / Akte ansehen"
+          title={t("viewRecord")}
         >
-          <Eye className="w-3.5 h-3.5" />
+          <Eye strokeWidth={1.5} className="w-4 h-4" />
         </Button>
       </StudentProfileDialog>
 
@@ -70,6 +91,7 @@ export function StudentActions({
         studentId={student.id}
         studentName={studentName}
         currentMonthYear={currentMonthYear}
+        defaultAmount={calculatedPaymentAmount}
         isAlreadyPaid={isAlreadyPaid}
       />
 
@@ -86,12 +108,12 @@ export function StudentActions({
         onClick={handleDelete}
         disabled={isPending}
         className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-        title="Schüler löschen"
+        title={tCommon("delete")}
       >
         {isPending ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />
+          <Loader2 strokeWidth={1.5} className="w-4 h-4 animate-spin text-slate-400" />
         ) : (
-          <Trash2 className="w-3.5 h-3.5" />
+          <Trash2 strokeWidth={1.5} className="w-4 h-4" />
         )}
       </Button>
     </div>

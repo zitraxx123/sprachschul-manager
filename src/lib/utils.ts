@@ -12,10 +12,11 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string, locale?: string): string {
   try {
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat("de-DE", {
+    const intlLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
+    return new Intl.DateTimeFormat(intlLocale, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",

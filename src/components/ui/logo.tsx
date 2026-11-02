@@ -8,6 +8,7 @@ interface LogoProps {
   size?: "sm" | "md" | "lg";
   showText?: boolean;
   subtitle?: string;
+  logoUrl?: string | null;
 }
 
 export function Logo({
@@ -15,11 +16,12 @@ export function Logo({
   size = "md",
   showText = true,
   subtitle,
+  logoUrl,
 }: LogoProps) {
   const iconSizes = {
-    sm: "w-7 h-7 rounded-lg",
-    md: "w-9 h-9 rounded-xl",
-    lg: "w-12 h-12 rounded-xl",
+    sm: "w-8 h-8 rounded-lg",
+    md: "w-10 h-10 rounded-lg",
+    lg: "w-12 h-12 rounded-lg",
   };
 
   const capSizes = {
@@ -35,22 +37,35 @@ export function Logo({
   };
 
   return (
-    <div className={`flex items-center space-x-2.5 ${className}`}>
-      <div
-        className={`${iconSizes[size]} bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm`}
-      >
-        <GraduationCap className={capSizes[size]} />
-      </div>
+    <div className={`flex items-center space-x-2 ${className}`}>
+      {logoUrl ? (
+        <div
+          className={`${iconSizes[size]} bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logoUrl}
+            alt="Logo"
+            className="w-full h-full object-contain"
+          />
+        </div>
+      ) : (
+        <div
+          className={`${iconSizes[size]} bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs`}
+        >
+          <GraduationCap className={capSizes[size]} strokeWidth={1.5} />
+        </div>
+      )}
 
       {showText && (
         <div className="leading-tight overflow-hidden">
           <div className="flex items-center space-x-1">
-            <span className={`font-bold tracking-tight text-slate-900 ${textSizes[size]}`}>
-              Sprachschul<span className="text-blue-600">-Manager</span>
+            <span className={`font-bold tracking-tight text-slate-900 dark:text-slate-100 ${textSizes[size]}`}>
+              Sprachschul<span className="text-blue-600 dark:text-blue-400">-Manager</span>
             </span>
           </div>
           {subtitle && (
-            <p className="text-[11px] text-slate-400 font-medium truncate">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium truncate">
               {subtitle}
             </p>
           )}

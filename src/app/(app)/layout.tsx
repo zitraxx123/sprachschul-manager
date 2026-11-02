@@ -34,6 +34,7 @@ export default async function AppLayout({
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
       <Sidebar 
         organizationName={orgName} 
+        logoUrl={organization?.logo_url || null}
         userEmail={user.email || ""} 
         userName={teacher?.name || user.email || ""}
         isTeacher={isTeacher}
@@ -41,6 +42,7 @@ export default async function AppLayout({
       <div className="flex-1 flex flex-col min-w-0 print:w-full print:block">
         <Header 
           organizationName={orgName} 
+          logoUrl={organization?.logo_url || null}
           userEmail={user.email || ""} 
           userName={teacher?.name || user.email || ""} 
           isTeacher={isTeacher} 

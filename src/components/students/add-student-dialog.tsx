@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { createStudent, StudentActionState } from "@/actions/students";
 import { Course, CourseSchedule } from "@/types/database";
 import { CourseCombobox } from "@/components/ui/course-combobox";
@@ -19,7 +20,8 @@ import {
   Phone, 
   BookOpen, 
   Loader2, 
-  AlertCircle 
+  AlertCircle,
+  Euro
 } from "lucide-react";
 
 interface AddStudentDialogProps {
@@ -27,6 +29,9 @@ interface AddStudentDialogProps {
 }
 
 export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
+  const t = useTranslations("students");
+  const tCommon = useTranslations("common");
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
   const [courseName, setCourseName] = useState("");
@@ -35,7 +40,7 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
     async (prev, formData) => {
       const res = await createStudent(prev, formData);
       if (res?.success) {
-        toast.success("Schüler erfolgreich angelegt!");
+        toast.success(t("saveStudent") + " " + tCommon("saved"));
         setIsOpen(false);
         setSelectedCourseIds([]);
         setCourseName("");
@@ -50,17 +55,17 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
   return (
     <div>
       {!isOpen ? (
-        <Button onClick={() => setIsOpen(true)} className="space-x-1.5">
-          <Plus className="w-4 h-4" />
-          <span>Schüler hinzufügen</span>
+        <Button onClick={() => setIsOpen(true)} className="space-x-2">
+          <Plus strokeWidth={1.5} className="w-4 h-4" />
+          <span>{t("addStudent")}</span>
         </Button>
       ) : (
-        <Card className="border-blue-200 bg-blue-50/20 shadow-md mb-6 animate-in fade-in duration-150">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
+        <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl mb-6 ring-1 ring-blue-500/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <CardTitle className="text-base font-semibold">Neuen Schüler erfassen</CardTitle>
-              <CardDescription>
-                Stammdaten und Zuweisung zu einem oder mehreren Kursen (Multi-Zuweisung)
+              <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">{t("addStudent")}</CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {t("subtitle")}
               </CardDescription>
             </div>
             <Button
@@ -72,15 +77,15 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
                 setSelectedCourseIds([]);
                 setCourseName("");
               }}
-              className="h-8 w-8 text-slate-400 hover:text-slate-700"
+              className="h-8 w-8 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             >
-              <X className="w-4 h-4" />
+              <X strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-5">
             {state?.error && (
-              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 flex items-start space-x-2.5 text-xs text-red-700">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2 text-xs text-red-700 dark:text-red-300">
+                <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{state.error}</span>
               </div>
             )}
@@ -92,29 +97,29 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
               ))}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="first_name" className="flex items-center space-x-1.5">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Vorname *</span>
+                <div className="space-y-2">
+                  <Label htmlFor="first_name" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <User strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{t("firstName")} *</span>
                   </Label>
                   <Input
                     id="first_name"
                     name="first_name"
-                    placeholder="z. B. Max"
+                    placeholder="Max"
                     required
                     disabled={isPending}
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="last_name" className="flex items-center space-x-1.5">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Nachname *</span>
+                <div className="space-y-2">
+                  <Label htmlFor="last_name" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <User strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{t("lastName")} *</span>
                   </Label>
                   <Input
                     id="last_name"
                     name="last_name"
-                    placeholder="z. B. Mustermann"
+                    placeholder="Mustermann"
                     required
                     disabled={isPending}
                   />
@@ -122,10 +127,10 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="flex items-center space-x-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" />
-                    <span>E-Mail (optional)</span>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{tCommon("email")} ({tCommon("optional")})</span>
                   </Label>
                   <Input
                     id="email"
@@ -136,10 +141,10 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="phone" className="flex items-center space-x-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Telefon (optional)</span>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <span>{tCommon("phone")} ({tCommon("optional")})</span>
                   </Label>
                   <Input
                     id="phone"
@@ -152,34 +157,34 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
               </div>
 
               {/* Parent / Emergency Contact Section */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-3">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4 text-blue-600" />
-                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Elternkontakt / Notfallkontakt (optional)
+                  <Users strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                    {t("emergencyContact")}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500">
-                  Hinterlegen Sie die Kontaktdaten der Eltern oder Erziehungsberechtigten für Minderjährige oder Notfälle.
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {t("emergencyContactDesc")}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <Label htmlFor="parent_name" className="text-[11px] font-semibold text-slate-700">
-                      Name der Eltern
+                    <Label htmlFor="parent_name" className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                      {t("parentName")}
                     </Label>
                     <Input
                       id="parent_name"
                       name="parent_name"
-                      placeholder="z. B. Sabine Mustermann"
+                      placeholder="Sabine Mustermann"
                       disabled={isPending}
                       className="h-9 text-xs"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <Label htmlFor="parent_phone" className="text-[11px] font-semibold text-slate-700">
-                      Telefon der Eltern
+                    <Label htmlFor="parent_phone" className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                      {t("parentPhone")}
                     </Label>
                     <Input
                       id="parent_phone"
@@ -192,8 +197,8 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
                   </div>
 
                   <div className="space-y-1">
-                    <Label htmlFor="parent_email" className="text-[11px] font-semibold text-slate-700">
-                      E-Mail der Eltern
+                    <Label htmlFor="parent_email" className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                      {t("parentEmail")}
                     </Label>
                     <Input
                       id="parent_email"
@@ -208,33 +213,53 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
               </div>
 
               {/* Course Multi-select Selection (Modern Combobox) */}
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4">
                 <CourseCombobox
                   courses={courses}
                   selectedIds={selectedCourseIds}
                   onChange={setSelectedCourseIds}
-                  placeholder="Kurs nach Name oder Dozent suchen..."
+                  placeholder={t("searchPlaceholder")}
                   disabled={isPending}
                 />
               </div>
 
               {/* Course Note / Level */}
-              <div className="space-y-1.5">
-                <Label htmlFor="course_name" className="flex items-center space-x-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Zusätzliche Einstufung / Bemerkung (optional)</span>
+              <div className="space-y-2">
+                <Label htmlFor="course_name" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <BookOpen strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                  <span>{t("additionalNote")}</span>
                 </Label>
                 <Input
                   id="course_name"
                   name="course_name"
-                  placeholder="z. B. Niveau B2, Prüfungsvorbereitung Telc"
+                  placeholder={t("additionalNotePlaceholder")}
                   value={courseName}
                   onChange={(e) => setCourseName(e.target.value)}
                   disabled={isPending}
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-2 border-t border-slate-100">
+              {/* Custom Monthly Price (Individual discount/override) */}
+              <div className="space-y-2">
+                <Label htmlFor="custom_monthly_price" className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <Euro strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                  <span>{t("customMonthlyPrice")}</span>
+                </Label>
+                <Input
+                  id="custom_monthly_price"
+                  name="custom_monthly_price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="z. B. 120.00"
+                  disabled={isPending}
+                />
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                  {t("customMonthlyPriceDesc")}
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <Button
                   type="button"
                   variant="outline"
@@ -245,16 +270,16 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
                   }}
                   disabled={isPending}
                 >
-                  Abbrechen
+                  {tCommon("cancel")}
                 </Button>
                 <Button type="submit" disabled={isPending}>
                   {isPending ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Speichern...
+                      <Loader2 strokeWidth={1.5} className="w-4 h-4 mr-2 animate-spin" />
+                      {tCommon("saving")}
                     </>
                   ) : (
-                    "Schüler anlegen"
+                    t("saveStudent")
                   )}
                 </Button>
               </div>

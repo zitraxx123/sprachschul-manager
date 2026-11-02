@@ -25,6 +25,14 @@ export async function createStudent(
     courseIds.push(legacyCourseId);
   }
   const courseName = (formData.get("course_name") as string)?.trim() || null;
+  const customMonthlyPriceRaw = (formData.get("custom_monthly_price") as string)?.trim();
+  let customMonthlyPrice: number | null = null;
+  if (customMonthlyPriceRaw !== undefined && customMonthlyPriceRaw !== "") {
+    const parsed = parseFloat(customMonthlyPriceRaw.replace(",", "."));
+    if (!isNaN(parsed) && parsed >= 0) {
+      customMonthlyPrice = parsed;
+    }
+  }
 
   if (!firstName || !lastName) {
     return { error: "Vor- und Nachname des Schülers sind erforderlich." };
@@ -50,6 +58,7 @@ export async function createStudent(
       parent_phone: parentPhone,
       parent_email: parentEmail,
       course_name: courseName,
+      custom_monthly_price: customMonthlyPrice,
     })
     .select("id")
     .single();
@@ -98,6 +107,14 @@ export async function updateStudent(
     courseIds.push(legacyCourseId);
   }
   const courseName = (formData.get("course_name") as string)?.trim() || null;
+  const customMonthlyPriceRaw = (formData.get("custom_monthly_price") as string)?.trim();
+  let customMonthlyPrice: number | null = null;
+  if (customMonthlyPriceRaw !== undefined && customMonthlyPriceRaw !== "") {
+    const parsed = parseFloat(customMonthlyPriceRaw.replace(",", "."));
+    if (!isNaN(parsed) && parsed >= 0) {
+      customMonthlyPrice = parsed;
+    }
+  }
 
   if (!studentId) {
     return { error: "Ungültige Schüler-ID." };
@@ -126,6 +143,7 @@ export async function updateStudent(
       parent_phone: parentPhone,
       parent_email: parentEmail,
       course_name: courseName,
+      custom_monthly_price: customMonthlyPrice,
     })
     .eq("id", studentId)
     .eq("organization_id", organization.id);

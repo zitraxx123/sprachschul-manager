@@ -30,6 +30,7 @@ import {
   BookOpen, 
   Calculator 
 } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 
 interface TeacherDetailPageProps {
   params: Promise<{ id: string }>;
@@ -45,13 +46,23 @@ export default async function TeacherDetailPage({
     membership,
     organization,
     resolvedParams,
-    resolvedSearchParams
+    resolvedSearchParams,
+    tTeachers,
+    tCourses,
+    tLessons,
+    tCommon,
+    locale
   ] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
     getActiveOrganization(),
     params,
     searchParams,
+    getTranslations("teachers"),
+    getTranslations("courses"),
+    getTranslations("lessons"),
+    getTranslations("common"),
+    getLocale(),
   ]);
 
   if (currentTeacher && membership?.role === "teacher") {
@@ -65,8 +76,8 @@ export default async function TeacherDetailPage({
 
   const supabase = await createClient();
 
-  // Parallel fetch: Teacher details and all teacher lessons
-  const [teacherResult, lessonsResult] = await Promise.all([
+  // Parallel fetch: Teacher details, all teacher lessons, and all teacher names for substitutions
+  const [teacherResult, lessonsResult, allTeachersResult] = await Promise.all([
     supabase
       .from("teachers")
       .select("*")
@@ -79,13 +90,20 @@ export default async function TeacherDetailPage({
       .eq("teacher_id", teacherId)
       .eq("organization_id", organization.id)
       .order("lesson_date", { ascending: false }),
+    supabase
+      .from("teachers")
+      .select("id, name")
+      .eq("organization_id", organization.id),
   ]);
 
   const teacher = teacherResult.data;
+  const allTeachersMap = new Map((allTeachersResult.data || []).map((t) => [t.id, t.name]));
 
   if (!teacher) {
     notFound();
   }
+
+  const intlLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
 
   // Determine active month (default: current YYYY-MM)
   const now = new Date();
@@ -97,7 +115,7 @@ export default async function TeacherDetailPage({
     l.lesson_date.startsWith(activeMonth)
   );
 
-  // 3. Calculate Payroll: Sum of specialized rates per lesson
+  // Calculate Payroll: Sum of specialized rates per lesson
   const totalHours = monthlyLessons.reduce(
     (sum, l) => sum + Number(l.duration_hours || 0),
     0
@@ -107,7 +125,9 @@ export default async function TeacherDetailPage({
     const calc = calculateLessonPayroll(
       Number(l.duration_hours || 0),
       (l as unknown as { courses?: { course_type?: string } }).courses?.course_type,
-      teacher
+      teacher,
+      l.status,
+      organization.late_cancellation_pay_percent ?? 50
     );
     return sum + calc.totalAmount;
   }, 0);
@@ -116,16 +136,16 @@ export default async function TeacherDetailPage({
   const monthOptions = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const label = d.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+    const label = d.toLocaleDateString(intlLocale, { month: "long", year: "numeric" });
     return { value, label };
   });
 
   const selectedDate = new Date(`${activeMonth}-01`);
-  const monthNameYear = selectedDate.toLocaleDateString("de-DE", {
+  const monthNameYear = selectedDate.toLocaleDateString(intlLocale, {
     month: "long",
     year: "numeric",
   });
-  const todayFormatted = new Date().toLocaleDateString("de-DE", {
+  const todayFormatted = new Date().toLocaleDateString(intlLocale, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -142,28 +162,37 @@ export default async function TeacherDetailPage({
       {/* Official Print Document Header (Visible ONLY in print) */}
       <div className="hidden print:block mb-8 pb-4 border-b-2 border-slate-900">
         <div className="flex justify-between items-start">
-          <div>
-            <span className="text-[11px] uppercase font-bold tracking-widest text-slate-500">
-              Tätigkeitsnachweis &amp; Honorarabrechnung
-            </span>
-            <h1 className="text-2xl font-black text-slate-900 mt-1">{organization.name}</h1>
-            <p className="text-xs text-slate-500">Sprachschule &amp; Weiterbildung</p>
+          <div className="flex items-start space-x-4">
+            {organization.logo_url && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={organization.logo_url}
+                alt={organization.name}
+                className="h-14 w-auto max-w-[160px] object-contain shrink-0"
+              />
+            )}
+            <div>
+              <span className="text-[11px] uppercase font-bold tracking-widest text-slate-500">
+                {tTeachers("teacherDetailTitle")}
+              </span>
+              <h1 className="text-2xl font-black text-slate-900 mt-0.5">{organization.name}</h1>
+            </div>
           </div>
           <div className="text-right text-xs text-slate-700 space-y-1">
-            <div>Abrechnungsmonat: <strong className="text-slate-900 text-sm">{monthNameYear}</strong></div>
-            <div>Druckdatum: <strong className="text-slate-900">{todayFormatted}</strong></div>
+            <div>{tCommon("month")}: <strong className="text-slate-900 text-sm">{monthNameYear}</strong></div>
+            <div>{tCommon("date")}: <strong className="text-slate-900">{todayFormatted}</strong></div>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-slate-200 grid grid-cols-2 gap-4 text-xs">
           <div>
-            <span className="text-slate-400 block font-medium">Lehrkraft / Dozent:</span>
+            <span className="text-slate-400 block font-medium">{tCommon("teacher")}:</span>
             <span className="text-base font-bold text-slate-900">{teacher.name}</span>
             {teacher.email && <span className="text-slate-500 block">{teacher.email}</span>}
           </div>
           <div className="text-right">
-            <span className="text-slate-400 block font-medium">Vertraglicher Stundensatz:</span>
-            <span className="text-base font-bold text-slate-900">{formatCurrency(hourlyRate)} / Std.</span>
+            <span className="text-slate-400 block font-medium">{tTeachers("contractRate")}:</span>
+            <span className="text-base font-bold text-slate-900">{formatCurrency(hourlyRate)} / {tCommon("hourShort")}</span>
           </div>
         </div>
       </div>
@@ -172,44 +201,44 @@ export default async function TeacherDetailPage({
       <div className="print:hidden">
         <Link
           href="/teachers"
-          className="inline-flex items-center text-xs font-medium text-slate-500 hover:text-slate-800 mb-4 transition-colors"
+          className="inline-flex items-center text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 mb-4 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-          <span>Zurück zur Lehrkräfte-Übersicht</span>
+          <ArrowLeft strokeWidth={1.5} className="w-4 h-4 mr-1" />
+          <span>{tCommon("back")}</span>
         </Link>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-start sm:items-center space-x-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white font-bold text-xl flex items-center justify-center shadow-sm shrink-0">
+            <div className="w-14 h-14 rounded-xl bg-blue-600 text-white font-bold text-xl flex items-center justify-center shadow-sm shrink-0">
               {teacher.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900">{teacher.name}</h1>
-                <Badge variant="outline" className="text-xs">Dozent / Lehrkraft</Badge>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{teacher.name}</h1>
+                <Badge variant="outline" className="text-xs">{tCommon("teacher")}</Badge>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-xs text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-xs text-slate-500 dark:text-slate-400">
                 {teacher.email && (
                   <span className="flex items-center space-x-1">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" />
+                    <Mail strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                     <a href={`mailto:${teacher.email}`} className="hover:underline">{teacher.email}</a>
                   </span>
                 )}
                 {teacher.phone && (
                   <span className="flex items-center space-x-1">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" />
-                    <a href={`tel:${teacher.phone}`} className="text-blue-600 hover:underline">{teacher.phone}</a>
+                    <Phone strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                    <a href={`tel:${teacher.phone}`} className="text-blue-600 dark:text-blue-400 hover:underline">{teacher.phone}</a>
                   </span>
                 )}
                 {teacher.birthday && (
-                  <span className="flex items-center space-x-1 text-slate-600 font-medium">
-                    <Cake className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Geb.: {new Date(teacher.birthday).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}</span>
+                  <span className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-medium">
+                    <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                    <span>{formatDate(teacher.birthday, locale)}</span>
                   </span>
                 )}
                 <span className="flex items-center space-x-1">
-                  <Euro className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Basissatz: <strong>{formatCurrency(hourlyRate)} / Std.</strong></span>
+                  <Euro strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                  <span>{tTeachers("baseRate")}: <strong>{formatCurrency(hourlyRate)} / {tCommon("hourShort")}</strong></span>
                 </span>
               </div>
             </div>
@@ -226,8 +255,8 @@ export default async function TeacherDetailPage({
                 size="sm"
                 className="text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200"
               >
-                <Trash2 className="w-4 h-4 mr-1.5" />
-                <span>Löschen</span>
+                <Trash2 strokeWidth={1.5} className="w-4 h-4 mr-1.5" />
+                <span>{tCommon("delete")}</span>
               </Button>
             </form>
           </div>
@@ -235,42 +264,42 @@ export default async function TeacherDetailPage({
 
         {/* Honorarsätze Strip (if specialized rates are configured) */}
         {(teacher.rate_group || teacher.rate_individual || teacher.rate_45 || teacher.rate_60 || teacher.rate_90) && (
-          <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-wrap items-center gap-2.5 text-xs">
-            <span className="font-bold text-slate-700 flex items-center space-x-1 mr-1">
-              <Euro className="w-3.5 h-3.5 text-blue-600" />
-              <span>Gültige Honorarsätze:</span>
+          <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1 mr-1">
+              <Euro strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>{tTeachers("advancedRatesToggle")}:</span>
             </span>
-            <Badge variant="outline" className="bg-white font-mono">
-              Basissatz: {formatCurrency(hourlyRate)}/Std.
+            <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono">
+              {tTeachers("baseRate")}: {formatCurrency(hourlyRate)}/{tCommon("hourShort")}
             </Badge>
             {teacher.rate_group && (
-              <Badge variant="outline" className="bg-white font-mono text-blue-700 border-blue-200">
-                <Users className="w-3 h-3 mr-1" />
-                Gruppe: {formatCurrency(Number(teacher.rate_group))}/Std.
+              <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700">
+                <Users strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                {tCourses("group")}: {formatCurrency(Number(teacher.rate_group))}/{tCommon("hourShort")}
               </Badge>
             )}
             {teacher.rate_individual && (
-              <Badge variant="outline" className="bg-white font-mono text-purple-700 border-purple-200">
-                <UserCheck className="w-3 h-3 mr-1" />
-                Einzel: {formatCurrency(Number(teacher.rate_individual))}/Std.
+              <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700">
+                <UserCheck strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                {tCourses("individual")}: {formatCurrency(Number(teacher.rate_individual))}/{tCommon("hourShort")}
               </Badge>
             )}
             {teacher.rate_45 && (
-              <Badge variant="outline" className="bg-white font-mono">
-                <Clock className="w-3 h-3 mr-1" />
-                45 Min: {formatCurrency(Number(teacher.rate_45))}
+              <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono">
+                <Clock strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                45 {tCommon("minuteShort")}: {formatCurrency(Number(teacher.rate_45))}
               </Badge>
             )}
             {teacher.rate_60 && (
-              <Badge variant="outline" className="bg-white font-mono">
-                <Clock className="w-3 h-3 mr-1" />
-                60 Min: {formatCurrency(Number(teacher.rate_60))}
+              <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono">
+                <Clock strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                60 {tCommon("minuteShort")}: {formatCurrency(Number(teacher.rate_60))}
               </Badge>
             )}
             {teacher.rate_90 && (
-              <Badge variant="outline" className="bg-white font-mono">
-                <Clock className="w-3 h-3 mr-1" />
-                90 Min: {formatCurrency(Number(teacher.rate_90))}
+              <Badge variant="outline" className="bg-white dark:bg-slate-800 font-mono">
+                <Clock strokeWidth={1.5} className="w-4 h-4 mr-1" />
+                90 {tCommon("minuteShort")}: {formatCurrency(Number(teacher.rate_90))}
               </Badge>
             )}
           </div>
@@ -278,10 +307,10 @@ export default async function TeacherDetailPage({
       </div>
 
       {/* Month Selector Bar */}
-      <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 print:hidden">
-        <div className="flex items-center space-x-2 text-sm font-medium text-slate-700">
-          <Calendar className="w-4 h-4 text-slate-400" />
-          <span>Abrechnungsmonat wählen:</span>
+      <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 print:hidden">
+        <div className="flex items-center space-x-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+          <Calendar strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+          <span>{tCommon("month")}:</span>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -292,7 +321,7 @@ export default async function TeacherDetailPage({
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeMonth === opt.value
                   ? "bg-blue-600 text-white shadow-sm"
-                  : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                  : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               {opt.label}
@@ -301,54 +330,54 @@ export default async function TeacherDetailPage({
         </div>
       </div>
 
-      {/* Basic Payroll Calculator Card (Core MVP requirement) */}
-      <Card className="border-blue-200 bg-gradient-to-br from-white to-blue-50/30 print:hidden">
+      {/* Basic Payroll Calculator Card */}
+      <Card className="border-blue-200 dark:border-slate-800 bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-slate-900/60 print:hidden">
         <CardHeader>
-          <div className="flex items-center space-x-2 text-blue-600 text-sm font-semibold">
-            <Calculator className="w-4 h-4" />
-            <span>Monatsabrechnung (Honorarrechner)</span>
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 text-sm font-semibold">
+            <Calculator strokeWidth={1.5} className="w-4 h-4" />
+            <span>{tTeachers("payslipTitle")}</span>
           </div>
           <CardTitle className="text-xl">
-            Auszahlungsbetrag für {monthNameYear}
+            {monthNameYear}
           </CardTitle>
           <CardDescription>
-            Berechnungsgrundlage: (Summe aller Unterrichtsstunden im Monat) × (Vertraglicher Stundensatz)
+            {tTeachers("calculationBasis")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <span className="text-xs text-slate-500 font-medium flex items-center space-x-1.5">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
-                <span>Geleistete Stunden</span>
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center space-x-2">
+                <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                <span>{tTeachers("hoursDelivered")}</span>
               </span>
-              <div className="text-2xl font-bold text-slate-900 mt-2">
-                {totalHours.toFixed(1)} <span className="text-sm font-normal text-slate-500">Std.</span>
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-2">
+                {totalHours.toFixed(1)} <span className="text-sm font-normal text-slate-500">{tCommon("hourShort")}</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">{monthlyLessons.length} Unterrichtseinheiten</p>
+              <p className="text-[11px] text-slate-400 mt-1">{monthlyLessons.length} {tTeachers("units")}</p>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <span className="text-xs text-slate-500 font-medium flex items-center space-x-1.5">
-                <Euro className="w-3.5 h-3.5 text-slate-400" />
-                <span>Vertraglicher Stundensatz</span>
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center space-x-2">
+                <Euro strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                <span>{tTeachers("contractRate")}</span>
               </span>
-              <div className="text-2xl font-bold text-slate-900 mt-2">
+              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-2">
                 {formatCurrency(hourlyRate)}
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">Vergütung pro 60 Minuten</p>
+              <p className="text-[11px] text-slate-400 mt-1">60 {tCommon("minuteShort")}</p>
             </div>
 
             <div className="bg-blue-600 text-white p-4 rounded-xl shadow-md">
-              <span className="text-xs text-blue-100 font-medium flex items-center space-x-1.5">
-                <Calculator className="w-3.5 h-3.5 text-blue-200" />
-                <span>Auszahlungs-Honorar</span>
+              <span className="text-xs text-blue-100 font-medium flex items-center space-x-2">
+                <Calculator strokeWidth={1.5} className="w-4 h-4 text-blue-200" />
+                <span>{tTeachers("payoutTotal")}</span>
               </span>
               <div className="text-3xl font-extrabold mt-2">
                 {formatCurrency(totalEarnings)}
               </div>
               <p className="text-[11px] text-blue-100 mt-1 font-mono">
-                {totalHours.toFixed(1)} Std. × {formatCurrency(hourlyRate)}
+                {totalHours.toFixed(1)} {tCommon("hourShort")} × {formatCurrency(hourlyRate)}
               </p>
             </div>
           </div>
@@ -360,18 +389,18 @@ export default async function TeacherDetailPage({
         <CardHeader className="flex flex-row items-center justify-between print:hidden">
           <div>
             <CardTitle className="text-base font-semibold">
-              Unterrichtsnachweis ({monthlyLessons.length} Einheiten)
+              {tTeachers("lessonProof")} ({monthlyLessons.length} {tTeachers("units")})
             </CardTitle>
             <CardDescription>
-              Detailaufstellung der gehaltenen Stunden im gewählten Monat
+              {monthNameYear}
             </CardDescription>
           </div>
           <div className="flex items-center space-x-2">
             <PrintButton />
             <Link href="/lessons">
-              <Button variant="outline" size="sm" className="space-x-1.5">
-                <BookOpen className="w-4 h-4" />
-                <span>Neue Stunde erfassen</span>
+              <Button variant="outline" size="sm" className="space-x-2">
+                <BookOpen strokeWidth={1.5} className="w-4 h-4" />
+                <span>{tTeachers("newLesson")}</span>
               </Button>
             </Link>
           </div>
@@ -380,13 +409,13 @@ export default async function TeacherDetailPage({
           {monthlyLessons.length === 0 ? (
             <EmptyState
               icon={Calendar}
-              title={`Keine Unterrichtsstunden im ${monthNameYear}`}
-              description="Für diesen Monat wurden für diese Lehrkraft noch keine Einheiten im System erfasst."
+              title={tTeachers("noLessonsMonth")}
+              description={tTeachers("noLessonsMonthDesc")}
             >
               <Link href="/lessons">
-                <Button size="sm" className="space-x-1.5">
-                  <BookOpen className="w-4 h-4" />
-                  <span>Stunde jetzt erfassen</span>
+                <Button size="sm" className="space-x-2">
+                  <BookOpen strokeWidth={1.5} className="w-4 h-4" />
+                  <span>{tTeachers("recordLessonNow")}</span>
                 </Button>
               </Link>
             </EmptyState>
@@ -397,11 +426,12 @@ export default async function TeacherDetailPage({
                 <Table>
                   <TableHeader>
                     <TableRow className="print:border-slate-300">
-                      <TableHead>Datum</TableHead>
-                      <TableHead>Schüler / Kursgruppe</TableHead>
-                      <TableHead>Dauer</TableHead>
-                      <TableHead className="text-right">Vergütung Einheit</TableHead>
-                      <TableHead>Notizen</TableHead>
+                      <TableHead>{tTeachers("date")}</TableHead>
+                      <TableHead>{tTeachers("studentCourse")}</TableHead>
+                      <TableHead>{tLessons("statusLabel")}</TableHead>
+                      <TableHead>{tCommon("duration")}</TableHead>
+                      <TableHead className="text-right">{tTeachers("payoutUnit")}</TableHead>
+                      <TableHead>{tCommon("notes")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -409,35 +439,66 @@ export default async function TeacherDetailPage({
                       const calc = calculateLessonPayroll(
                         Number(lesson.duration_hours || 0),
                         (lesson as unknown as { courses?: { course_type?: string } }).courses?.course_type,
-                        teacher
+                        teacher,
+                        lesson.status,
+                        organization.late_cancellation_pay_percent ?? 50
+                      );
+
+                      const originalTeacherName = lesson.original_teacher_id
+                        ? allTeachersMap.get(lesson.original_teacher_id)
+                        : null;
+                      const isSubstitution = Boolean(
+                        lesson.original_teacher_id && lesson.original_teacher_id !== lesson.teacher_id
                       );
 
                       return (
                         <TableRow key={lesson.id} className="print:border-slate-200">
-                          <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
-                            {formatDate(lesson.lesson_date)}
+                          <TableCell className="font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                            {formatDate(lesson.lesson_date, locale)}
                           </TableCell>
-                          <TableCell className="text-slate-700">
+                          <TableCell className="text-slate-700 dark:text-slate-300">
                             <div>
-                              <span className="font-medium text-slate-800">{lesson.student_name || "—"}</span>
+                              <span className="font-medium text-slate-800 dark:text-slate-200">{lesson.student_name || "—"}</span>
                               {(lesson as unknown as { courses?: { course_type?: string } }).courses?.course_type === "individual" ? (
-                                <span className="block text-[10px] text-emerald-600 font-semibold">
-                                  Einzelunterricht (1:1)
+                                <span className="block text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                                  {tCourses("individual")}
                                 </span>
                               ) : (
                                 <span className="block text-[10px] text-slate-400">
-                                  Gruppenunterricht
+                                  {tCourses("group")}
                                 </span>
+                              )}
+                              {isSubstitution && (
+                                <div className="mt-1">
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 print:bg-transparent print:text-black border border-amber-300 dark:border-amber-800 print:border-black px-1.5 py-0.5 rounded">
+                                    ★ {originalTeacherName || tCommon("teacher")}
+                                  </span>
+                                </div>
                               )}
                             </div>
                           </TableCell>
                           <TableCell>
+                            {lesson.status === "cancelled_by_student" ? (
+                              <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 text-[10px]">
+                                {tLessons("statusCancelledByStudent")}
+                              </Badge>
+                            ) : lesson.status === "cancelled_late" ? (
+                              <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-semibold text-[10px]">
+                                {tLessons("statusCancelledLate")}
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 text-[10px]">
+                                {tLessons("statusCompleted")}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
                             <Badge variant="secondary" className="print:bg-transparent print:border-none print:p-0 print:font-semibold">
-                              {lesson.duration_hours} Std.
+                              {lesson.duration_hours} {tCommon("hourShort")}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
-                            <span className="font-bold text-slate-900 block">{formatCurrency(calc.totalAmount)}</span>
+                            <span className="font-bold text-slate-900 dark:text-slate-100 block">{formatCurrency(calc.totalAmount)}</span>
                             <span className="text-[10px] text-slate-400 block font-mono">
                               {formatCurrency(calc.rateUsed)} ({calc.rateDescription})
                             </span>
@@ -449,19 +510,19 @@ export default async function TeacherDetailPage({
                       );
                     })}
                   </TableBody>
-                  <TableFooter className="bg-slate-50 print:bg-slate-100 font-semibold text-slate-900 border-t-2 border-slate-300">
+                  <TableFooter className="bg-slate-50 dark:bg-slate-800 print:bg-slate-100 font-semibold text-slate-900 dark:text-slate-100 border-t-2 border-slate-300 dark:border-slate-700">
                     <TableRow>
                       <TableCell colSpan={2} className="font-bold">
-                        Gesamtsumme ({monthNameYear})
+                        {tCommon("total")} ({monthNameYear})
                       </TableCell>
                       <TableCell className="font-bold">
-                        {totalHours.toFixed(1)} Std.
+                        {totalHours.toFixed(1)} {tCommon("hourShort")}
                       </TableCell>
-                      <TableCell className="text-right font-black text-base text-emerald-700 print:text-black">
+                      <TableCell className="text-right font-black text-base text-emerald-700 dark:text-emerald-400 print:text-black">
                         {formatCurrency(totalEarnings)}
                       </TableCell>
                       <TableCell className="text-xs text-slate-500">
-                        {monthlyLessons.length} {monthlyLessons.length === 1 ? "Einheit" : "Einheiten"}
+                        {monthlyLessons.length} {tTeachers("units")}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
@@ -474,42 +535,55 @@ export default async function TeacherDetailPage({
                   const calc = calculateLessonPayroll(
                     Number(lesson.duration_hours || 0),
                     (lesson as unknown as { courses?: { course_type?: string } }).courses?.course_type,
-                    teacher
+                    teacher,
+                    lesson.status,
+                    organization.late_cancellation_pay_percent ?? 50
                   );
 
                   return (
                     <div
                       key={lesson.id}
-                      className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2.5"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2"
                     >
                       <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center space-x-1.5 font-semibold text-slate-900">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{formatDate(lesson.lesson_date)}</span>
+                        <div className="flex items-center space-x-2 font-semibold text-slate-900 dark:text-slate-100">
+                          <Calendar strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                          <span>{formatDate(lesson.lesson_date, locale)}</span>
                         </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {lesson.duration_hours} Std.
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          {lesson.status === "cancelled_by_student" ? (
+                            <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 text-[10px]">
+                              {tLessons("statusCancelledByStudent")}
+                            </Badge>
+                          ) : lesson.status === "cancelled_late" ? (
+                            <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-semibold text-[10px]">
+                              {tLessons("statusCancelledLate")}
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 text-[10px]">
+                              {tLessons("statusCompleted")}
+                            </Badge>
+                          )}
+                          <Badge variant="secondary" className="text-xs">
+                            {lesson.duration_hours} {tCommon("hourShort")}
+                          </Badge>
+                        </div>
                       </div>
 
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h4 className="font-bold text-slate-900 text-sm">
-                            {lesson.student_name || "Unterrichtseinheit"}
+                          <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                            {lesson.student_name || "—"}
                           </h4>
-                          {(lesson as unknown as { courses?: { course_type?: string } }).courses?.course_type === "individual" ? (
-                            <span className="text-[10px] text-emerald-600 font-semibold block">
-                              Einzelunterricht (1:1)
-                            </span>
-                          ) : (
-                            <span className="text-[10px] text-slate-400 block">
-                              Gruppenunterricht
+                          {lesson.original_teacher_id && lesson.original_teacher_id !== lesson.teacher_id && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 px-1.5 py-0.5 rounded mt-1">
+                              ★ {allTeachersMap.get(lesson.original_teacher_id) || tCommon("teacher")}
                             </span>
                           )}
                         </div>
 
                         <div className="text-right shrink-0">
-                          <span className="text-base font-extrabold text-slate-900 block">
+                          <span className="text-base font-extrabold text-slate-900 dark:text-slate-100 block">
                             {formatCurrency(calc.totalAmount)}
                           </span>
                           <span className="text-[10px] text-slate-400 font-mono block">
@@ -519,7 +593,7 @@ export default async function TeacherDetailPage({
                       </div>
 
                       {lesson.notes && (
-                        <p className="text-xs text-slate-400 italic pt-1.5 border-t border-slate-100 truncate">
+                        <p className="text-xs text-slate-400 italic pt-1.5 border-t border-slate-100 dark:border-slate-800 truncate">
                           &quot;{lesson.notes}&quot;
                         </p>
                       )}
@@ -528,12 +602,12 @@ export default async function TeacherDetailPage({
                 })}
 
                 {/* Mobile Monthly Total Card */}
-                <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-700 block">Gesamt ({monthNameYear})</span>
-                    <span className="text-[11px] text-slate-500">{totalHours.toFixed(1)} Std. • {monthlyLessons.length} Einheiten</span>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200 block">{tCommon("total")} ({monthNameYear})</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">{totalHours.toFixed(1)} {tCommon("hourShort")} • {monthlyLessons.length} {tTeachers("units")}</span>
                   </div>
-                  <span className="text-lg font-black text-emerald-700">
+                  <span className="text-lg font-black text-emerald-700 dark:text-emerald-400">
                     {formatCurrency(totalEarnings)}
                   </span>
                 </div>
@@ -546,18 +620,18 @@ export default async function TeacherDetailPage({
       {/* Official Print Document Footer & Signatures (Visible ONLY in print) */}
       <div className="hidden print:block mt-8 pt-4 text-xs">
         <div className="flex justify-between items-center mb-6 bg-slate-100 p-4 rounded-lg border border-slate-300">
-          <span className="text-sm font-bold text-slate-900">Gesamtbetrag zur Auszahlung:</span>
+          <span className="text-sm font-bold text-slate-900">{tTeachers("payoutTotal")}:</span>
           <span className="text-xl font-black text-slate-900">{formatCurrency(totalEarnings)}</span>
         </div>
         <p className="text-slate-500 italic mb-14">
-          Hiermit wird die sachliche und rechnerische Richtigkeit der oben aufgeführten Unterrichtseinheiten bestätigt.
+          {tTeachers("signatureNote")}
         </p>
         <div className="grid grid-cols-2 gap-16 pt-8">
           <div className="border-t border-slate-500 pt-2 text-center text-slate-700">
-            Ort, Datum / Unterschrift Lehrkraft ({teacher.name})
+            {tTeachers("signatureTeacher")} ({teacher.name})
           </div>
           <div className="border-t border-slate-500 pt-2 text-center text-slate-700">
-            Unterschrift Schulleitung ({organization.name})
+            {tTeachers("signatureSchool")} ({organization.name})
           </div>
         </div>
       </div>

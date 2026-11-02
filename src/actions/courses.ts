@@ -14,6 +14,11 @@ export type ScheduleInput = {
   duration: number;
 };
 
+export type StudentAssignmentInput = {
+  studentId: string;
+  status: "active" | "trial" | "waiting";
+};
+
 export async function createCourse(
   prevState: CourseActionState | null,
   formData: FormData
@@ -24,6 +29,13 @@ export async function createCourse(
   const description = (formData.get("description") as string)?.trim() || null;
   const courseTypeRaw = (formData.get("course_type") as string)?.trim();
   const courseType: "group" | "individual" = courseTypeRaw === "individual" ? "individual" : "group";
+  const maxCapacityRaw = (formData.get("max_capacity") as string)?.trim();
+  const parsedCapacity = maxCapacityRaw ? parseInt(maxCapacityRaw, 10) : 10;
+  const maxCapacity = isNaN(parsedCapacity) || parsedCapacity < 1 ? 10 : parsedCapacity;
+
+  const monthlyPriceRaw = (formData.get("monthly_price") as string)?.trim();
+  const parsedMonthlyPrice = monthlyPriceRaw ? parseFloat(monthlyPriceRaw.replace(",", ".")) : 0;
+  const monthlyPrice = isNaN(parsedMonthlyPrice) || parsedMonthlyPrice < 0 ? 0 : parsedMonthlyPrice;
 
   if (!name) {
     return { error: "Bitte geben Sie einen Kursnamen ein." };
@@ -81,6 +93,8 @@ export async function createCourse(
       room_id: roomId,
       course_type: courseType,
       description: description || null,
+      max_capacity: maxCapacity,
+      monthly_price: monthlyPrice,
     })
     .select("id")
     .single();
@@ -103,13 +117,20 @@ export async function createCourse(
   }
 
   // Assign students if any were selected during course creation
-  if (studentIds.length > 0) {
-    const studentCourseInserts = studentIds.map((sId) => ({
-      organization_id: organization.id,
-      course_id: newCourse.id,
-      student_id: sId,
-    }));
-    await supabase.from("student_courses").insert(studentCourseInserts);
+  let assignments: StudentAssignmentInput[] = [];
+  const assignmentsRaw = formData.get("student_assignments_json") as string;
+  if (assignmentsRaw) {
+    try {
+      assignments = JSON.parse(assignmentsRaw);
+    } catch {
+      assignments = [];
+    }
+  }
+
+  if (assignments.length > 0) {
+    await updateCourseStudents(newCourse.id, assignments);
+  } else if (studentIds.length > 0) {
+    await updateCourseStudents(newCourse.id, studentIds);
   }
 
   revalidatePath("/courses");
@@ -124,13 +145,22 @@ export async function updateCourse(
   prevState: CourseActionState | null,
   formData: FormData
 ): Promise<CourseActionState> {
-  const courseId = (formData.get("id") as string)?.trim();
+  const courseId =
+    (formData.get("course_id") as string)?.trim() ||
+    (formData.get("id") as string)?.trim();
   const name = (formData.get("name") as string)?.trim();
   const teacherId = (formData.get("teacher_id") as string)?.trim() || null;
   const roomId = (formData.get("room_id") as string)?.trim() || null;
   const description = (formData.get("description") as string)?.trim() || null;
   const courseTypeRaw = (formData.get("course_type") as string)?.trim();
   const courseType: "group" | "individual" = courseTypeRaw === "individual" ? "individual" : "group";
+  const maxCapacityRaw = (formData.get("max_capacity") as string)?.trim();
+  const parsedCapacity = maxCapacityRaw ? parseInt(maxCapacityRaw, 10) : 10;
+  const maxCapacity = isNaN(parsedCapacity) || parsedCapacity < 1 ? 10 : parsedCapacity;
+
+  const monthlyPriceRaw = (formData.get("monthly_price") as string)?.trim();
+  const parsedMonthlyPrice = monthlyPriceRaw ? parseFloat(monthlyPriceRaw.replace(",", ".")) : 0;
+  const monthlyPrice = isNaN(parsedMonthlyPrice) || parsedMonthlyPrice < 0 ? 0 : parsedMonthlyPrice;
 
   if (!courseId) {
     return { error: "Kurs-ID fehlt." };
@@ -180,6 +210,8 @@ export async function updateCourse(
       room_id: roomId,
       course_type: courseType,
       description: description || null,
+      max_capacity: maxCapacity,
+      monthly_price: monthlyPrice,
       updated_at: new Date().toISOString(),
     })
     .eq("id", courseId)
@@ -215,8 +247,16 @@ export async function updateCourse(
   }
 
   // Sync assigned students if provided in formData
+  const studentAssignmentsRaw = formData.get("student_assignments_json") as string;
   const studentIdsRaw = formData.get("student_ids_json") as string;
-  if (studentIdsRaw !== null && studentIdsRaw !== undefined) {
+  if (studentAssignmentsRaw) {
+    try {
+      const assignments: StudentAssignmentInput[] = JSON.parse(studentAssignmentsRaw);
+      await updateCourseStudents(courseId, assignments);
+    } catch {
+      // Ignore JSON parse errors for optional students payload
+    }
+  } else if (studentIdsRaw !== null && studentIdsRaw !== undefined) {
     try {
       const studentIds: string[] = JSON.parse(studentIdsRaw);
       await updateCourseStudents(courseId, studentIds);
@@ -255,17 +295,28 @@ export async function deleteCourse(courseId: string) {
 
 export async function updateCourseStudents(
   courseId: string,
-  studentIds: string[]
+  assignmentsOrIds: StudentAssignmentInput[] | string[]
 ): Promise<CourseActionState> {
   const organization = await getActiveOrganization();
   if (!organization) return { error: "Keine aktive Sprachschule gefunden." };
 
   const supabase = await createClient();
 
-  // 1. Fetch course info
+  // Normalize assignments input
+  const assignments: StudentAssignmentInput[] = (assignmentsOrIds || []).map((item) => {
+    if (typeof item === "string") {
+      return { studentId: item, status: "active" as const };
+    }
+    return {
+      studentId: item.studentId,
+      status: item.status === "trial" || item.status === "waiting" ? item.status : ("active" as const),
+    };
+  });
+
+  // 1. Fetch course info with capacity limit
   const { data: course, error: cErr } = await supabase
     .from("courses")
-    .select("id, name")
+    .select("id, name, max_capacity")
     .eq("id", courseId)
     .eq("organization_id", organization.id)
     .single();
@@ -274,10 +325,19 @@ export async function updateCourseStudents(
     return { error: "Kurs nicht gefunden." };
   }
 
+  // Enforce capacity rule for 'active' students
+  const maxCapacity = course.max_capacity || 10;
+  const activeCount = assignments.filter((a) => a.status === "active").length;
+  if (activeCount > maxCapacity) {
+    return {
+      error: `Die maximale Teilnehmerzahl von ${maxCapacity} aktiven Schülern ist erreicht (aktuell: ${activeCount}). Bitte weisen Sie Schüler der Warteliste zu.`,
+    };
+  }
+
   // 2. Fetch all currently assigned students for this course in student_courses
   const { data: currentLinks, error: fetchErr } = await supabase
     .from("student_courses")
-    .select("student_id")
+    .select("id, student_id, status")
     .eq("course_id", courseId)
     .eq("organization_id", organization.id);
 
@@ -285,9 +345,16 @@ export async function updateCourseStudents(
     return { error: `Fehler beim Abrufen der aktuellen Zuweisungen: ${fetchErr.message}` };
   }
 
-  const currentStudentIds = (currentLinks || []).map((l) => l.student_id);
-  const toRemove = currentStudentIds.filter((id) => !studentIds.includes(id));
-  const toAdd = studentIds.filter((id) => !currentStudentIds.includes(id));
+  const currentLinksMap = new Map((currentLinks || []).map((l) => [l.student_id, l]));
+  const currentStudentIds = Array.from(currentLinksMap.keys());
+  const targetStudentIds = assignments.map((a) => a.studentId);
+
+  const toRemove = currentStudentIds.filter((id) => !targetStudentIds.includes(id));
+  const toAdd = assignments.filter((a) => !currentStudentIds.includes(a.studentId));
+  const toUpdate = assignments.filter((a) => {
+    const existing = currentLinksMap.get(a.studentId);
+    return existing && existing.status !== a.status;
+  });
 
   // 3. Remove student_courses rows for deselected students
   if (toRemove.length > 0) {
@@ -303,12 +370,13 @@ export async function updateCourseStudents(
     }
   }
 
-  // 4. Add student_courses rows for newly selected students
+  // 4. Add student_courses rows for newly selected students with their specified status
   if (toAdd.length > 0) {
-    const inserts = toAdd.map((studentId) => ({
+    const inserts = toAdd.map((item) => ({
       organization_id: organization.id,
       course_id: courseId,
-      student_id: studentId,
+      student_id: item.studentId,
+      status: item.status,
     }));
 
     const { error: assignErr } = await supabase
@@ -317,6 +385,20 @@ export async function updateCourseStudents(
 
     if (assignErr) {
       return { error: `Fehler beim Zuweisen der Schüler: ${assignErr.message}` };
+    }
+  }
+
+  // 5. Update status for existing students if status changed
+  for (const item of toUpdate) {
+    const { error: updateStatusErr } = await supabase
+      .from("student_courses")
+      .update({ status: item.status })
+      .eq("course_id", courseId)
+      .eq("student_id", item.studentId)
+      .eq("organization_id", organization.id);
+
+    if (updateStatusErr) {
+      console.error("Error updating student_courses status:", updateStatusErr);
     }
   }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCurrentUser, getCurrentTeacher, getCurrentMembership } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { 
   GraduationCap, 
   ArrowRight, 
@@ -34,7 +35,7 @@ export default async function HomePage() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
-              <GraduationCap className="w-6 h-6" />
+              <GraduationCap strokeWidth={1.5} className="w-6 h-6" />
             </div>
             <div className="leading-tight">
               <span className="font-bold text-slate-900 text-lg tracking-tight block">
@@ -56,11 +57,12 @@ export default async function HomePage() {
 
           {/* Auth Action */}
           <div className="flex items-center space-x-3">
+            <LanguageSwitcher />
             {user ? (
               <Link href={portalHref}>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 h-10 shadow-sm space-x-1.5">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 h-10 shadow-sm space-x-2">
                   <span>Zum Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
                 </Button>
               </Link>
             ) : (
@@ -71,9 +73,9 @@ export default async function HomePage() {
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 h-10 shadow-sm space-x-1.5">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 h-10 shadow-sm space-x-2">
                     <span>Jetzt starten</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
                   </Button>
                 </Link>
               </>
@@ -86,7 +88,7 @@ export default async function HomePage() {
       <section className="pt-20 pb-16 md:pt-28 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Trust Pill */}
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50/70 text-xs font-semibold text-blue-800 mb-6">
-          <ShieldCheck className="w-4 h-4 text-blue-600" />
+          <ShieldCheck strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
           <span>Für Sprachschulen &amp; Bildungsinstitute in Deutschland</span>
         </div>
 
@@ -107,7 +109,7 @@ export default async function HomePage() {
           <Link href="/login" className="w-full sm:w-auto">
             <Button size="lg" className="w-full sm:w-auto h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base shadow-sm space-x-2">
               <span>Jetzt kostenlos testen</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Button>
           </Link>
           <a href="#vorteile" className="w-full sm:w-auto">
@@ -120,21 +122,21 @@ export default async function HomePage() {
         {/* Trust Badges Bar */}
         <div className="mt-12 pt-8 border-t border-slate-100 flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-xs font-medium text-slate-500">
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
+            <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
             <span>100% DSGVO-konform (Server in Frankfurt)</span>
           </div>
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
+            <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
             <span>GoBD-konforme Honorarabrechnung</span>
           </div>
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
+            <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-blue-600" />
             <span>Keine Kreditkarte erforderlich</span>
           </div>
         </div>
 
         {/* 3. Clean Product Preview Mockup (B2B UI) */}
-        <div className="mt-14 max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden text-left">
+        <div className="mt-14 max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden text-left">
           {/* Browser Chrome Header */}
           <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -212,10 +214,10 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Column 1: Fehlerfreie Honorarabrechnung */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
-                  <Euro className="w-6 h-6" />
+                  <Euro strokeWidth={1.5} className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
                   Fehlerfreie Honorarabrechnung
@@ -229,15 +231,15 @@ export default async function HomePage() {
 
               <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-blue-600 flex items-center space-x-1">
                 <span>GoBD-konformer PDF-Export</span>
-                <Check className="w-3.5 h-3.5" />
+                <Check strokeWidth={1.5} className="w-4 h-4" />
               </div>
             </div>
 
             {/* Column 2: Lehrer-Portal für das Smartphone */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
-                  <Smartphone className="w-6 h-6" />
+                  <Smartphone strokeWidth={1.5} className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
                   Lehrer-Portal für das Smartphone
@@ -251,15 +253,15 @@ export default async function HomePage() {
 
               <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-blue-600 flex items-center space-x-1">
                 <span>Optimiert für iOS &amp; Android</span>
-                <Check className="w-3.5 h-3.5" />
+                <Check strokeWidth={1.5} className="w-4 h-4" />
               </div>
             </div>
 
             {/* Column 3: Lückenlose Dokumentation */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
-                  <ClipboardCheck className="w-6 h-6" />
+                  <ClipboardCheck strokeWidth={1.5} className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
                   Lückenlose Dokumentation
@@ -273,7 +275,7 @@ export default async function HomePage() {
 
               <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-blue-600 flex items-center space-x-1">
                 <span>Prüfungssicher &amp; DSGVO-konform</span>
-                <Check className="w-3.5 h-3.5" />
+                <Check strokeWidth={1.5} className="w-4 h-4" />
               </div>
             </div>
           </div>
@@ -296,7 +298,7 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
           {/* Step 1 */}
-          <div className="relative bg-white p-8 rounded-2xl border border-slate-200">
+          <div className="relative bg-white p-8 rounded-xl border border-slate-200">
             <span className="text-3xl font-black text-blue-600 block mb-4">
               01
             </span>
@@ -310,7 +312,7 @@ export default async function HomePage() {
           </div>
 
           {/* Step 2 */}
-          <div className="relative bg-white p-8 rounded-2xl border border-slate-200">
+          <div className="relative bg-white p-8 rounded-xl border border-slate-200">
             <span className="text-3xl font-black text-blue-600 block mb-4">
               02
             </span>
@@ -324,7 +326,7 @@ export default async function HomePage() {
           </div>
 
           {/* Step 3 */}
-          <div className="relative bg-white p-8 rounded-2xl border border-slate-200">
+          <div className="relative bg-white p-8 rounded-xl border border-slate-200">
             <span className="text-3xl font-black text-blue-600 block mb-4">
               03
             </span>
@@ -343,7 +345,7 @@ export default async function HomePage() {
       <section id="sicherheit" className="py-16 bg-slate-50 border-t border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-4">
-            <ShieldCheck className="w-6 h-6" />
+            <ShieldCheck strokeWidth={1.5} className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900">
             Höchste Datensicherheit nach deutschem Standard
@@ -358,7 +360,7 @@ export default async function HomePage() {
 
       {/* 7. Bottom CTA Banner (Clean Deep Blue) */}
       <section className="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-14 text-center shadow-lg">
+        <div className="bg-slate-900 text-white rounded-xl p-8 sm:p-14 text-center shadow-lg">
           <h2 className="text-3xl sm:text-4xl font-bold max-w-xl mx-auto leading-tight">
             Bereit für eine moderne Sprachschulverwaltung?
           </h2>
@@ -370,7 +372,7 @@ export default async function HomePage() {
             <Link href="/login" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto h-12 px-8 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base shadow-sm space-x-2">
                 <span>Jetzt kostenlos testen</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -384,7 +386,7 @@ export default async function HomePage() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-                <GraduationCap className="w-5 h-5" />
+                <GraduationCap strokeWidth={1.5} className="w-5 h-5" />
               </div>
               <span className="font-bold text-slate-900 text-base">
                 Sprachschul-Manager
@@ -407,7 +409,7 @@ export default async function HomePage() {
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
             <p>© 2026 Sprachschul-Manager. Alle Rechte vorbehalten.</p>
-            <p className="flex items-center space-x-1.5">
+            <p className="flex items-center space-x-2">
               <span>Entwickelt &amp; gehostet in Deutschland</span>
               <span>🇩🇪</span>
             </p>

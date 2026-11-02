@@ -1,22 +1,25 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { deleteCourse } from "@/actions/courses";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Trash2, Loader2 } from "lucide-react";
 
 export function DeleteCourseButton({ courseId }: { courseId: string }) {
+  const t = useTranslations("courses");
+  const tCommon = useTranslations("common");
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (confirm("Möchten Sie diesen Kurs wirklich löschen?")) {
+    if (confirm(t("deleteConfirm"))) {
       startTransition(async () => {
         try {
           await deleteCourse(courseId);
-          toast.success("Kurs erfolgreich gelöscht.");
+          toast.success(t("deletedSuccess"));
         } catch {
-          toast.error("Fehler beim Löschen des Kurses.");
+          toast.error(t("deleteError"));
         }
       });
     }
@@ -30,12 +33,12 @@ export function DeleteCourseButton({ courseId }: { courseId: string }) {
       onClick={handleDelete}
       disabled={isPending}
       className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-      title="Kurs löschen"
+      title={tCommon("delete")}
     >
       {isPending ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />
+        <Loader2 strokeWidth={1.5} className="w-4 h-4 animate-spin text-slate-400" />
       ) : (
-        <Trash2 className="w-3.5 h-3.5" />
+        <Trash2 strokeWidth={1.5} className="w-4 h-4" />
       )}
     </Button>
   );

@@ -38,9 +38,9 @@ export function ThemeToggle() {
       aria-label="Design umschalten"
     >
       {isDark ? (
-        <Sun className="w-4 h-4 text-amber-400 animate-in spin-in-90 duration-200" />
+        <Sun strokeWidth={1.5} className="w-4 h-4 text-amber-400 animate-in spin-in-90 duration-200" />
       ) : (
-        <Moon className="w-4 h-4 text-slate-600 animate-in spin-in-90 duration-200" />
+        <Moon strokeWidth={1.5} className="w-4 h-4 text-slate-600 animate-in spin-in-90 duration-200" />
       )}
     </Button>
   );

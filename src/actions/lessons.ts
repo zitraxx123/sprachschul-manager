@@ -33,6 +33,10 @@ export async function createLesson(
   const durationRaw = formData.get("duration_hours") as string;
   let studentName = (formData.get("student_name") as string)?.trim() || null;
   const notes = (formData.get("notes") as string)?.trim() || null;
+  const statusRaw = (formData.get("status") as string)?.trim();
+  const status = statusRaw === "cancelled_by_student" || statusRaw === "cancelled_late"
+    ? statusRaw
+    : "completed";
 
   if (!teacherId) {
     return { error: "Bitte wählen Sie eine Lehrkraft aus." };
@@ -76,6 +80,7 @@ export async function createLesson(
     lesson_date: lessonDate,
     duration_hours: durationHours,
     notes,
+    status,
   });
 
   if (error) {
@@ -109,4 +114,76 @@ export async function deleteLesson(lessonId: string) {
   revalidatePath("/students");
   revalidatePath("/teachers");
   revalidatePath("/dashboard");
+}
+
+export async function substituteTeacher(
+  prevState: LessonActionState | null,
+  formData: FormData
+): Promise<LessonActionState> {
+  const lessonId = (formData.get("lesson_id") as string)?.trim();
+  const newTeacherId = (formData.get("new_teacher_id") as string)?.trim();
+
+  if (!lessonId) {
+    return { error: "Ungültige Unterrichtsstunden-ID." };
+  }
+  if (!newTeacherId) {
+    return { error: "Bitte wählen Sie eine neue Lehrkraft für die Vertretung aus." };
+  }
+
+  const organization = await getActiveOrganization();
+  if (!organization) {
+    return { error: "Keine aktive Organisation gefunden." };
+  }
+
+  const supabase = await createClient();
+
+  // 1. Fetch current lesson to get current teacher and existing original_teacher_id
+  const { data: lesson, error: lErr } = await supabase
+    .from("lessons")
+    .select("id, teacher_id, original_teacher_id")
+    .eq("id", lessonId)
+    .eq("organization_id", organization.id)
+    .single();
+
+  if (lErr || !lesson) {
+    return { error: "Unterrichtsstunde nicht gefunden." };
+  }
+
+  if (lesson.teacher_id === newTeacherId) {
+    return { error: "Diese Lehrkraft ist bereits für diese Stunde eingetragen." };
+  }
+
+  // Preserve the original teacher ID; if re-assigning back to the original teacher, reset to null
+  let originalTeacherId: string | null = lesson.original_teacher_id;
+  if (!originalTeacherId) {
+    originalTeacherId = lesson.teacher_id;
+  } else if (newTeacherId === originalTeacherId) {
+    originalTeacherId = null;
+  }
+
+  // 2. Update lesson: teacher_id = newTeacherId, original_teacher_id = originalTeacherId
+  const { error: uErr } = await supabase
+    .from("lessons")
+    .update({
+      teacher_id: newTeacherId,
+      original_teacher_id: originalTeacherId,
+    })
+    .eq("id", lessonId)
+    .eq("organization_id", organization.id);
+
+  if (uErr) {
+    return { error: `Fehler beim Speichern der Vertretung: ${uErr.message}` };
+  }
+
+  revalidatePath("/lessons");
+  revalidatePath("/teachers");
+  revalidatePath(`/teachers/${newTeacherId}`);
+  revalidatePath(`/teachers/${lesson.teacher_id}`);
+  if (lesson.original_teacher_id) {
+    revalidatePath(`/teachers/${lesson.original_teacher_id}`);
+  }
+  revalidatePath("/dashboard");
+  revalidatePath("/my-portal");
+
+  return { success: true };
 }

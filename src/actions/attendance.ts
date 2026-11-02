@@ -18,7 +18,8 @@ export async function recordCourseLesson(
   lessonDate: string,
   attendances: AttendanceItem[],
   notes?: string,
-  durationHoursParam?: number
+  durationHoursParam?: number,
+  status: "completed" | "cancelled_by_student" | "cancelled_late" = "completed"
 ): Promise<RecordLessonState> {
   const organization = await getActiveOrganization();
   if (!organization) return { error: "Keine Organisation gefunden." };
@@ -53,7 +54,11 @@ export async function recordCourseLesson(
   }
   const presentCount = attendances.filter((a) => a.status === "present").length;
 
-  // 2. Insert Lesson for teacher payroll (salary = duration * teacher hourly rate)
+  const defaultNotes = status !== "completed"
+    ? `Kurs: ${course.name} (${status === "cancelled_late" ? "Spätstornierung" : "Rechtzeitige Stornierung"})`
+    : `Kurs: ${course.name} (${presentCount} anwesend, ${attendances.length - presentCount} abwesend)`;
+
+  // 2. Insert Lesson for teacher payroll
   const { data: lesson, error: lErr } = await supabase
     .from("lessons")
     .insert({
@@ -63,7 +68,8 @@ export async function recordCourseLesson(
       student_name: course.name,
       lesson_date: lessonDate,
       duration_hours: durationHours,
-      notes: notes || `Kurs: ${course.name} (${presentCount} anwesend, ${attendances.length - presentCount} abwesend)`,
+      notes: notes || defaultNotes,
+      status: status || "completed",
     })
     .select("id")
     .single();

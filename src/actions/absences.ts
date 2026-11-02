@@ -171,7 +171,7 @@ export async function getAbsencesReport(
         student_name,
         teacher_id,
         notes,
-        teachers (
+        teachers!lessons_teacher_id_fkey (
           id,
           name,
           hourly_rate

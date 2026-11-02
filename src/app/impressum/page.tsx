@@ -13,16 +13,16 @@ export default function ImpressumPage() {
       {/* Header */}
       <header className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2.5">
+          <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-              <GraduationCap className="w-5 h-5" />
+              <GraduationCap strokeWidth={1.5} className="w-5 h-5" />
             </div>
             <span className="font-bold text-slate-900 text-base">Sprachschul-Manager</span>
           </Link>
 
           <Link href="/">
-            <Button variant="ghost" size="sm" className="space-x-1.5 text-xs text-slate-600">
-              <ArrowLeft className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="sm" className="space-x-2 text-xs text-slate-600">
+              <ArrowLeft strokeWidth={1.5} className="w-4 h-4" />
               <span>Zurück zur Startseite</span>
             </Button>
           </Link>

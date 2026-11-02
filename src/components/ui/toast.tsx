@@ -19,7 +19,7 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-white group-[.toaster]:dark:bg-slate-900 group-[.toaster]:text-slate-900 group-[.toaster]:dark:text-slate-100 group-[.toaster]:border-slate-200 group-[.toaster]:dark:border-slate-800 group-[.toaster]:shadow-lg font-sans rounded-2xl text-xs",
+            "group toast group-[.toaster]:bg-white group-[.toaster]:dark:bg-slate-900 group-[.toaster]:text-slate-900 group-[.toaster]:dark:text-slate-100 group-[.toaster]:border-slate-200 group-[.toaster]:dark:border-slate-800 group-[.toaster]:shadow-lg font-sans rounded-xl text-xs",
           description: "group-[.toast]:text-slate-500 group-[.toast]:dark:text-slate-400 text-[11px]",
           actionButton: "group-[.toast]:bg-blue-600 group-[.toast]:text-white font-medium text-xs",
           cancelButton: "group-[.toast]:bg-slate-100 group-[.toast]:dark:bg-slate-800 group-[.toast]:text-slate-600 group-[.toast]:dark:text-slate-300 font-medium text-xs",
