@@ -337,6 +337,72 @@ export type Database = {
           }
         ];
       };
+      lesson_overrides: {
+        Row: {
+          id: string;
+          organization_id: string;
+          course_id: string;
+          lesson_date: string;
+          original_start_time: string;
+          new_date: string | null;
+          new_start_time: string | null;
+          new_duration: number | null;
+          new_teacher_id: string | null;
+          original_teacher_id: string | null;
+          reason: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          course_id: string;
+          lesson_date: string;
+          original_start_time: string;
+          new_date?: string | null;
+          new_start_time?: string | null;
+          new_duration?: number | null;
+          new_teacher_id?: string | null;
+          original_teacher_id?: string | null;
+          reason?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          course_id?: string;
+          lesson_date?: string;
+          original_start_time?: string;
+          new_date?: string | null;
+          new_start_time?: string | null;
+          new_duration?: number | null;
+          new_teacher_id?: string | null;
+          original_teacher_id?: string | null;
+          reason?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_overrides_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_overrides_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       monthly_payments: {
         Row: {
           id: string;
@@ -605,6 +671,7 @@ export type Attendance = Database["public"]["Tables"]["attendance"]["Row"];
 export type StudentCourse = Database["public"]["Tables"]["student_courses"]["Row"];
 export type StudentCourseStatus = Database["public"]["Tables"]["student_courses"]["Row"]["status"];
 export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
+export type LessonOverrideRow = Database["public"]["Tables"]["lesson_overrides"]["Row"];
 export type LessonStatus = Database["public"]["Tables"]["lessons"]["Row"]["status"];
 
 export type LessonWithTeacher = Lesson & {

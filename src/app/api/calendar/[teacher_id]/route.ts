@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/database";
 import { getSupabaseUrl, getSupabaseAnonKey } from "@/lib/supabase/config";
-import { generateIcsFeed, IcsCourseItem } from "@/lib/calendar";
+import { generateIcsFeed, IcsCourseItem, IcsOverrideItem } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,6 +33,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   let teacherName = "";
   let organizationName = "Sprachschule";
   let coursesList: IcsCourseItem[] = [];
+  let overridesList: IcsOverrideItem[] = [];
 
   // Attempt 1: Call secure RPC function get_teacher_calendar_data
   try {
@@ -46,6 +47,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       teacherName = rpcData.teacher.name || "Lehrkraft";
       organizationName = rpcData.organization_name || "Sprachschule";
       coursesList = (rpcData.courses || []) as IcsCourseItem[];
+      overridesList = (rpcData.overrides || []) as IcsOverrideItem[];
     }
   } catch {
     // Fallback if RPC is not installed or errors
@@ -110,6 +112,37 @@ export async function GET(request: Request, { params }: RouteParams) {
           students: studentNames,
         };
       });
+
+      // One-off overrides (only visible with service role / open RLS)
+      const sinceDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+      const { data: overrideRows } = await supabase
+        .from("lesson_overrides")
+        .select("*, courses(name, course_type, teacher_id, rooms(name), course_schedules(start_time, duration))")
+        .or(`new_teacher_id.eq.${teacher_id},original_teacher_id.eq.${teacher_id}`)
+        .gte("lesson_date", sinceDate);
+
+      overridesList = (overrideRows || []).map((row) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const r = row as any;
+        const slot = (r.courses?.course_schedules || []).find(
+          (s: { start_time: string }) => String(s.start_time).slice(0, 5) === r.original_start_time
+        );
+        return {
+          course_id: r.course_id,
+          course_name: r.courses?.name || "Kurs",
+          course_type: r.courses?.course_type ?? null,
+          room_name: r.courses?.rooms?.name ?? null,
+          lesson_date: r.lesson_date,
+          original_start_time: r.original_start_time,
+          new_date: r.new_date,
+          new_start_time: r.new_start_time,
+          new_duration: r.new_duration,
+          new_teacher_id: r.new_teacher_id,
+          original_teacher_id: r.original_teacher_id,
+          template_teacher_id: r.courses?.teacher_id ?? null,
+          template_duration: slot?.duration ?? null,
+        } as IcsOverrideItem;
+      });
     } catch (err) {
       console.error("Error fetching teacher calendar:", err);
       return new Response("Interner Serverfehler beim Laden des Kalenders", { status: 500 });
@@ -121,6 +154,8 @@ export async function GET(request: Request, { params }: RouteParams) {
     teacherName,
     organizationName,
     courses: coursesList,
+    teacherId: teacher_id,
+    overrides: overridesList,
   });
 
   return new Response(icsBody, {
@@ -128,7 +163,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
       "Content-Disposition": `inline; filename="stundenplan-${teacher_id}.ics"`,
-      "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
       "Pragma": "no-cache",
       "Expires": "0",
     },

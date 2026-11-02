@@ -368,7 +368,9 @@
     "courseFull": "Kurs voll",
     "studentAddedWaiting": "Kurs ist voll. Schüler wurde auf die Warteliste gesetzt.",
     "searchStudentPlaceholder": "Schüler nach Name oder E-Mail suchen...",
-    "monthlyPrice": "Monatspreis (€)"
+    "monthlyPrice": "Monatspreis (€)",
+    "addAs": "Hinzufügen als",
+    "courseFullSuggestWaiting": "Der Kurs ist voll – Aktiv ist nicht möglich. Bitte als Warteliste hinzufügen."
   },
   "lessons": {
     "title": "Unterrichtsstunden (Klassenbuch)",
@@ -858,5 +860,39 @@
     "duration120": "120 Min (2.0 Std.)",
     "duration150": "150 Min (2.5 Std.)",
     "duration180": "180 Min (3.0 Std.)"
+  },
+  "overrides": {
+    "editTitle": "Nur diesen Termin ändern",
+    "editHint": "Gilt nur für dieses Datum. Der Stundenplan des Kurses bleibt unverändert.",
+    "permanentHint": "Dauerhafte Änderungen nehmen Sie im Kurs vor (Kurse → Bearbeiten).",
+    "courseEditHint": "Änderungen am Stundenplan gelten dauerhaft für alle künftigen Termine. Einzelne Termine verschieben Sie im Wochenplan auf dem Dashboard.",
+    "date": "Datum",
+    "startTime": "Beginn",
+    "duration": "Dauer (Std.)",
+    "teacher": "Lehrkraft",
+    "reason": "Grund (optional)",
+    "reasonPlaceholder": "z. B. Krankheit, Feiertag",
+    "substituteTeacher": "Vertretung",
+    "keepTeacher": "Keine Vertretung ({name})",
+    "regularTeacher": "Reguläre Lehrkraft",
+    "save": "Termin speichern",
+    "saving": "Speichern…",
+    "reset": "Auf Standard zurücksetzen",
+    "saved": "Termin wurde geändert.",
+    "resetDone": "Termin wurde auf den Standard zurückgesetzt.",
+    "badgeMoved": "Verschoben",
+    "badgeSubstitute": "Vertretung",
+    "substituteFor": "Vertretung für {name}",
+    "replacedBy": "Vertretung: {name}",
+    "regularTime": "Regulär: {time}",
+    "movedFromDate": "Verschoben von {date}",
+    "errForbidden": "Keine Berechtigung für diese Aktion.",
+    "errInvalid": "Bitte prüfen Sie Datum, Uhrzeit und Dauer.",
+    "errNotFound": "Termin, Kurs oder Lehrkraft wurde nicht gefunden.",
+    "errTeacherBusy": "Die Lehrkraft ist zu dieser Zeit bereits belegt: {detail}",
+    "errRoomBusy": "Der Raum ist zu dieser Zeit bereits belegt: {detail}",
+    "errDb": "Speichern fehlgeschlagen: {detail}",
+    "pastReadonly": "Vergangene Termine können hier nicht mehr geändert werden.",
+    "refreshHint": "Stundenplan aktualisiert sich beim Zurückkehren zum Fenster."
   }
 }

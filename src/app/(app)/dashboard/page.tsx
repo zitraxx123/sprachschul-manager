@@ -17,6 +17,7 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { UpcomingBirthdays } from "@/components/dashboard/upcoming-birthdays";
 import { CourseWithFullDetails } from "@/components/dashboard/school-weekly-schedule";
 import { DynamicSchoolSchedule } from "@/components/dashboard/dynamic-school-schedule";
+import type { LessonOverride } from "@/lib/schedule";
 import { 
   FinancialOverview, 
   MonthlyFinancialRecord, 
@@ -59,7 +60,8 @@ export default async function DashboardPage() {
     coursesResult,
     attendanceResult,
     paymentsResult,
-    studentsResult
+    studentsResult,
+    overridesResult
   ] = await Promise.all([
     supabase
       .from("teachers")
@@ -99,7 +101,13 @@ export default async function DashboardPage() {
       .from("students")
       .select("id, first_name, last_name, email, phone, custom_monthly_price, student_courses(course_id, courses(id, name, monthly_price))")
       .eq("organization_id", organization.id)
-      .order("first_name", { ascending: true })
+      .order("first_name", { ascending: true }),
+    // One-off schedule exceptions (moved lessons / substitutes): last 90 days and all future
+    supabase
+      .from("lesson_overrides")
+      .select("*")
+      .eq("organization_id", organization.id)
+      .gte("lesson_date", new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0])
   ]);
 
   const teachers = teachersResult.data || [];
@@ -108,6 +116,7 @@ export default async function DashboardPage() {
   const attendanceData = attendanceResult.data || [];
   const allPayments = paymentsResult.data || [];
   const students = studentsResult.data || [];
+  const scheduleOverrides = (overridesResult.data || []) as LessonOverride[];
 
   // Compute statistics for current month
   const now = new Date();
@@ -382,6 +391,7 @@ export default async function DashboardPage() {
             courses={(rawCourses || []) as unknown as CourseWithFullDetails[]}
             teachers={teachers || []}
             absences={absencesList}
+            overrides={scheduleOverrides}
           />
         </div>
 

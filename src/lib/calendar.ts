@@ -87,6 +87,23 @@ export interface IcsScheduleItem {
   duration: number;
 }
 
+/** One-off exception to the weekly template (moved lesson / substitute teacher) */
+export interface IcsOverrideItem {
+  course_id: string;
+  course_name: string;
+  course_type?: string | null;
+  room_name?: string | null;
+  lesson_date: string; // original date YYYY-MM-DD
+  original_start_time: string; // HH:MM
+  new_date?: string | null;
+  new_start_time?: string | null;
+  new_duration?: number | string | null;
+  new_teacher_id?: string | null;
+  original_teacher_id?: string | null;
+  template_teacher_id?: string | null;
+  template_duration?: number | string | null;
+}
+
 export interface IcsCourseItem {
   id: string;
   name: string;
@@ -105,10 +122,14 @@ export function generateIcsFeed({
   teacherName,
   organizationName,
   courses,
+  teacherId,
+  overrides = [],
 }: {
   teacherName: string;
   organizationName?: string;
   courses: IcsCourseItem[];
+  teacherId?: string;
+  overrides?: IcsOverrideItem[];
 }): string {
   const now = new Date();
   const dtstamp = now.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -133,6 +154,9 @@ export function generateIcsFeed({
     `X-WR-CALNAME:${escapeIcs(calName)}`,
     `X-WR-CALDESC:${escapeIcs(calDesc)}`,
     "X-WR-TIMEZONE:Europe/Berlin",
+    // Refresh hints for subscribing clients (honored by Apple Calendar / Outlook; Google ignores them)
+    "REFRESH-INTERVAL;VALUE=DURATION:PT1H",
+    "X-PUBLISHED-TTL:PT1H",
     // Timezone definition for Europe/Berlin
     "BEGIN:VTIMEZONE",
     "TZID:Europe/Berlin",
@@ -153,6 +177,28 @@ export function generateIcsFeed({
     "END:STANDARD",
     "END:VTIMEZONE",
   ];
+
+  // Excluded template occurrences (lesson moved away or handed to a substitute)
+  const compact = (t: string) => {
+    const [h = "00", m = "00"] = (t || "00:00").split(":");
+    return `${h.padStart(2, "0")}${m.padStart(2, "0").slice(0, 2)}`;
+  };
+  const exdateMap = new Map<string, string[]>();
+  if (teacherId) {
+    overrides.forEach((o) => {
+      const wasMine = (o.template_teacher_id || o.original_teacher_id) === teacherId;
+      const movedAway = Boolean(o.new_date || o.new_start_time) || (o.new_teacher_id && o.new_teacher_id !== teacherId);
+      if (!wasMine || !movedAway) return;
+      const [oy, om, od] = o.lesson_date.split("-");
+      const weekday = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"][
+        new Date(Date.UTC(parseInt(oy, 10), parseInt(om, 10) - 1, parseInt(od, 10))).getUTCDay()
+      ];
+      const key = `${o.course_id}|${weekday}|${compact(o.original_start_time)}`;
+      const list = exdateMap.get(key) || [];
+      list.push(`${oy}${om}${od}T${compact(o.original_start_time)}00`);
+      exdateMap.set(key, list);
+    });
+  }
 
   for (const course of courses) {
     const schedules = course.schedules || [];
@@ -204,10 +250,42 @@ export function generateIcsFeed({
       lines.push(`DTSTART;TZID=Europe/Berlin:${dateStr}T${startTimeClean}`);
       lines.push(`DTEND;TZID=Europe/Berlin:${dateStr}T${endTimeClean}`);
       lines.push(`RRULE:FREQ=WEEKLY;BYDAY=${dayInfo.code}`);
+      const exKey = `${course.id}|${rawDay}|${compact(sched.start_time)}`;
+      (exdateMap.get(exKey) || []).forEach((ex) => lines.push(`EXDATE;TZID=Europe/Berlin:${ex}`));
       lines.push("STATUS:CONFIRMED");
       lines.push("TRANSP:OPAQUE");
       lines.push("END:VEVENT");
     }
+  }
+
+  // Single events for moved lessons / lessons taken over as substitute
+  if (teacherId) {
+    overrides.forEach((o) => {
+      const effectiveTeacher = o.new_teacher_id || o.template_teacher_id || o.original_teacher_id;
+      if (effectiveTeacher !== teacherId) return;
+      const isChanged = Boolean(o.new_date || o.new_start_time || o.new_duration || o.new_teacher_id);
+      if (!isChanged) return;
+
+      const date = (o.new_date || o.lesson_date).replace(/-/g, "");
+      const start = compact(o.new_start_time || o.original_start_time);
+      const duration = Number(o.new_duration) || Number(o.template_duration) || 1.5;
+      const endClean = calculateEndTime(`${start.slice(0, 2)}:${start.slice(2)}`, duration).split(":");
+      const isSubstitute = Boolean(o.new_teacher_id && o.new_teacher_id === teacherId && o.template_teacher_id !== teacherId);
+      const label = isSubstitute ? "Vertretung" : "Verschoben";
+      const roomLabel = o.room_name ? o.room_name : "Nicht zugewiesen";
+
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:override-${o.course_id}-${o.lesson_date}-${start}@sprachschule-erp`);
+      lines.push(`DTSTAMP:${dtstamp}`);
+      lines.push(`SUMMARY:${escapeIcs(`${o.course_name} (${label})`)}`);
+      lines.push(`DESCRIPTION:${escapeIcs(`Kurs: ${o.course_name}\n${label}\nRaum: ${roomLabel}`)}`);
+      if (o.room_name) lines.push(`LOCATION:${escapeIcs(o.room_name)}`);
+      lines.push(`DTSTART;TZID=Europe/Berlin:${date}T${start}00`);
+      lines.push(`DTEND;TZID=Europe/Berlin:${date}T${(endClean[0] || "10").padStart(2, "0")}${(endClean[1] || "00").padStart(2, "0")}00`);
+      lines.push("STATUS:CONFIRMED");
+      lines.push("TRANSP:OPAQUE");
+      lines.push("END:VEVENT");
+    });
   }
 
   lines.push("END:VCALENDAR");

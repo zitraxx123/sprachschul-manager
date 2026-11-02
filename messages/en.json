@@ -368,7 +368,9 @@
     "courseFull": "Course full",
     "studentAddedWaiting": "Course is full. Student added to waiting list.",
     "searchStudentPlaceholder": "Search student by name or email...",
-    "monthlyPrice": "Monthly Price (€)"
+    "monthlyPrice": "Monthly Price (€)",
+    "addAs": "Add as",
+    "courseFullSuggestWaiting": "The course is full – active enrollment is not possible. Please add to the waiting list."
   },
   "lessons": {
     "title": "Lessons (Class Logbook)",
@@ -858,5 +860,39 @@
     "duration120": "120 min (2.0 hrs)",
     "duration150": "150 min (2.5 hrs)",
     "duration180": "180 min (3.0 hrs)"
+  },
+  "overrides": {
+    "editTitle": "Change this lesson only",
+    "editHint": "Applies to this date only. The course timetable stays unchanged.",
+    "permanentHint": "For permanent changes edit the course (Courses → Edit).",
+    "courseEditHint": "Timetable changes apply permanently to all future lessons. To move a single lesson, use the weekly plan on the dashboard.",
+    "date": "Date",
+    "startTime": "Start",
+    "duration": "Duration (hrs)",
+    "teacher": "Teacher",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. illness, public holiday",
+    "substituteTeacher": "Substitute",
+    "keepTeacher": "No substitute ({name})",
+    "regularTeacher": "Regular teacher",
+    "save": "Save lesson",
+    "saving": "Saving…",
+    "reset": "Reset to default",
+    "saved": "Lesson updated.",
+    "resetDone": "Lesson reset to the default timetable.",
+    "badgeMoved": "Moved",
+    "badgeSubstitute": "Substitute",
+    "substituteFor": "Substituting for {name}",
+    "replacedBy": "Substitute: {name}",
+    "regularTime": "Regular: {time}",
+    "movedFromDate": "Moved from {date}",
+    "errForbidden": "You are not allowed to perform this action.",
+    "errInvalid": "Please check the date, time and duration.",
+    "errNotFound": "Lesson, course or teacher not found.",
+    "errTeacherBusy": "The teacher is already booked at this time: {detail}",
+    "errRoomBusy": "The room is already booked at this time: {detail}",
+    "errDb": "Saving failed: {detail}",
+    "pastReadonly": "Past lessons can no longer be changed here.",
+    "refreshHint": "The timetable refreshes when you return to this window."
   }
 }

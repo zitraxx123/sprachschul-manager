@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { CourseWithStudents } from "@/components/portal/weekly-calendar";
+import { LessonOverride } from "@/lib/schedule";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 const WeeklyCalendar = dynamic(
@@ -25,6 +26,7 @@ export function DynamicWeeklyCalendar(props: {
   teacherName?: string;
   lateCancellationHours?: number;
   lateCancellationPayPercent?: number;
+  overrides?: LessonOverride[];
 }) {
   return <WeeklyCalendar {...props} />;
 }

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { CourseWithFullDetails, AbsenceItem } from "@/components/dashboard/school-weekly-schedule";
 import { Teacher } from "@/types/database";
+import { LessonOverride } from "@/lib/schedule";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 const SchoolWeeklySchedule = dynamic(
@@ -24,6 +25,7 @@ export function DynamicSchoolSchedule(props: {
   courses: CourseWithFullDetails[];
   teachers?: Teacher[];
   absences?: AbsenceItem[];
+  overrides?: LessonOverride[];
 }) {
   return <SchoolWeeklySchedule {...props} />;
 }

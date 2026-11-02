@@ -425,6 +425,12 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                                 maxCapacity={maxCapacity}
                                 allStudents={formattedStudents}
                                 assignedStudentIds={enrolledStudents.map((s) => s.id)}
+                                initialAssignments={studentCoursesList
+                                  .filter((sc) => sc.students)
+                                  .map((sc) => ({
+                                    studentId: sc.students!.id,
+                                    status: (sc.status || "active") as "active" | "trial" | "waiting",
+                                  }))}
                               />
                               <DeleteCourseButton courseId={course.id} />
                             </div>
@@ -447,6 +453,9 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                   const activeStudents = studentCoursesList.filter((sc) => !sc.status || sc.status === "active");
                   const maxCapacity = course.max_capacity || 10;
                   const activeCount = activeStudents.length;
+                  const trialStudents = studentCoursesList.filter((sc) => sc.status === "trial");
+                  const waitingStudents = studentCoursesList.filter((sc) => sc.status === "waiting");
+                  const isFull = activeCount >= maxCapacity;
 
                   const schedules = course.course_schedules || [];
                   const isIndividual = course.course_type === "individual";
@@ -491,13 +500,34 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                           </div>
                         </div>
 
-                        <Badge variant="outline" className="font-semibold text-xs py-0.5 shrink-0">
+                        <Badge
+                          variant="outline"
+                          className={`font-semibold text-xs py-0.5 shrink-0 ${
+                            isFull
+                              ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800"
+                              : "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+                          }`}
+                        >
                           {activeCount} / {maxCapacity}
                         </Badge>
                       </div>
 
                       {/* Teacher & Schedule on Mobile */}
                       <div className="text-xs space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        {(trialStudents.length > 0 || waitingStudents.length > 0) && (
+                          <div className="flex flex-wrap gap-1 text-[10px]">
+                            {trialStudents.length > 0 && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-100/90 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-semibold border border-amber-200 dark:border-amber-900">
+                                +{trialStudents.length} {tStudents("statusTrial")}
+                              </span>
+                            )}
+                            {waitingStudents.length > 0 && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700">
+                                +{waitingStudents.length} {tStudents("statusWaiting")}
+                              </span>
+                            )}
+                          </div>
+                        )}
                         <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-300">
                           <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
                           <span>{tCourses("teacher")}: <strong>{teacherData?.name || tCourses("noTeacher")}</strong></span>
@@ -526,6 +556,12 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                           maxCapacity={maxCapacity}
                           allStudents={formattedStudents}
                           assignedStudentIds={enrolledStudents.map((s) => s.id)}
+                          initialAssignments={studentCoursesList
+                            .filter((sc) => sc.students)
+                            .map((sc) => ({
+                              studentId: sc.students!.id,
+                              status: (sc.status || "active") as "active" | "trial" | "waiting",
+                            }))}
                         />
                         <div className="flex items-center space-x-1">
                           <EditCourseDialog

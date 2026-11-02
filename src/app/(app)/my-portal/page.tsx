@@ -16,6 +16,7 @@ import { GoogleCalendarIcon } from "@/components/portal/google-calendar-icon";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
 import { calculateLessonPayroll } from "@/lib/payroll";
 import { Course, Student } from "@/types/database";
+import type { LessonOverride } from "@/lib/schedule";
 import { 
   Clock, 
   Euro, 
@@ -127,7 +128,35 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
       .eq("organization_id", organization.id),
   ]);
 
-  const rawTeacherCourses = (coursesResult.data as unknown as RawTeacherCourse[]) || [];
+  let rawTeacherCourses = (coursesResult.data as unknown as RawTeacherCourse[]) || [];
+
+  // One-off exceptions involving this teacher (RLS only returns rows where they are
+  // the substitute or the replaced teacher): last 30 days and all future.
+  const { data: overrideRows } = await supabase
+    .from("lesson_overrides")
+    .select("*")
+    .eq("organization_id", organization.id)
+    .gte("lesson_date", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]);
+  const teacherOverrides = (overrideRows || []) as LessonOverride[];
+
+  // Courses taught as SUBSTITUTE are not in the teacher's own course list -> load them too,
+  // so the weekly calendar can show those single lessons.
+  const ownCourseIds = new Set(rawTeacherCourses.map((c) => c.id));
+  const substituteCourseIds = Array.from(
+    new Set(
+      teacherOverrides
+        .filter((o) => o.new_teacher_id === teacher.id && !ownCourseIds.has(o.course_id))
+        .map((o) => o.course_id)
+    )
+  );
+  if (substituteCourseIds.length > 0) {
+    const { data: subCourses } = await supabase
+      .from("courses")
+      .select("*, rooms(*), course_schedules(*), student_courses(*, students(*))")
+      .in("id", substituteCourseIds)
+      .eq("organization_id", organization.id);
+    rawTeacherCourses = [...rawTeacherCourses, ...((subCourses as unknown as RawTeacherCourse[]) || [])];
+  }
   const allLessons = lessonsResult.data || [];
   const allTeachersMap = new Map((allTeachersResult.data || []).map((t) => [t.id, t.name]));
 
@@ -249,6 +278,7 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
         teacherName={teacher.name}
         lateCancellationHours={organization.late_cancellation_hours ?? 24}
         lateCancellationPayPercent={organization.late_cancellation_pay_percent ?? 50}
+        overrides={teacherOverrides}
       />
 
       {/* 4. Monthly Payroll Summary Card */}

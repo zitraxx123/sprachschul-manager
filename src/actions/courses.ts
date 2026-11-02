@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { normTime, weekdayOf } from "@/lib/schedule";
 
 export type CourseActionState = {
   error?: string;
@@ -246,20 +247,47 @@ export async function updateCourse(
     return { error: `Fehler beim Speichern der neuen Unterrichtszeiten: ${sErr.message}` };
   }
 
+  // Permanent schedule change: future one-off overrides that refer to a template slot
+  // which no longer exists are obsolete -> remove them (past overrides are kept as history).
+  const todayStr = new Date().toISOString().split("T")[0];
+  const { data: futureOverrides } = await supabase
+    .from("lesson_overrides")
+    .select("id, lesson_date, original_start_time")
+    .eq("organization_id", organization.id)
+    .eq("course_id", courseId)
+    .gte("lesson_date", todayStr);
+
+  const staleOverrideIds = (futureOverrides || [])
+    .filter(
+      (o) =>
+        !schedules.some(
+          (sch) =>
+            sch.day_of_week === weekdayOf(o.lesson_date) &&
+            normTime(sch.start_time) === normTime(o.original_start_time)
+        )
+    )
+    .map((o) => o.id);
+
+  if (staleOverrideIds.length > 0) {
+    await supabase.from("lesson_overrides").delete().in("id", staleOverrideIds);
+  }
+
   // Sync assigned students if provided in formData
   const studentAssignmentsRaw = formData.get("student_assignments_json") as string;
   const studentIdsRaw = formData.get("student_ids_json") as string;
   if (studentAssignmentsRaw) {
     try {
       const assignments: StudentAssignmentInput[] = JSON.parse(studentAssignmentsRaw);
-      await updateCourseStudents(courseId, assignments);
+      const syncRes = await updateCourseStudents(courseId, assignments);
+      if (syncRes.error) return syncRes;
     } catch {
       // Ignore JSON parse errors for optional students payload
     }
   } else if (studentIdsRaw !== null && studentIdsRaw !== undefined) {
     try {
       const studentIds: string[] = JSON.parse(studentIdsRaw);
-      await updateCourseStudents(courseId, studentIds);
+      const syncRes = await updateCourseStudents(courseId, studentIds);
+      if (syncRes.error) return syncRes;
     } catch {
       // Ignore JSON parse errors for optional students payload
     }
@@ -303,9 +331,13 @@ export async function updateCourseStudents(
   const supabase = await createClient();
 
   // Normalize assignments input
-  const assignments: StudentAssignmentInput[] = (assignmentsOrIds || []).map((item) => {
+  // A plain id list (course edit form) carries no status: existing enrollments keep theirs,
+  // new ones become 'active'. Only the student dialog sends explicit statuses.
+  const assignments: Array<{ studentId: string; status?: StudentAssignmentInput["status"] }> = (
+    assignmentsOrIds || []
+  ).map((item) => {
     if (typeof item === "string") {
-      return { studentId: item, status: "active" as const };
+      return { studentId: item };
     }
     return {
       studentId: item.studentId,
@@ -325,14 +357,7 @@ export async function updateCourseStudents(
     return { error: "Kurs nicht gefunden." };
   }
 
-  // Enforce capacity rule for 'active' students
   const maxCapacity = course.max_capacity || 10;
-  const activeCount = assignments.filter((a) => a.status === "active").length;
-  if (activeCount > maxCapacity) {
-    return {
-      error: `Die maximale Teilnehmerzahl von ${maxCapacity} aktiven Schülern ist erreicht (aktuell: ${activeCount}). Bitte weisen Sie Schüler der Warteliste zu.`,
-    };
-  }
 
   // 2. Fetch all currently assigned students for this course in student_courses
   const { data: currentLinks, error: fetchErr } = await supabase
@@ -347,14 +372,29 @@ export async function updateCourseStudents(
 
   const currentLinksMap = new Map((currentLinks || []).map((l) => [l.student_id, l]));
   const currentStudentIds = Array.from(currentLinksMap.keys());
-  const targetStudentIds = assignments.map((a) => a.studentId);
+  const finalAssignments: StudentAssignmentInput[] = assignments.map((a) => ({
+    studentId: a.studentId,
+    status:
+      a.status ?? (currentLinksMap.get(a.studentId)?.status as StudentAssignmentInput["status"] | undefined) ?? "active",
+  }));
+  const targetStudentIds = finalAssignments.map((a) => a.studentId);
 
   const toRemove = currentStudentIds.filter((id) => !targetStudentIds.includes(id));
-  const toAdd = assignments.filter((a) => !currentStudentIds.includes(a.studentId));
-  const toUpdate = assignments.filter((a) => {
+  const toAdd = finalAssignments.filter((a) => !currentStudentIds.includes(a.studentId));
+  const toUpdate = finalAssignments.filter((a) => {
     const existing = currentLinksMap.get(a.studentId);
     return existing && existing.status !== a.status;
   });
+
+  // Enforce capacity rule for 'active' students. A course that is already over capacity
+  // (legacy data) may still be saved as long as the number of active students does not grow.
+  const activeCount = finalAssignments.filter((a) => a.status === "active").length;
+  const currentActiveCount = (currentLinks || []).filter((l) => l.status === "active").length;
+  if (activeCount > maxCapacity && activeCount > currentActiveCount) {
+    return {
+      error: `Die maximale Teilnehmerzahl von ${maxCapacity} aktiven Schülern ist erreicht (aktuell: ${activeCount}). Bitte weisen Sie Schüler der Warteliste zu.`,
+    };
+  }
 
   // 3. Remove student_courses rows for deselected students
   if (toRemove.length > 0) {
@@ -367,6 +407,23 @@ export async function updateCourseStudents(
 
     if (unassignErr) {
       return { error: `Fehler beim Entfernen von Schülern: ${unassignErr.message}` };
+    }
+  }
+
+  // 3b. Free seats first: move students OUT of 'active' before anybody is added/promoted.
+  //     (The DB trigger enforces capacity per statement, so the order matters for swaps.)
+  const updateStatus = async (item: StudentAssignmentInput) =>
+    supabase
+      .from("student_courses")
+      .update({ status: item.status })
+      .eq("course_id", courseId)
+      .eq("student_id", item.studentId)
+      .eq("organization_id", organization.id);
+
+  for (const item of toUpdate.filter((u) => u.status !== "active")) {
+    const { error: demoteErr } = await updateStatus(item);
+    if (demoteErr) {
+      return { error: `Fehler beim Aktualisieren des Status: ${demoteErr.message}` };
     }
   }
 
@@ -388,17 +445,16 @@ export async function updateCourseStudents(
     }
   }
 
-  // 5. Update status for existing students if status changed
-  for (const item of toUpdate) {
-    const { error: updateStatusErr } = await supabase
-      .from("student_courses")
-      .update({ status: item.status })
-      .eq("course_id", courseId)
-      .eq("student_id", item.studentId)
-      .eq("organization_id", organization.id);
-
-    if (updateStatusErr) {
-      console.error("Error updating student_courses status:", updateStatusErr);
+  // 5. Promote to 'active' last (capacity is guaranteed by the DB trigger)
+  for (const item of toUpdate.filter((u) => u.status === "active")) {
+    const { error: promoteErr } = await updateStatus(item);
+    if (promoteErr) {
+      const isFull = promoteErr.message.includes("course_full");
+      return {
+        error: isFull
+          ? `Die maximale Teilnehmerzahl von ${maxCapacity} aktiven Schülern ist erreicht. Bitte weisen Sie Schüler der Warteliste zu.`
+          : `Fehler beim Aktualisieren des Status: ${promoteErr.message}`,
+      };
     }
   }
 

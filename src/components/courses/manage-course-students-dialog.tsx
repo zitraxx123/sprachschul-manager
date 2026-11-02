@@ -81,6 +81,11 @@ export function ManageCourseStudentsDialog({
 
   const [assignments, setAssignments] = useState<AssignedStudentState[]>(defaultAssignments);
 
+  // Status a newly added student gets (chosen before clicking a search result)
+  const [addStatus, setAddStatus] = useState<StudentStatus>(
+    defaultAssignments.filter((a) => a.status === "active").length >= maxCapacity ? "waiting" : "active"
+  );
+
   // Map students by id for fast lookups
   const studentMap = useMemo(() => {
     return new Map(allStudents.map((s) => [s.id, s]));
@@ -95,6 +100,9 @@ export function ManageCourseStudentsDialog({
 
   function handleOpen() {
     setAssignments(defaultAssignments);
+    setAddStatus(
+      defaultAssignments.filter((a) => a.status === "active").length >= maxCapacity ? "waiting" : "active"
+    );
     setSearchQuery("");
     setError(null);
     setSuccess(false);
@@ -126,18 +134,18 @@ export function ManageCourseStudentsDialog({
   function handleAddStudent(student: StudentOption) {
     if (assignedIdsSet.has(student.id)) return;
 
-    // Rule: If capacity is reached, automatically set status to 'waiting'
-    const newStatus: StudentStatus = isFull ? "waiting" : "active";
+    // Rule: a full course blocks 'active' - suggest the waiting list instead
+    if (addStatus === "active" && isFull) {
+      toast.error(t("courseFullSuggestWaiting"));
+      setAddStatus("waiting");
+      return;
+    }
 
     setAssignments((prev) => [
       ...prev,
-      { studentId: student.id, status: newStatus },
+      { studentId: student.id, status: addStatus },
     ]);
     setSearchQuery("");
-
-    if (isFull) {
-      toast.info(t("studentAddedWaiting"));
-    }
   }
 
   function handleRemoveStudent(studentId: string) {
@@ -298,6 +306,44 @@ export function ManageCourseStudentsDialog({
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
+              </div>
+
+              {/* Status for newly added students */}
+              <div className="space-y-1.5">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
+                    {t("addAs")}
+                  </span>
+                  <div className="flex items-center space-x-1 p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400">
+                    {(
+                      [
+                        { value: "active", label: tStudents("statusActive"), activeClass: "text-blue-700 dark:text-blue-300" },
+                        { value: "trial", label: tStudents("statusTrial"), activeClass: "text-amber-700 dark:text-amber-300" },
+                        { value: "waiting", label: tStudents("statusWaiting"), activeClass: "text-slate-800 dark:text-slate-100" },
+                      ] as Array<{ value: StudentStatus; label: string; activeClass: string }>
+                    ).map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        disabled={isPending}
+                        onClick={() => setAddStatus(opt.value)}
+                        className={`px-2.5 py-1 rounded-lg transition-all ${
+                          addStatus === opt.value
+                            ? `bg-white dark:bg-slate-700 font-bold shadow-sm ${opt.activeClass}`
+                            : "hover:text-slate-900 dark:hover:text-white"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {isFull && addStatus === "active" && (
+                  <p className="text-[11px] text-amber-700 dark:text-amber-400 font-medium flex items-center space-x-1">
+                    <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0" />
+                    <span>{t("courseFullSuggestWaiting")}</span>
+                  </p>
+                )}
               </div>
 
               {/* Student Search & Quick Add */}

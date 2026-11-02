@@ -1,7 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import {
+  createClient,
+  getActiveOrganization,
+  getCurrentMembership,
+  getCurrentTeacher,
+} from "@/lib/supabase/server";
+import { LessonOverride, resolveOccurrencesForDate, ScheduleCourse, normTime } from "@/lib/schedule";
 
 export type AttendanceItem = {
   student_id: string;
@@ -19,7 +25,9 @@ export async function recordCourseLesson(
   attendances: AttendanceItem[],
   notes?: string,
   durationHoursParam?: number,
-  status: "completed" | "cancelled_by_student" | "cancelled_late" = "completed"
+  status: "completed" | "cancelled_by_student" | "cancelled_late" = "completed",
+  /** Effective start time (HH:MM) of the occurrence - disambiguates several slots per day */
+  startTime?: string
 ): Promise<RecordLessonState> {
   const organization = await getActiveOrganization();
   if (!organization) return { error: "Keine Organisation gefunden." };
@@ -29,7 +37,7 @@ export async function recordCourseLesson(
   // 1. Fetch course details
   const { data: course, error: cErr } = await supabase
     .from("courses")
-    .select("*, teachers(*)")
+    .select("*, teachers(*), course_schedules(id, day_of_week, start_time, duration)")
     .eq("id", courseId)
     .eq("organization_id", organization.id)
     .single();
@@ -38,7 +46,37 @@ export async function recordCourseLesson(
     return { error: "Kurs nicht gefunden." };
   }
 
-  const teacherId = course.teacher_id;
+  // Resolve one-off override (moved lesson / substitute teacher) for this occurrence.
+  // Overrides are keyed by the ORIGINAL date, a moved lesson is recorded on its NEW date.
+  const { data: overrideRows } = await supabase
+    .from("lesson_overrides")
+    .select("*")
+    .eq("organization_id", organization.id)
+    .eq("course_id", courseId)
+    .or(`lesson_date.eq.${lessonDate},new_date.eq.${lessonDate}`);
+
+  const occurrences = resolveOccurrencesForDate(
+    [course as unknown as ScheduleCourse & typeof course],
+    (overrideRows || []) as LessonOverride[],
+    lessonDate
+  );
+  const occurrence =
+    (startTime ? occurrences.find((o) => o.startTime === normTime(startTime)) : undefined) ||
+    (occurrences.length === 1 ? occurrences[0] : undefined);
+
+  // A replaced teacher must not book a lesson that was handed to a substitute
+  if (occurrence?.isSubstituted) {
+    const [membership, currentTeacher] = await Promise.all([getCurrentMembership(), getCurrentTeacher()]);
+    if (membership?.role === "teacher" && currentTeacher?.id !== occurrence.teacherId) {
+      return { error: "Dieser Termin wurde einer Vertretung zugewiesen." };
+    }
+  }
+
+  const teacherId = occurrence?.teacherId || course.teacher_id;
+  const originalTeacherId =
+    occurrence?.isSubstituted && occurrence.originalTeacherId !== teacherId
+      ? occurrence.originalTeacherId
+      : null;
   if (!teacherId) {
     return { error: "Dem Kurs ist keine Lehrkraft zugewiesen." };
   }
@@ -64,6 +102,7 @@ export async function recordCourseLesson(
     .insert({
       organization_id: organization.id,
       teacher_id: teacherId,
+      original_teacher_id: originalTeacherId,
       course_id: course.id,
       student_name: course.name,
       lesson_date: lessonDate,

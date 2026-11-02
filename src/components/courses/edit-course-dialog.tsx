@@ -58,6 +58,7 @@ export function EditCourseDialog({
   const t = useTranslations("courses");
   const tCommon = useTranslations("common");
   const tSchedule = useTranslations("schedule");
+  const tOverrides = useTranslations("overrides");
 
   const [isOpen, setIsOpen] = useState(false);
   const [courseType, setCourseType] = useState<"group" | "individual">(
@@ -463,6 +464,10 @@ export function EditCourseDialog({
                     {schedules.length} {t("daysPerWeek")}
                   </Badge>
                 </div>
+
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                  {tOverrides("courseEditHint")}
+                </p>
 
                 <div className="space-y-2">
                   {schedules.map((schedule, index) => (

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { Course, Student, CourseSchedule } from "@/types/database";
 import { recordCourseLesson } from "@/actions/attendance";
@@ -26,9 +27,11 @@ import {
   CalendarSync,
   XCircle,
   AlertTriangle,
-  Info
+  Info,
+  RefreshCw
 } from "lucide-react";
 import { formatTimeRange } from "@/lib/utils";
+import { LessonOverride, resolveOccurrencesForDate } from "@/lib/schedule";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
 import { GoogleCalendarIcon } from "./google-calendar-icon";
 import { CalendarSubscribeModal } from "./calendar-subscribe-modal";
@@ -49,6 +52,8 @@ interface WeeklyCalendarProps {
   teacherName?: string;
   lateCancellationHours?: number;
   lateCancellationPayPercent?: number;
+  /** One-off exceptions (moved lessons / substitutes) that involve this teacher */
+  overrides?: LessonOverride[];
 }
 
 const GERMAN_DAYS = [
@@ -67,7 +72,28 @@ export function WeeklyCalendar({
   teacherName,
   lateCancellationHours = 24,
   lateCancellationPayPercent = 50,
+  overrides = [],
 }: WeeklyCalendarProps) {
+  const router = useRouter();
+  const [isRefreshing, startRefresh] = useTransition();
+
+  // Periodic refresh: refetch the schedule when the teacher returns to this window (max. every 30s)
+  useEffect(() => {
+    let last = Date.now();
+    const onReturn = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - last < 30000) return;
+      last = Date.now();
+      router.refresh();
+    };
+    window.addEventListener("focus", onReturn);
+    document.addEventListener("visibilitychange", onReturn);
+    return () => {
+      window.removeEventListener("focus", onReturn);
+      document.removeEventListener("visibilitychange", onReturn);
+    };
+  }, [router]);
+
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState<{
@@ -87,6 +113,8 @@ export function WeeklyCalendar({
   const tLessons = useTranslations("lessons");
   const tSchedule = useTranslations("schedule");
   const tCommon = useTranslations("common");
+  const tStudents = useTranslations("students");
+  const tOv = useTranslations("overrides");
   const locale = useLocale();
 
   const jsLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
@@ -115,7 +143,7 @@ export function WeeklyCalendar({
   const weekDays = GERMAN_DAYS.map((dayItem, idx) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + idx);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const isToday = d.toDateString() === today.toDateString();
     return {
       dbName: dayItem.value,
@@ -157,7 +185,10 @@ export function WeeklyCalendar({
     const students = selectedInstance.course.students || [];
 
     if (actionType === "cancelled") {
-      const absentAttendances = students.map((s) => ({
+      // Waiting-list students are not expected to attend -> no absence for them
+      const absentAttendances = students
+        .filter((s) => s.enrollment_status !== "waiting")
+        .map((s) => ({
         student_id: s.id,
         status: "absent" as const,
       }));
@@ -168,7 +199,8 @@ export function WeeklyCalendar({
         absentAttendances,
         notes,
         durationHours,
-        cancellationResult.status
+        cancellationResult.status,
+        selectedInstance.schedule.start_time
       );
 
       setIsSubmitting(false);
@@ -188,10 +220,13 @@ export function WeeklyCalendar({
     }
 
     // Regular lesson completed
-    const attendances = students.map((s) => ({
-      student_id: s.id,
-      status: (attendanceMap[s.id] ? "present" : "absent") as "present" | "absent",
-    }));
+    // Waiting-list students are only recorded when the teacher ticked them as present
+    const attendances = students
+      .filter((s) => s.enrollment_status !== "waiting" || attendanceMap[s.id])
+      .map((s) => ({
+        student_id: s.id,
+        status: (attendanceMap[s.id] ? "present" : "absent") as "present" | "absent",
+      }));
 
     const res = await recordCourseLesson(
       selectedInstance.course.id,
@@ -199,7 +234,8 @@ export function WeeklyCalendar({
       attendances,
       notes,
       durationHours,
-      "completed"
+      "completed",
+      selectedInstance.schedule.start_time
     );
 
     setIsSubmitting(false);
@@ -245,6 +281,19 @@ export function WeeklyCalendar({
           >
             <CalendarSync strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span>{tPortal("subscribeCalendar")}</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => startRefresh(() => router.refresh())}
+            disabled={isRefreshing}
+            className="h-8 px-2 text-slate-600 dark:text-slate-300 dark:border-slate-700"
+            title={tCommon("refresh")}
+            aria-label={tCommon("refresh")}
+          >
+            <RefreshCw strokeWidth={1.5} className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
           </Button>
 
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-0.5" />
@@ -315,15 +364,11 @@ export function WeeklyCalendar({
 
       <div className="flex md:grid md:grid-cols-7 gap-3 overflow-x-auto pb-4 pt-1 px-1 -mx-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-smooth touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {weekDays.map((day) => {
-          // Find all schedules running on this day for the teacher's courses
-          const dayInstances: Array<{ course: CourseWithStudents; schedule: CourseSchedule }> = [];
-          courses.forEach((c) => {
-            (c.course_schedules || []).forEach((sched) => {
-              if (sched.day_of_week === day.dbName) {
-                dayInstances.push({ course: c, schedule: sched });
-              }
-            });
-          });
+          // Template + one-off overrides, keeping only lessons this teacher EFFECTIVELY teaches
+          // (own courses minus handed-over lessons, plus lessons taken over as substitute)
+          const dayInstances = resolveOccurrencesForDate(courses, overrides, day.dateStr).filter(
+            (o) => o.teacherId === teacherId
+          );
 
           return (
             <div
@@ -351,7 +396,14 @@ export function WeeklyCalendar({
                     <span className="text-[11px] text-slate-400 dark:text-slate-600 italic">{tPortal("noLessonOnDay")}</span>
                   </div>
                 ) : (
-                  dayInstances.map(({ course, schedule }, idx) => {
+                  dayInstances.map((occ, idx) => {
+                    const { course } = occ;
+                    // Effective schedule values (after override)
+                    const schedule = {
+                      ...occ.schedule,
+                      start_time: occ.startTime,
+                      duration: occ.duration,
+                    } as unknown as CourseSchedule;
                     const gcalUrl = buildGoogleCalendarUrl({
                       text: course.name,
                       date: day.dateStr,
@@ -363,7 +415,7 @@ export function WeeklyCalendar({
 
                     return (
                       <div
-                        key={`${course.id}-${schedule.id || idx}`}
+                        key={`${course.id}-${occ.originalDate}-${occ.originalStartTime}-${idx}`}
                         onClick={() => handleOpenLesson(course, schedule, day.dateStr)}
                         className="group cursor-pointer rounded-xl p-3 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all text-left"
                       >
@@ -405,6 +457,26 @@ export function WeeklyCalendar({
                             {schedule.duration} {tCommon("hourShort")}
                           </span>
                         </div>
+
+                        {(occ.isMoved || occ.isSubstituted) && (
+                          <div className="flex flex-wrap items-center gap-1 mb-1">
+                            {occ.isMoved && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300">
+                                {tOv("badgeMoved")}
+                              </span>
+                            )}
+                            {occ.isSubstituted && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-violet-100 dark:bg-violet-950/80 text-violet-800 dark:text-violet-300">
+                                {tOv("badgeSubstitute")}
+                              </span>
+                            )}
+                            {occ.isMoved && (
+                              <span className="text-[9px] text-slate-400 dark:text-slate-500">
+                                {tOv("regularTime", { time: occ.originalStartTime })}
+                              </span>
+                            )}
+                          </div>
+                        )}
 
                         {/* Room if assigned */}
                         {course.rooms?.name && (
@@ -638,6 +710,16 @@ export function WeeklyCalendar({
                                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                                     {student.first_name} {student.last_name}
                                   </span>
+                                  {student.enrollment_status === "trial" && (
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white">
+                                      {tStudents("statusTrial")}
+                                    </span>
+                                  )}
+                                  {student.enrollment_status === "waiting" && (
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-500 text-white">
+                                      {tStudents("statusWaiting")}
+                                    </span>
+                                  )}
                                 </div>
 
                                 <span

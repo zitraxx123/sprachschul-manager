@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Badge } from "@/components/ui/badge";
@@ -21,10 +22,13 @@ import {
   Layers,
   DoorOpen,
   AlertTriangle,
-  GraduationCap
+  GraduationCap,
+  RefreshCw
 } from "lucide-react";
 import { formatTimeRange } from "@/lib/utils";
 import { Teacher } from "@/types/database";
+import { LessonOverride, ResolvedOccurrence, resolveOccurrencesForDate } from "@/lib/schedule";
+import { OccurrenceEditor } from "@/components/dashboard/occurrence-editor";
 
 export interface CourseWithFullDetails {
   id: string;
@@ -76,6 +80,7 @@ interface SchoolWeeklyScheduleProps {
   courses: CourseWithFullDetails[];
   teachers?: Teacher[];
   absences?: AbsenceItem[];
+  overrides?: LessonOverride[];
 }
 
 const GERMAN_DAYS = [
@@ -87,16 +92,6 @@ const GERMAN_DAYS = [
   { value: "Samstag", key: "saturday" },
   { value: "Sonntag", key: "sunday" },
 ] as const;
-
-interface ScheduleInstance {
-  course: CourseWithFullDetails;
-  schedule: {
-    id?: string;
-    day_of_week: string;
-    start_time: string;
-    duration: number;
-  };
-}
 
 interface SelectedModalState {
   course: CourseWithFullDetails;
@@ -110,13 +105,17 @@ interface SelectedModalState {
   displayDate: string;
   absences: AbsenceItem[];
   isPast: boolean;
+  occurrence: ResolvedOccurrence<CourseWithFullDetails>;
 }
 
 export function SchoolWeeklySchedule({
   courses,
   teachers = [],
   absences = [],
+  overrides = [],
 }: SchoolWeeklyScheduleProps) {
+  const router = useRouter();
+  const [isRefreshing, startRefresh] = useTransition();
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedInstance, setSelectedInstance] = useState<SelectedModalState | null>(null);
   const [filterType, setFilterType] = useState<"all" | "group" | "individual">("all");
@@ -127,7 +126,25 @@ export function SchoolWeeklySchedule({
   const tPortal = useTranslations("portal");
   const tLessons = useTranslations("lessons");
   const tCommon = useTranslations("common");
+  const tOv = useTranslations("overrides");
   const locale = useLocale();
+
+  // Periodic refresh: refetch server data when the admin returns to this window (max. every 30s)
+  useEffect(() => {
+    let last = Date.now();
+    const onReturn = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - last < 30000) return;
+      last = Date.now();
+      router.refresh();
+    };
+    window.addEventListener("focus", onReturn);
+    document.addEventListener("visibilitychange", onReturn);
+    return () => {
+      window.removeEventListener("focus", onReturn);
+      document.removeEventListener("visibilitychange", onReturn);
+    };
+  }, [router]);
 
   const jsLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
 
@@ -142,7 +159,7 @@ export function SchoolWeeklySchedule({
     return GERMAN_DAYS.map((dayItem, idx) => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + idx);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       const isToday = d.toDateString() === today.toDateString();
       return {
         dbName: dayItem.value,
@@ -189,10 +206,20 @@ export function SchoolWeeklySchedule({
     return courses.filter((c) => {
       if (filterType === "group" && (c.course_type || "group") !== "group") return false;
       if (filterType === "individual" && c.course_type !== "individual") return false;
-      if (selectedTeacherId !== "all" && c.teacher_id !== selectedTeacherId) return false;
       return true;
     });
-  }, [courses, filterType, selectedTeacherId]);
+  }, [courses, filterType]);
+
+  const teacherNameById = useMemo(
+    () => new Map(teacherOptions.map((tc) => [tc.id, tc.name])),
+    [teacherOptions]
+  );
+
+  const modalTeacher: { name: string; email?: string | null; phone?: string | null } | null = selectedInstance
+    ? selectedInstance.occurrence.isSubstituted
+      ? teacherOptions.find((tc) => tc.id === selectedInstance.occurrence.teacherId) ?? null
+      : selectedInstance.course.teachers ?? null
+    : null;
 
   return (
     <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden bg-white dark:bg-slate-900">
@@ -276,8 +303,20 @@ export function SchoolWeeklySchedule({
               </button>
             </div>
 
-            {/* 3. Week Navigation Buttons */}
+            {/* 3. Refresh + Week Navigation Buttons */}
             <div className="flex items-center space-x-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => startRefresh(() => router.refresh())}
+                disabled={isRefreshing}
+                className="h-8 w-8 p-0 text-slate-600 dark:text-slate-300 dark:border-slate-700"
+                title={tCommon("refresh")}
+                aria-label={tCommon("refresh")}
+              >
+                <RefreshCw strokeWidth={1.5} className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
+              </Button>
+
               <Button
                 variant="outline"
                 size="sm"
@@ -320,16 +359,10 @@ export function SchoolWeeklySchedule({
 
         <div className="flex md:grid md:grid-cols-7 gap-3 overflow-x-auto pb-4 pt-1 px-1 -mx-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-smooth touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {weekDays.map((day) => {
-            const instances: ScheduleInstance[] = [];
-            filteredCourses.forEach((c) => {
-              (c.course_schedules || []).forEach((sched) => {
-                if (sched.day_of_week === day.dbName) {
-                  instances.push({ course: c, schedule: sched });
-                }
-              });
-            });
-
-            instances.sort((a, b) => a.schedule.start_time.localeCompare(b.schedule.start_time));
+            // Template + one-off overrides (moved lessons / substitutes), filtered by EFFECTIVE teacher
+            const instances = resolveOccurrencesForDate(filteredCourses, overrides, day.dateStr).filter(
+              (o) => selectedTeacherId === "all" || o.teacherId === selectedTeacherId
+            );
 
             return (
               <div
@@ -368,10 +401,20 @@ export function SchoolWeeklySchedule({
                       <span className="text-[11px] text-slate-300 dark:text-slate-600 italic">{tPortal("noLessonOnDay")}</span>
                     </div>
                   ) : (
-                    instances.map(({ course, schedule }, idx) => {
+                    instances.map((occ, idx) => {
+                      const { course } = occ;
+                      // Effective schedule values (after override)
+                      const schedule = {
+                        id: occ.schedule.id,
+                        day_of_week: occ.schedule.day_of_week,
+                        start_time: occ.startTime,
+                        duration: occ.duration,
+                      };
                       const isIndividual = course.course_type === "individual";
                       const enrolledCount = course.student_courses?.length || 0;
-                      const teacherName = course.teachers?.name || tLessons("unknownTeacher");
+                      const teacherName =
+                        (occ.isSubstituted ? teacherNameById.get(occ.teacherId || "") : course.teachers?.name) ||
+                        tLessons("unknownTeacher");
 
                       const [startH, startM] = schedule.start_time.split(":").map((v) => parseInt(v, 10));
                       const scheduledDateTime = new Date(day.date);
@@ -383,9 +426,10 @@ export function SchoolWeeklySchedule({
 
                       return (
                         <div
-                          key={`${course.id}-${schedule.id || idx}`}
+                          key={`${course.id}-${occ.originalDate}-${occ.originalStartTime}-${idx}`}
                           onClick={() =>
                             setSelectedInstance({
+                              occurrence: occ,
                               course,
                               schedule,
                               dateStr: day.dateStr,
@@ -428,9 +472,24 @@ export function SchoolWeeklySchedule({
                             {course.name}
                           </p>
 
+                          {(occ.isMoved || occ.isSubstituted) && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {occ.isMoved && (
+                                <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 font-bold px-1.5 py-0 text-[9px]">
+                                  {tOv("badgeMoved")}
+                                </Badge>
+                              )}
+                              {occ.isSubstituted && (
+                                <Badge variant="outline" className="bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800 font-bold px-1.5 py-0 text-[9px]">
+                                  {tOv("badgeSubstitute")}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+
                           {/* Teacher Name & Room */}
                           <div className="space-y-0.5 mt-1.5">
-                            <div className="flex items-center space-x-1 text-[11px] text-slate-500 dark:text-slate-400">
+                            <div className={`flex items-center space-x-1 text-[11px] ${occ.isSubstituted ? "text-violet-700 dark:text-violet-300 font-semibold" : "text-slate-500 dark:text-slate-400"}`}>
                               <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />
                               <span className="truncate">{teacherName}</span>
                             </div>
@@ -595,6 +654,25 @@ export function SchoolWeeklySchedule({
                 </div>
               )}
 
+              {/* Admin: change THIS lesson only (override) */}
+              <OccurrenceEditor
+                key={`${selectedInstance.course.id}-${selectedInstance.occurrence.originalDate}-${selectedInstance.occurrence.originalStartTime}`}
+                courseId={selectedInstance.course.id}
+                courseTeacherId={selectedInstance.course.teacher_id}
+                courseTeacherName={selectedInstance.course.teachers?.name || tLessons("unknownTeacher")}
+                originalDate={selectedInstance.occurrence.originalDate}
+                originalStartTime={selectedInstance.occurrence.originalStartTime}
+                originalDuration={Number(selectedInstance.occurrence.schedule.duration) || 1.5}
+                currentDate={selectedInstance.dateStr}
+                currentStartTime={selectedInstance.occurrence.startTime}
+                currentDuration={selectedInstance.occurrence.duration}
+                currentTeacherId={selectedInstance.occurrence.teacherId}
+                hasOverride={Boolean(selectedInstance.occurrence.override)}
+                isPast={selectedInstance.isPast}
+                teachers={teacherOptions}
+                onDone={() => setSelectedInstance(null)}
+              />
+
               {/* Room Box */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-1">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
@@ -613,27 +691,32 @@ export function SchoolWeeklySchedule({
                   <span>{tCommon("teacher")}</span>
                 </span>
 
-                {selectedInstance.course.teachers ? (
+                {modalTeacher ? (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                       <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                        {selectedInstance.course.teachers.name}
+                        {modalTeacher.name}
                       </p>
+                      {selectedInstance.occurrence.isSubstituted && (
+                        <p className="text-[11px] text-violet-600 dark:text-violet-300">
+                          {tOv("substituteFor", { name: selectedInstance.course.teachers?.name || tLessons("unknownTeacher") })}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      {selectedInstance.course.teachers.phone && (
+                      {modalTeacher.phone && (
                         <a
-                          href={`tel:${selectedInstance.course.teachers.phone}`}
+                          href={`tel:${modalTeacher.phone}`}
                           className="h-8 px-2.5 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-semibold flex items-center space-x-1 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
                         >
                           <Phone strokeWidth={1.5} className="w-4 h-4" />
-                          <span>{selectedInstance.course.teachers.phone}</span>
+                          <span>{modalTeacher.phone}</span>
                         </a>
                       )}
-                      {selectedInstance.course.teachers.email && (
+                      {modalTeacher.email && (
                         <a
-                          href={`mailto:${selectedInstance.course.teachers.email}`}
+                          href={`mailto:${modalTeacher.email}`}
                           className="h-8 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center space-x-1 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <Mail strokeWidth={1.5} className="w-4 h-4" />
