@@ -304,7 +304,7 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap items-center gap-2">
           <ImportDataDialog buttonLabel={tDash("importData")} />
           <Link href="/courses">
-            <Button variant="outline" size="sm" className="space-x-2 shadow-2xs">
+            <Button variant="outline" size="sm" className="space-x-2 shadow-sm">
               <Plus strokeWidth={1.5} className="w-4 h-4" />
               <span>{tDash("newCourse")}</span>
             </Button>
@@ -485,7 +485,7 @@ export default async function DashboardPage() {
                 {teacherStats.map((t) => (
                   <div
                     key={t.id}
-                    className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs space-y-3"
+                    className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
@@ -617,7 +617,7 @@ export default async function DashboardPage() {
                   return (
                     <div
                       key={lesson.id}
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2"
                     >
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 font-medium">

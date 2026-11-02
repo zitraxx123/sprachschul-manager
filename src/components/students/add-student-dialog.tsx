@@ -60,7 +60,7 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
           <span>{t("addStudent")}</span>
         </Button>
       ) : (
-        <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl mb-6 ring-1 ring-blue-500/10">
+        <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md mb-6 ring-1 ring-blue-500/10">
           <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
               <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">{t("addStudent")}</CardTitle>

@@ -240,7 +240,7 @@ export function WeeklyCalendar({
             variant="outline"
             size="sm"
             onClick={() => setIsSubscribeModalOpen(true)}
-            className="h-8 text-xs font-semibold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/60 bg-blue-50/70 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 flex items-center gap-2 transition-all shadow-2xs"
+            className="h-8 text-xs font-semibold text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/60 bg-blue-50/70 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 flex items-center gap-2 transition-all shadow-sm"
             title={tPortal("subscribeCalendarDesc")}
           >
             <CalendarSync strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -289,7 +289,7 @@ export function WeeklyCalendar({
 
       {/* Helpful banner when teacher has no courses yet */}
       {courses.length === 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/20 border border-blue-200/80 dark:border-blue-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/20 border border-blue-200/80 dark:border-blue-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-sm">
           <div className="flex items-start sm:items-center space-x-2">
             <CalendarIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 sm:mt-0 shrink-0" />
             <p className="text-slate-700 dark:text-slate-300">
@@ -300,7 +300,7 @@ export function WeeklyCalendar({
             type="button"
             size="sm"
             onClick={() => setIsSubscribeModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white shrink-0 font-semibold text-xs h-8 shadow-xs"
+            className="bg-blue-600 hover:bg-blue-700 text-white shrink-0 font-semibold text-xs h-8 shadow-sm"
           >
             {tPortal("subscribeNow")}
           </Button>
@@ -446,7 +446,7 @@ export function WeeklyCalendar({
 
         return (
           <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-lg sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+            <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-lg sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
               {/* Mobile Drag Indicator Bar */}
               <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -529,7 +529,7 @@ export function WeeklyCalendar({
                       onClick={() => setActionType("completed")}
                       className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
                         actionType === "completed"
-                          ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 shadow-xs ring-1 ring-slate-200 dark:ring-slate-600"
+                          ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600"
                           : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                       }`}
                     >
@@ -541,11 +541,11 @@ export function WeeklyCalendar({
                       onClick={() => setActionType("cancelled")}
                       className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
                         actionType === "cancelled"
-                          ? "bg-white dark:bg-slate-700 text-rose-700 dark:text-rose-300 shadow-xs ring-1 ring-slate-200 dark:ring-slate-600"
+                          ? "bg-white dark:bg-slate-700 text-amber-700 dark:text-amber-300 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600"
                           : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                       }`}
                     >
-                      <XCircle strokeWidth={1.5} className={`w-4 h-4 ${actionType === "cancelled" ? "text-rose-600 dark:text-rose-400" : "text-slate-400"}`} />
+                      <XCircle strokeWidth={1.5} className={`w-4 h-4 ${actionType === "cancelled" ? "text-amber-600 dark:text-amber-400" : "text-slate-400"}`} />
                       <span>{tPortal("statusStudentCancelled")}</span>
                     </button>
                   </div>
@@ -621,7 +621,7 @@ export function WeeklyCalendar({
                                 }
                                 className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
                                   isPresent
-                                    ? "bg-white dark:bg-slate-800 shadow-2xs"
+                                    ? "bg-white dark:bg-slate-800 shadow-sm"
                                     : "opacity-60 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700/60"
                                 }`}
                               >
@@ -644,7 +644,7 @@ export function WeeklyCalendar({
                                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                                     isPresent
                                       ? "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                                      : "bg-rose-50 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
+                                      : "bg-amber-50 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
                                   }`}
                                 >
                                   {isPresent ? tPortal("presentCheckbox") : tPortal("absentCheckbox")}
@@ -753,7 +753,7 @@ export function WeeklyCalendar({
                     disabled={isSubmitting}
                     className={
                       actionType === "cancelled"
-                        ? "bg-rose-600 hover:bg-rose-700 text-white space-x-2"
+                        ? "bg-amber-600 hover:bg-amber-700 text-white space-x-2"
                         : "bg-blue-600 hover:bg-blue-700 text-white space-x-2"
                     }
                   >

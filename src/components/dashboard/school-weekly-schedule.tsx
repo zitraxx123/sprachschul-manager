@@ -246,7 +246,7 @@ export function SchoolWeeklySchedule({
                 onClick={() => setFilterType("all")}
                 className={`px-2.5 py-1 rounded-lg transition-all ${
                   filterType === "all"
-                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold shadow-2xs"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold shadow-sm"
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -257,7 +257,7 @@ export function SchoolWeeklySchedule({
                 onClick={() => setFilterType("group")}
                 className={`px-2.5 py-1 rounded-lg transition-all ${
                   filterType === "group"
-                    ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 font-bold shadow-2xs"
+                    ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 font-bold shadow-sm"
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -268,7 +268,7 @@ export function SchoolWeeklySchedule({
                 onClick={() => setFilterType("individual")}
                 className={`px-2.5 py-1 rounded-lg transition-all ${
                   filterType === "individual"
-                    ? "bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 font-bold shadow-2xs"
+                    ? "bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm"
                     : "hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -337,7 +337,7 @@ export function SchoolWeeklySchedule({
                 className={`w-[84vw] max-w-[320px] sm:w-[280px] md:w-auto shrink-0 md:shrink snap-center md:snap-align-none rounded-xl border p-3 flex flex-col min-h-[230px] transition-all ${
                   day.isToday
                     ? "bg-blue-50/60 dark:bg-blue-950/40 border-blue-300 dark:border-blue-800 ring-2 ring-blue-100 dark:ring-blue-950 shadow-sm"
-                    : "bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs"
+                    : "bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
                 }`}
               >
                 {/* Day Header */}
@@ -353,7 +353,7 @@ export function SchoolWeeklySchedule({
                   <span
                     className={`text-[11px] font-mono px-1.5 py-0.5 rounded ${
                       day.isToday
-                        ? "bg-blue-600 text-white font-semibold shadow-2xs"
+                        ? "bg-blue-600 text-white font-semibold shadow-sm"
                         : "text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800"
                     }`}
                   >
@@ -394,9 +394,9 @@ export function SchoolWeeklySchedule({
                               isPast,
                             })
                           }
-                          className={`group cursor-pointer rounded-xl p-3 border transition-all text-left shadow-2xs hover:shadow-md active:scale-[0.99] relative ${
+                          className={`group cursor-pointer rounded-xl p-3 border transition-all text-left shadow-sm hover:shadow-md active:scale-[0.99] relative ${
                             hasAbsences
-                              ? "bg-gradient-to-br from-white to-rose-50/40 dark:from-slate-800 dark:to-rose-950/30 border-rose-300 dark:border-rose-900/60 hover:border-rose-400 ring-1 ring-rose-200 dark:ring-rose-950"
+                              ? "bg-gradient-to-br from-white to-amber-50/40 dark:from-slate-800 dark:to-amber-950/30 border-amber-300 dark:border-amber-900/60 hover:border-amber-400 ring-1 ring-amber-200 dark:ring-amber-950"
                               : isIndividual
                               ? "bg-gradient-to-br from-white to-emerald-50/40 dark:from-slate-800 dark:to-emerald-950/30 border-emerald-200 dark:border-emerald-900/60 hover:border-emerald-400"
                               : "bg-gradient-to-br from-white to-blue-50/40 dark:from-slate-800 dark:to-slate-800/80 border-slate-200 dark:border-slate-700/80 hover:border-blue-400 dark:hover:border-blue-500"
@@ -416,8 +416,8 @@ export function SchoolWeeklySchedule({
 
                               {hasAbsences && (
                                 <span className="relative flex h-2 w-2 shrink-0 ml-1">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600" />
                                 </span>
                               )}
                             </div>
@@ -485,7 +485,7 @@ export function SchoolWeeklySchedule({
       {/* Course Details Modal Dialog */}
       {selectedInstance && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Bar */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -539,23 +539,23 @@ export function SchoolWeeklySchedule({
             <div className="p-5 sm:p-6 space-y-4 overflow-y-auto max-h-[72vh]">
               {/* Absences Alert Box */}
               {selectedInstance.absences.length > 0 && (
-                <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-gradient-to-br from-rose-50/90 via-red-50/40 to-white dark:from-rose-950/60 dark:via-red-950/40 dark:to-slate-900 shadow-2xs space-y-3">
+                <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-gradient-to-br from-amber-50/90 via-amber-50/40 to-white dark:from-amber-950/60 dark:via-amber-950/40 dark:to-slate-900 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-rose-800 dark:text-rose-300">
-                      <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0">
+                    <div className="flex items-center space-x-2 text-amber-800 dark:text-amber-300">
+                      <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
                         <AlertTriangle strokeWidth={1.5} className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="text-xs font-bold block">
                           {tDashboard("recordedAbsencesForLesson")}
                         </span>
-                        <span className="text-[11px] text-rose-600 dark:text-rose-400 block">
+                        <span className="text-[11px] text-amber-600 dark:text-amber-400 block">
                           {selectedInstance.absences.length} {tCommon("students")}
                         </span>
                       </div>
                     </div>
 
-                    <Badge className="bg-rose-600 text-white font-bold text-[10px] px-2 py-0.5 shadow-2xs">
+                    <Badge className="bg-amber-600 text-white font-bold text-[10px] px-2 py-0.5 shadow-sm">
                       ⚠️ {selectedInstance.absences.length} {tPortal("absentCheckbox")}
                     </Badge>
                   </div>
@@ -564,10 +564,10 @@ export function SchoolWeeklySchedule({
                     {selectedInstance.absences.map((abs) => (
                       <div
                         key={abs.studentId}
-                        className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-rose-100 dark:border-rose-900/40 shadow-2xs text-xs"
+                        className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-amber-100 dark:border-amber-900/40 shadow-sm text-xs"
                       >
                         <div className="flex items-center space-x-2 min-w-0">
-                          <span className="w-6 h-6 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-bold text-[10px] flex items-center justify-center shrink-0">
+                          <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold text-[10px] flex items-center justify-center shrink-0">
                             {abs.studentName.charAt(0)}
                           </span>
                           <span className="font-bold text-slate-900 dark:text-slate-100 truncate">
@@ -585,7 +585,7 @@ export function SchoolWeeklySchedule({
                               <Phone strokeWidth={1.5} className="w-4 h-4" />
                             </a>
                           )}
-                          <Badge variant="outline" className="bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800 font-bold text-[10px]">
+                          <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 font-bold text-[10px]">
                             {tDashboard("unexcusedAbsent")}
                           </Badge>
                         </div>
@@ -596,7 +596,7 @@ export function SchoolWeeklySchedule({
               )}
 
               {/* Room Box */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-1">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-1">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>{tDashboard("classroomLocation")}</span>
@@ -607,7 +607,7 @@ export function SchoolWeeklySchedule({
               </div>
 
               {/* Teacher Info Box */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-2">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <User strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>{tCommon("teacher")}</span>
@@ -648,7 +648,7 @@ export function SchoolWeeklySchedule({
               </div>
 
               {/* Schedule Days Box */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-2">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <CalendarIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   <span>{tDashboard("regularSchedule")}</span>
@@ -676,7 +676,7 @@ export function SchoolWeeklySchedule({
 
               {/* Course Description */}
               {selectedInstance.course.description && (
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-2">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-2">
                   <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                     <FileText strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <span>{tDashboard("courseDescContent")}</span>
@@ -688,7 +688,7 @@ export function SchoolWeeklySchedule({
               )}
 
               {/* Students Enrolled List */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-2xs space-y-3">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                     <Users strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />

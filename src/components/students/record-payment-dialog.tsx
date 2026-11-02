@@ -55,7 +55,7 @@ export function RecordPaymentDialog({
         variant="outline"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className={`h-8 px-2.5 text-xs font-medium shadow-xs ${
+        className={`h-8 px-2.5 text-xs font-medium shadow-sm ${
           isAlreadyPaid 
             ? "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700" 
             : "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 border-blue-200 dark:border-blue-800/80 bg-blue-50/30 dark:bg-blue-950/30"
@@ -67,7 +67,7 @@ export function RecordPaymentDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <Card className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <Card className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Indicator */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
             <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">

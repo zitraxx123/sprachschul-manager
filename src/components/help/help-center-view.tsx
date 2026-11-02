@@ -374,7 +374,7 @@ export function HelpCenterView() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900 text-white p-6 sm:p-10 shadow-lg border border-blue-600/30">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900 text-white p-6 sm:p-10 shadow-sm border border-blue-600/30">
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-white/20">
             <HelpCircle strokeWidth={1.5} className="w-4 h-4" />
@@ -424,7 +424,7 @@ export function HelpCenterView() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0 ${
                 isActive
-                  ? "bg-blue-600 text-white border-blue-600 shadow-xs ring-2 ring-blue-600/20"
+                  ? "bg-blue-600 text-white border-blue-600 shadow-sm ring-2 ring-blue-600/20"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
@@ -493,7 +493,7 @@ export function HelpCenterView() {
             return (
               <div
                 key={faq.id}
-                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden transition-all duration-200"
+                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-200"
               >
                 <button
                   type="button"
@@ -541,7 +541,7 @@ export function HelpCenterView() {
           </div>
           <a
             href="mailto:support@sprachschule-app.de?subject=Hilfe-Anfrage%20Sprachschul-Manager"
-            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shrink-0 shadow-xs transition-colors"
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shrink-0 shadow-sm transition-colors"
           >
             <span>{tHelp("contactSupport")}</span>
             <ExternalLink strokeWidth={1.5} className="w-4 h-4" />

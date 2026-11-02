@@ -43,14 +43,14 @@ export function AddRoomDialog() {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} className="space-x-2 shadow-xs">
+      <Button onClick={() => setIsOpen(true)} className="space-x-2 shadow-sm">
         <Plus strokeWidth={1.5} className="w-4 h-4" />
         <span>{tRooms("addRoom")}</span>
       </Button>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-150">
-          <div className="w-full max-sm:rounded-t-xl sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:rounded-t-xl sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Header */}
             <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
               <div className="flex items-center space-x-3">
@@ -102,7 +102,7 @@ export function AddRoomDialog() {
               {/* Quick Presets */}
               <div className="space-y-2">
                 <div className="flex items-center space-x-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  <Sparkles strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                  <Sparkles strokeWidth={1.5} className="w-4 h-4 text-amber-600" />
                   <span>{tRooms("quickPresets")}</span>
                 </div>
                 <div className="flex flex-wrap gap-2">

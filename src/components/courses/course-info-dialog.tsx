@@ -77,7 +77,7 @@ export function CourseInfoDialog({ course, children }: CourseInfoDialogProps) {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[90dvh] max-sm:rounded-t-xl sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[90dvh] max-sm:rounded-t-xl sm:max-w-md sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile drag bar */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -126,7 +126,7 @@ export function CourseInfoDialog({ course, children }: CourseInfoDialogProps) {
             {/* Content */}
             <div className="p-5 space-y-4 overflow-y-auto">
               {/* Teacher Info */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-2xs space-y-2">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm space-y-2">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <User strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>{t("teacher")}</span>
@@ -162,7 +162,7 @@ export function CourseInfoDialog({ course, children }: CourseInfoDialogProps) {
               </div>
 
               {/* Schedule / Stundenplan */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-2xs space-y-2">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm space-y-2">
                 <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                   <Calendar strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>{t("regularSchedule")}</span>
@@ -190,7 +190,7 @@ export function CourseInfoDialog({ course, children }: CourseInfoDialogProps) {
 
               {/* Room (if assigned) */}
               {course.rooms && (
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-2xs space-y-1">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm space-y-1">
                   <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                     <DoorOpen strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <span>{t("room")}</span>
@@ -201,7 +201,7 @@ export function CourseInfoDialog({ course, children }: CourseInfoDialogProps) {
 
               {/* Description */}
               {course.description && (
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-2xs space-y-2">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm space-y-2">
                   <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center space-x-2">
                     <FileText strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <span>{t("description")}</span>

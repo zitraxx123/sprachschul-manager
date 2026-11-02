@@ -161,7 +161,7 @@ export default async function TeachersPage() {
                               )}
                               {t.birthday && (
                                 <div className="flex items-center space-x-2 text-slate-400">
-                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-600" />
                                   <span>{formatDate(t.birthday, locale)}</span>
                                 </div>
                               )}
@@ -215,7 +215,7 @@ export default async function TeachersPage() {
                   return (
                     <div 
                       key={t.id} 
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center space-x-3 min-w-0">
@@ -248,7 +248,7 @@ export default async function TeachersPage() {
                               )}
                               {t.birthday && (
                                 <div className="flex items-center space-x-1 text-slate-400">
-                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500 shrink-0" />
+                                  <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-600 shrink-0" />
                                   <span>{formatDate(t.birthday, locale)}</span>
                                 </div>
                               )}

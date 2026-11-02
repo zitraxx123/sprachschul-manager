@@ -136,7 +136,7 @@ export default async function HomePage() {
         </div>
 
         {/* 3. Clean Product Preview Mockup (B2B UI) */}
-        <div className="mt-14 max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden text-left">
+        <div className="mt-14 max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden text-left">
           {/* Browser Chrome Header */}
           <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -184,7 +184,7 @@ export default async function HomePage() {
                 <span className="inline-flex items-center px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-medium">
                   ✓ 11 Schüler anwesend
                 </span>
-                <span className="inline-flex items-center px-2 py-1 rounded bg-rose-50 text-rose-700 font-medium">
+                <span className="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-600 font-medium">
                   ✕ 1 Schüler abwesend
                 </span>
                 <span className="text-slate-400 ml-auto hidden sm:inline">
@@ -214,7 +214,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Column 1: Fehlerfreie Honorarabrechnung */}
-            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
                   <Euro strokeWidth={1.5} className="w-6 h-6" />
@@ -236,7 +236,7 @@ export default async function HomePage() {
             </div>
 
             {/* Column 2: Lehrer-Portal für das Smartphone */}
-            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
                   <Smartphone strokeWidth={1.5} className="w-6 h-6" />
@@ -258,7 +258,7 @@ export default async function HomePage() {
             </div>
 
             {/* Column 3: Lückenlose Dokumentation */}
-            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-6">
                   <ClipboardCheck strokeWidth={1.5} className="w-6 h-6" />
@@ -360,7 +360,7 @@ export default async function HomePage() {
 
       {/* 7. Bottom CTA Banner (Clean Deep Blue) */}
       <section className="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 text-white rounded-xl p-8 sm:p-14 text-center shadow-lg">
+        <div className="bg-slate-900 text-white rounded-xl p-8 sm:p-14 text-center shadow-sm">
           <h2 className="text-3xl sm:text-4xl font-bold max-w-xl mx-auto leading-tight">
             Bereit für eine moderne Sprachschulverwaltung?
           </h2>

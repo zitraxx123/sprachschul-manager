@@ -234,7 +234,7 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
         <div className="flex items-center space-x-2">
           <Link href="/absences">
             <Badge variant="outline" className="cursor-pointer bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-1.5 px-3 border-slate-200 dark:border-slate-700 flex items-center space-x-2">
-              <UserX strokeWidth={1.5} className="w-4 h-4 text-rose-500" />
+              <UserX strokeWidth={1.5} className="w-4 h-4 text-red-600" />
               <span>{tPortal("absencesReportButton")}</span>
             </Badge>
           </Link>
@@ -286,7 +286,7 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-            <div className="bg-white dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+            <div className="bg-white dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center space-x-2">
                 <Clock strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                 <span>{tPortal("taughtHoursCard")}</span>
@@ -297,7 +297,7 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
               <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">{tPortal("unitsInMonth", { count: monthlyLessons.length, month: monthNameYear })}</p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+            <div className="bg-white dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center space-x-2">
                 <Euro strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
                 <span>{tPortal("baseRateCard")}</span>
@@ -500,7 +500,7 @@ export default async function MyPortalPage({ searchParams }: MyPortalPageProps) 
                   return (
                     <div
                       key={lesson.id}
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2"
                     >
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center space-x-2 font-medium text-slate-700 dark:text-slate-300">

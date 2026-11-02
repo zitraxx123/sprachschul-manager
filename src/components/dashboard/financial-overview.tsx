@@ -129,7 +129,7 @@ export function FinancialOverview({
           <div className="p-4 rounded-xl border border-emerald-200/80 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 flex flex-col justify-between">
             <div className="flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 font-semibold mb-1">
               <span>{t("income")}</span>
-              <div className="w-6 h-6 rounded-md bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <div className="w-6 h-6 rounded-md bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                 <ArrowDownLeft strokeWidth={1.5} className="w-4 h-4" />
               </div>
             </div>
@@ -142,17 +142,17 @@ export function FinancialOverview({
           </div>
 
           {/* Ausgaben (Expenses) */}
-          <div className="p-4 rounded-xl border border-rose-200/80 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-xs text-rose-800 dark:text-rose-300 font-semibold mb-1">
+          <div className="p-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
               <span>{t("expenses")}</span>
-              <div className="w-6 h-6 rounded-md bg-rose-500/15 flex items-center justify-center text-rose-600 dark:text-rose-400">
+              <div className="w-6 h-6 rounded-md bg-red-50 dark:bg-red-950/30 flex items-center justify-center text-red-600 dark:text-red-400">
                 <ArrowUpRight strokeWidth={1.5} className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-lg sm:text-xl font-bold font-mono text-rose-700 dark:text-rose-300">
+            <div className="text-lg sm:text-xl font-bold font-mono text-red-700 dark:text-red-300">
               {formatCurrency(currentMonthExpenses)}
             </div>
-            <span className="text-[10px] text-rose-600/80 dark:text-rose-400/80 mt-1 line-clamp-1">
+            <span className="text-[10px] text-red-600/80 dark:text-red-400/80 mt-1 line-clamp-1">
               {t("expensesDesc")}
             </span>
           </div>
@@ -161,8 +161,8 @@ export function FinancialOverview({
           <div
             className={`p-4 rounded-xl border flex flex-col justify-between ${
               isProfitPositive
-                ? "border-emerald-300 dark:border-emerald-800 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200"
-                : "border-red-300 dark:border-red-800 bg-red-50/70 dark:bg-red-950/40 text-red-900 dark:text-red-200"
+                ? "border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200"
+                : "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-red-900 dark:text-red-200"
             }`}
           >
             <div className="flex items-center justify-between text-xs font-semibold mb-1">
@@ -172,8 +172,8 @@ export function FinancialOverview({
               <div
                 className={`w-6 h-6 rounded-md flex items-center justify-center ${
                   isProfitPositive
-                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                    : "bg-red-500/20 text-red-600 dark:text-red-400"
+                    ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400"
+                    : "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
                 }`}
               >
                 {isProfitPositive ? <TrendingUp strokeWidth={1.5} className="w-4 h-4" /> : <TrendingDown strokeWidth={1.5} className="w-4 h-4" />}
@@ -273,7 +273,7 @@ export function FinancialOverview({
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="flex items-center space-x-2">
-                <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-amber-600" />
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                   {t("openPayments")}
                 </h4>

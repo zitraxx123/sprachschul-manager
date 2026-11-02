@@ -40,7 +40,7 @@ export function Logo({
     <div className={`flex items-center space-x-2 ${className}`}>
       {logoUrl ? (
         <div
-          className={`${iconSizes[size]} bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden`}
+          className={`${iconSizes[size]} bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -51,7 +51,7 @@ export function Logo({
         </div>
       ) : (
         <div
-          className={`${iconSizes[size]} bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs`}
+          className={`${iconSizes[size]} bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm`}
         >
           <GraduationCap className={capSizes[size]} strokeWidth={1.5} />
         </div>

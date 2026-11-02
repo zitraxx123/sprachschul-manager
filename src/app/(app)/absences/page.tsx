@@ -112,20 +112,20 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
       {/* 2. KPI Summary Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Absences */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
             <UserX strokeWidth={1.5} className="w-6 h-6" />
           </div>
           <div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{tAbsences("totalAbsences")}</p>
-            <p className="text-2xl font-extrabold text-rose-600 dark:text-rose-400">
+            <p className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
               {totalAbsences} <span className="text-xs text-slate-400 font-normal">{tAbsences("inPeriod")}</span>
             </p>
           </div>
         </div>
 
         {/* Affected Students */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-sm">
           <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
             <Users strokeWidth={1.5} className="w-6 h-6" />
           </div>
@@ -138,7 +138,7 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
         </div>
 
         {/* Affected Courses */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-4 shadow-sm">
           <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <Layers strokeWidth={1.5} className="w-6 h-6" />
           </div>
@@ -220,7 +220,7 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                         {/* Schüler */}
                         <TableCell className="font-medium text-slate-900 dark:text-slate-100">
                           <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-bold text-xs flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-bold text-xs flex items-center justify-center shrink-0">
                               {record.studentName.charAt(0)}
                             </div>
                             <div className="min-w-0">
@@ -285,11 +285,11 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
                 {absences.map((record) => (
                   <div 
                     key={record.attendanceId} 
-                    className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                    className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center space-x-3 min-w-0">
-                        <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-bold text-sm flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-bold text-sm flex items-center justify-center shrink-0">
                           {record.studentName.charAt(0)}
                         </div>
                         <div className="min-w-0">

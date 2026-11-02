@@ -8,14 +8,16 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 dark:border dark:border-blue-800/60",
+          "border border-blue-200 dark:border-blue-900/60 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300",
         secondary:
-          "border-transparent bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 dark:border dark:border-slate-700",
+          "border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200",
         success:
-          "border-transparent bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 dark:border dark:border-emerald-800/60",
+          "border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400",
+        warning:
+          "border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400",
         destructive:
-          "border-transparent bg-red-100 dark:bg-red-950/80 text-red-800 dark:text-red-300 dark:border dark:border-red-800/60",
-        outline: "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 bg-transparent",
+          "border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400",
+        outline: "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 bg-transparent",
       },
     },
     defaultVariants: {

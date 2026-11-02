@@ -206,7 +206,7 @@ export function ManageCourseStudentsDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Handle */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -293,7 +293,7 @@ export function ManageCourseStudentsDialog({
                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-300 rounded-full ${
-                      isFull ? "bg-amber-500" : "bg-blue-600"
+                      isFull ? "bg-amber-600" : "bg-blue-600"
                     }`}
                     style={{ width: `${progressPercent}%` }}
                   />
@@ -316,7 +316,7 @@ export function ManageCourseStudentsDialog({
 
                 {/* Search Dropdown Results */}
                 {availableSearchResults.length > 0 && (
-                  <div className="absolute z-20 left-0 right-0 mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden max-h-48 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
+                  <div className="absolute z-20 left-0 right-0 mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md overflow-hidden max-h-48 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
                     {availableSearchResults.map((s) => (
                       <div
                         key={s.id}
@@ -360,7 +360,7 @@ export function ManageCourseStudentsDialog({
                       return (
                         <div
                           key={assignment.studentId}
-                          className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs"
+                          className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-sm"
                         >
                           <div className="flex items-center space-x-2 min-w-0">
                             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center shrink-0">

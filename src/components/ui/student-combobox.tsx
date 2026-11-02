@@ -138,7 +138,7 @@ export function StudentCombobox({
             <button
               type="button"
               onClick={() => onChange([])}
-              className="text-[11px] text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+              className="text-[11px] text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
               Alle entfernen
             </button>
@@ -152,7 +152,7 @@ export function StudentCombobox({
           {selectedStudents.map((s) => (
             <span
               key={s.id}
-              className="inline-flex items-center space-x-2 pl-2 pr-1 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold shadow-2xs animate-in zoom-in-95 duration-150 group hover:border-slate-300 dark:hover:border-slate-600"
+              className="inline-flex items-center space-x-2 pl-2 pr-1 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-semibold shadow-sm animate-in zoom-in-95 duration-150 group hover:border-slate-300 dark:hover:border-slate-600"
             >
               <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-bold flex items-center justify-center shrink-0">
                 {s.first_name.charAt(0)}{s.last_name.charAt(0)}
@@ -164,7 +164,7 @@ export function StudentCombobox({
                 type="button"
                 onClick={() => handleRemove(s.id)}
                 disabled={disabled}
-                className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-md p-0.5 transition-colors disabled:pointer-events-none"
+                className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30/50 rounded-md p-0.5 transition-colors disabled:pointer-events-none"
                 title={`${s.first_name} ${s.last_name} entfernen`}
                 aria-label={`Entfernen`}
               >
@@ -190,7 +190,7 @@ export function StudentCombobox({
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder={selectedStudents.length === 0 ? effectivePlaceholder : tCommon("searchMoreStudents")}
-          className="flex h-10 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 pl-9 pr-8 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-2xs"
+          className="flex h-10 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 pl-9 pr-8 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
         />
 
         {search ? (
@@ -213,7 +213,7 @@ export function StudentCombobox({
 
       {/* 4. Dropdown Popover with Filtered Results */}
       {isOpen && (
-        <div className="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100 max-h-60 overflow-y-auto">
+        <div className="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100 max-h-60 overflow-y-auto">
           {availableStudents.length === 0 ? (
             <div className="p-4 text-center text-xs text-slate-400 dark:text-slate-400">
               {search.trim() ? (

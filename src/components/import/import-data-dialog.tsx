@@ -170,7 +170,7 @@ export function ImportDataDialog({
         variant={variant}
         size={size}
         onClick={() => setIsOpen(true)}
-        className={`flex items-center space-x-2 font-medium shadow-2xs ${className}`}
+        className={`flex items-center space-x-2 font-medium shadow-sm ${className}`}
       >
         <Upload strokeWidth={1.5} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
         <span>{buttonLabel}</span>
@@ -178,7 +178,7 @@ export function ImportDataDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-3xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-3xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="p-5 sm:p-6 bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center space-x-3">
@@ -210,9 +210,9 @@ export function ImportDataDialog({
             {/* Modal Body */}
             <div className="p-5 sm:p-6 overflow-y-auto space-y-5 max-h-[calc(90dvh-120px)] sm:max-h-[75vh]">
               {/* 1. Google Forms Info Box */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50/50 to-sky-50 dark:from-blue-950/40 dark:via-indigo-950/20 dark:to-slate-900 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-4 sm:p-4.5 shadow-2xs">
+              <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50/50 to-sky-50 dark:from-blue-950/40 dark:via-indigo-950/20 dark:to-slate-900 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-4 sm:p-4.5 shadow-sm">
                 <div className="flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                     <Info strokeWidth={1.5} className="w-5 h-5" />
                   </div>
                   <div className="space-y-2 flex-1 min-w-0">
@@ -226,7 +226,7 @@ export function ImportDataDialog({
                         variant="outline"
                         size="sm"
                         onClick={downloadImportTemplateXlsx}
-                        className="h-8 text-xs bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/80 shadow-2xs"
+                        className="h-8 text-xs bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/80 shadow-sm"
                       >
                         <Download strokeWidth={1.5} className="w-4 h-4 mr-1 text-blue-600 dark:text-blue-400" />
                         {tImport("downloadTemplate")}

@@ -74,7 +74,7 @@ export function SubstituteTeacherDialog({
           setSelectedTeacherId("");
           setIsOpen(true);
         }}
-        className={`h-8 px-2.5 text-xs font-medium space-x-1 shadow-2xs ${
+        className={`h-8 px-2.5 text-xs font-medium space-x-1 shadow-sm ${
           isSubstituted
             ? "border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300 bg-amber-50/70 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50"
             : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -87,7 +87,7 @@ export function SubstituteTeacherDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-lg sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-lg sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="p-5 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center space-x-3">
@@ -201,7 +201,7 @@ export function SubstituteTeacherDialog({
                   type="submit"
                   size="sm"
                   disabled={isPending || !selectedTeacherId || selectedTeacherId === currentTeacherId}
-                  className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs"
+                  className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-sm"
                 >
                   {isPending ? (
                     <>

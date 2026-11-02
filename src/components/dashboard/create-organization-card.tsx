@@ -18,9 +18,9 @@ export function CreateOrganizationCard() {
 
   return (
     <div className="max-w-xl mx-auto py-12">
-      <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg">
+      <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
         <CardHeader className="text-center pb-4">
-          <div className="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 shadow-xs">
+          <div className="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 shadow-sm">
             <Building2 strokeWidth={1.5} className="w-8 h-8" />
           </div>
           <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">

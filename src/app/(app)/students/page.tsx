@@ -117,7 +117,7 @@ export default async function StudentsPage() {
 
       {/* Summary KPI Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
             <Users strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -127,7 +127,7 @@ export default async function StudentsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
             <CheckCircle2 strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -139,7 +139,7 @@ export default async function StudentsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
             <AlertCircle strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -214,7 +214,7 @@ export default async function StudentsPage() {
                               currentMonthYear={currentMonthYear}
                             >
                               <div className="flex items-center space-x-2 text-left group">
-                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-bold text-xs flex items-center justify-center group-hover:ring-2 group-hover:ring-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-2xs">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-bold text-xs flex items-center justify-center group-hover:ring-2 group-hover:ring-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
                                   {student.first_name.charAt(0)}
                                   {student.last_name.charAt(0)}
                                 </div>
@@ -285,7 +285,7 @@ export default async function StudentsPage() {
                                   <CourseInfoDialog key={c.id} course={c}>
                                     <button
                                       type="button"
-                                      className={`inline-flex items-center text-[11px] font-medium py-1 px-2.5 rounded-lg border transition-all active:scale-95 shadow-2xs hover:shadow-xs cursor-pointer ${
+                                      className={`inline-flex items-center text-[11px] font-medium py-1 px-2.5 rounded-lg border transition-all active:scale-95 shadow-sm hover:shadow-sm cursor-pointer ${
                                         status === "trial"
                                           ? "bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800 hover:bg-amber-100"
                                           : status === "waiting"
@@ -303,11 +303,11 @@ export default async function StudentsPage() {
                                       )}
                                       <span className="font-semibold">{c.name}</span>
                                       {status === "trial" ? (
-                                        <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500 text-white shadow-2xs">
+                                        <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-600 text-white shadow-sm">
                                           {tStudents("statusTrial")}
                                         </span>
                                       ) : status === "waiting" ? (
-                                        <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-slate-500 text-white shadow-2xs">
+                                        <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-slate-500 text-white shadow-sm">
                                           {tStudents("statusWaiting")}
                                         </span>
                                       ) : (
@@ -380,7 +380,7 @@ export default async function StudentsPage() {
                   return (
                     <div 
                       key={student.id} 
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <StudentProfileDialog
@@ -446,7 +446,7 @@ export default async function StudentsPage() {
                             {student.parent_phone && (
                               <a
                                 href={`tel:${student.parent_phone}`}
-                                className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs hover:bg-blue-50 dark:hover:bg-blue-950"
+                                className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950"
                               >
                                 {tStudents("call")} 📞
                               </a>
@@ -485,11 +485,11 @@ export default async function StudentsPage() {
                                 )}
                                 <span className="font-semibold">{c.name}</span>
                                 {status === "trial" ? (
-                                  <span className="ml-1 px-1 py-0.1 rounded text-[9px] font-bold bg-amber-500 text-white shadow-2xs">
+                                  <span className="ml-1 px-1 py-0.1 rounded text-[9px] font-bold bg-amber-600 text-white shadow-sm">
                                     {tStudents("statusTrial")}
                                   </span>
                                 ) : status === "waiting" ? (
-                                  <span className="ml-1 px-1 py-0.1 rounded text-[9px] font-bold bg-slate-500 text-white shadow-2xs">
+                                  <span className="ml-1 px-1 py-0.1 rounded text-[9px] font-bold bg-slate-500 text-white shadow-sm">
                                     {tStudents("statusWaiting")}
                                   </span>
                                 ) : (

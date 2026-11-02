@@ -84,7 +84,7 @@ export function RoomAvailabilityFinder() {
       <CardHeader className="pb-4 border-b border-blue-100/80 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
               <Sparkles strokeWidth={1.5} className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -164,7 +164,7 @@ export function RoomAvailabilityFinder() {
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center space-x-2"
+              className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm flex items-center justify-center space-x-2"
             >
               {isPending ? (
                 <>
@@ -239,7 +239,7 @@ export function RoomAvailabilityFinder() {
                     return (
                       <div
                         key={room.id}
-                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-2xs hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors"
+                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-sm hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors"
                       >
                         <div className="flex items-center space-x-3">
                           <div
@@ -282,7 +282,7 @@ export function RoomAvailabilityFinder() {
             {result.occupiedRooms.length > 0 && (
               <div className="pt-2 space-y-2 border-t border-slate-100 dark:border-slate-800">
                 <h5 className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                  <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                  <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-amber-600" />
                   <span>{tRooms("occupiedRooms", { count: result.occupiedRooms.length })}</span>
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

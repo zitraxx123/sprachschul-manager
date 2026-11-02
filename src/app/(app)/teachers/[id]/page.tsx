@@ -232,7 +232,7 @@ export default async function TeacherDetailPage({
                 )}
                 {teacher.birthday && (
                   <span className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-medium">
-                    <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-500" />
+                    <Cake strokeWidth={1.5} className="w-4 h-4 text-amber-600" />
                     <span>{formatDate(teacher.birthday, locale)}</span>
                   </span>
                 )}
@@ -543,7 +543,7 @@ export default async function TeacherDetailPage({
                   return (
                     <div
                       key={lesson.id}
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2"
                     >
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center space-x-2 font-semibold text-slate-900 dark:text-slate-100">

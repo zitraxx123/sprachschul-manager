@@ -60,7 +60,7 @@ export function StudentProfileDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile drag handle */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -80,7 +80,7 @@ export function StudentProfileDialog({
                         ✓ {t("paymentRecorded")}
                       </Badge>
                     ) : (
-                      <Badge variant="destructive" className="text-[10px] py-0 px-2 font-bold bg-red-500 text-white border-none">
+                      <Badge variant="destructive" className="text-[10px] py-0 px-2 font-bold bg-red-600 text-white border-none">
                         {t("paymentDue")}
                       </Badge>
                     )}
@@ -285,7 +285,7 @@ export function StudentProfileDialog({
                       return (
                         <div
                           key={c.id}
-                          className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-2xs space-y-2"
+                          className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm space-y-2"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div>
@@ -361,7 +361,7 @@ export function StudentProfileDialog({
                       </span>
                     ) : (
                       <span className="text-sm font-bold text-red-600 dark:text-red-400 flex items-center space-x-1">
-                        <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-red-500 dark:text-red-400" />
+                        <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-red-600 dark:text-red-400" />
                         <span>{t("paymentDue")}</span>
                       </span>
                     )}

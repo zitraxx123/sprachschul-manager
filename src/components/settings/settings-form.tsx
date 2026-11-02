@@ -131,7 +131,7 @@ export function SettingsForm({ organization }: SettingsFormProps) {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               {/* Logo Preview Box */}
-              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-2 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-2 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
                 {previewUrl ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
@@ -305,7 +305,7 @@ export function SettingsForm({ organization }: SettingsFormProps) {
         <Button
           type="submit"
           disabled={isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white space-x-2 px-6 h-10 shadow-xs"
+          className="bg-blue-600 hover:bg-blue-700 text-white space-x-2 px-6 h-10 shadow-sm"
         >
           {isPending ? (
             <>

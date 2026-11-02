@@ -37,7 +37,7 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
       {/* Brand Icon or Custom School Logo */}
       <div className="flex flex-col items-center mb-8">
         {logoUrl ? (
-          <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 flex items-center justify-center shadow-xs mb-3 overflow-hidden">
+          <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 flex items-center justify-center shadow-sm mb-3 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={logoUrl}
@@ -56,7 +56,7 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("subtitle")}</p>
       </div>
 
-      <Card className="shadow-lg border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <CardHeader className="space-y-1 pb-4">
           <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg mb-2">
             <button

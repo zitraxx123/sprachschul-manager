@@ -92,7 +92,7 @@ export function MobileNav({
           />
 
           {/* Drawer Content */}
-          <div className="relative w-4/5 max-w-xs bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200 border-r border-slate-200 dark:border-slate-800">
+          <div className="relative w-4/5 max-w-xs bg-white dark:bg-slate-900 h-full shadow-md flex flex-col z-10 animate-in slide-in-from-left duration-200 border-r border-slate-200 dark:border-slate-800">
             {/* Header */}
             <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center space-x-2 min-w-0">
@@ -166,7 +166,7 @@ export function MobileNav({
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="w-full flex items-center space-x-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 active:scale-95 transition-all select-none touch-manipulation cursor-pointer"
+                  className="w-full flex items-center space-x-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30/40 active:scale-95 transition-all select-none touch-manipulation cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" strokeWidth={1.5} />
                   <span>{t("logout")}</span>

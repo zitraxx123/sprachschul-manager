@@ -90,7 +90,7 @@ export function LessonDetailsDialog({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
+          <div className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-2xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200">
             {/* Mobile Drag Indicator */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -249,12 +249,12 @@ export function LessonDetailsDialog({
 
                     {/* Abwesend Column (Red) */}
                     <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-xs font-bold text-rose-700 dark:text-rose-400">
-                        <XCircle strokeWidth={1.5} className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                      <div className="flex items-center space-x-2 text-xs font-bold text-amber-700 dark:text-amber-400">
+                        <XCircle strokeWidth={1.5} className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                         <span>{tLessons("absentCount", { count: absentList.length })}</span>
                       </div>
 
-                      <div className="bg-rose-50/40 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/60 rounded-xl p-3 max-h-60 overflow-y-auto space-y-2 divide-y divide-rose-100/60 dark:divide-rose-900/40">
+                      <div className="bg-amber-50/40 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/60 rounded-xl p-3 max-h-60 overflow-y-auto space-y-2 divide-y divide-rose-100/60 dark:divide-rose-900/40">
                         {absentList.length === 0 ? (
                           <p className="text-xs text-slate-400 dark:text-slate-500 italic py-2 text-center">
                             {tLessons("noAbsences")}

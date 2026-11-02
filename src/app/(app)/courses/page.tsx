@@ -175,7 +175,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
 
       {/* Summary KPI Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
             <Layers strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -185,7 +185,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
             <Users strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -195,7 +195,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
             <User strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -205,7 +205,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center space-x-3 shadow-sm">
           <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
             <Calendar strokeWidth={1.5} className="w-5 h-5" />
           </div>
@@ -234,7 +234,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
               href="/courses"
               className={`px-3 py-1.5 rounded-lg transition-all ${
                 tab === "all"
-                  ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold shadow-2xs"
+                  ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold shadow-sm"
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -244,7 +244,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
               href="/courses?tab=group"
               className={`px-3 py-1.5 rounded-lg transition-all ${
                 tab === "group"
-                  ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 font-bold shadow-2xs"
+                  ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-300 font-bold shadow-sm"
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -254,7 +254,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
               href="/courses?tab=individual"
               className={`px-3 py-1.5 rounded-lg transition-all ${
                 tab === "individual"
-                  ? "bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 font-bold shadow-2xs"
+                  ? "bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm"
                   : "hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -454,7 +454,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                   return (
                     <div 
                       key={course.id} 
-                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+                      className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start space-x-3 min-w-0">

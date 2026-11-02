@@ -181,12 +181,12 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
   return (
     <div>
       {!isOpen ? (
-        <Button onClick={() => setIsOpen(true)} className="space-x-2 shadow-xs">
+        <Button onClick={() => setIsOpen(true)} className="space-x-2 shadow-sm">
           <Plus strokeWidth={1.5} className="w-4 h-4" />
           <span>{t("addCourse")}</span>
         </Button>
       ) : (
-        <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl mb-6 ring-1 ring-blue-500/10">
+        <Card className="border-blue-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md mb-6 ring-1 ring-blue-500/10">
           <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
               <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">{t("addCourse")}</CardTitle>
@@ -244,7 +244,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                     }}
                     className={`cursor-pointer p-3 rounded-xl border flex items-start space-x-3 transition-all select-none ${
                       courseType === "group"
-                        ? "bg-blue-50/80 dark:bg-blue-950/40 border-blue-500 dark:border-blue-600 ring-2 ring-blue-500/20 shadow-xs"
+                        ? "bg-blue-50/80 dark:bg-blue-950/40 border-blue-500 dark:border-blue-600 ring-2 ring-blue-500/20 shadow-sm"
                         : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                     }`}
                   >
@@ -279,7 +279,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                     }}
                     className={`cursor-pointer p-3 rounded-xl border flex items-start space-x-3 transition-all select-none ${
                       courseType === "individual"
-                        ? "bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-500 dark:border-emerald-600 ring-2 ring-emerald-500/20 shadow-xs"
+                        ? "bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-500 dark:border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm"
                         : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                     }`}
                   >
@@ -470,7 +470,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                   {schedules.map((schedule, index) => (
                     <div
                       key={schedule.tempId}
-                      className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-2xs grid grid-cols-1 sm:grid-cols-12 gap-3 items-center"
+                      className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm grid grid-cols-1 sm:grid-cols-12 gap-3 items-center"
                     >
                       <div className="sm:col-span-1 flex items-center">
                         <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center justify-center">

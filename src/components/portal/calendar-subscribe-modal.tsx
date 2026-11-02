@@ -63,7 +63,7 @@ export function CalendarSubscribeModal({
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div 
-        className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200"
+        className="w-full max-sm:max-h-[92dvh] max-sm:rounded-t-xl max-sm:rounded-b-none sm:max-w-xl sm:rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in max-sm:slide-in-from-bottom sm:zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
       >
@@ -168,7 +168,7 @@ export function CalendarSubscribeModal({
                 href={googleSubscribeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-2xs transition-all group"
+                className="flex items-center justify-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm transition-all group"
               >
                 <GoogleCalendarIcon className="w-4 h-4 shrink-0" />
                 <span>{tPortal("openInGoogle")}</span>
@@ -177,7 +177,7 @@ export function CalendarSubscribeModal({
 
               <a
                 href={webcalUrl}
-                className="flex items-center justify-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-2xs transition-all group"
+                className="flex items-center justify-center space-x-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm transition-all group"
               >
                 <Smartphone strokeWidth={1.5} className="w-4 h-4 text-slate-700 dark:text-slate-300 shrink-0" />
                 <span>{tPortal("openInApple")}</span>
@@ -199,7 +199,7 @@ export function CalendarSubscribeModal({
                 onClick={() => setActiveTab("google")}
                 className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center space-x-2 ${
                   activeTab === "google"
-                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 }`}
               >
@@ -211,7 +211,7 @@ export function CalendarSubscribeModal({
                 onClick={() => setActiveTab("apple")}
                 className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center space-x-2 ${
                   activeTab === "apple"
-                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 }`}
               >
@@ -223,7 +223,7 @@ export function CalendarSubscribeModal({
                 onClick={() => setActiveTab("manual")}
                 className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center space-x-2 ${
                   activeTab === "manual"
-                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs"
+                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 }`}
               >

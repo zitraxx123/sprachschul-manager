@@ -81,7 +81,7 @@ export function UpcomingBirthdays({ teachers }: UpcomingBirthdaysProps) {
   }, [teachers, jsLocale]);
 
   return (
-    <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden bg-white dark:bg-slate-900">
+    <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden bg-white dark:bg-slate-900">
       <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between">
         <div>
           <div className="flex items-center space-x-2">
@@ -118,7 +118,7 @@ export function UpcomingBirthdays({ teachers }: UpcomingBirthdaysProps) {
                 key={item.teacher.id}
                 className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-all ${
                   item.isToday
-                    ? "bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-white dark:from-amber-950/40 dark:via-orange-950/30 dark:to-slate-900 border-amber-300 dark:border-amber-800 shadow-xs ring-1 ring-amber-200 dark:ring-amber-950"
+                    ? "bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-white dark:from-amber-950/40 dark:via-orange-950/30 dark:to-slate-900 border-amber-300 dark:border-amber-800 shadow-sm ring-1 ring-amber-200 dark:ring-amber-950"
                     : item.isTomorrow
                     ? "bg-amber-50/40 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800"
                     : "bg-slate-50/70 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -127,9 +127,9 @@ export function UpcomingBirthdays({ teachers }: UpcomingBirthdaysProps) {
                 {/* Teacher Info */}
                 <div className="flex items-center space-x-3 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-xs ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-sm ${
                       item.isToday
-                        ? "bg-amber-500 text-white"
+                        ? "bg-amber-600 text-white"
                         : "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300"
                     }`}
                   >
@@ -157,7 +157,7 @@ export function UpcomingBirthdays({ teachers }: UpcomingBirthdaysProps) {
                 <div className="flex items-center justify-between sm:justify-end space-x-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
                   <div>
                     {item.isToday ? (
-                      <Badge className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-2.5 py-1 shadow-xs animate-pulse">
+                      <Badge className="bg-amber-600 hover:bg-amber-600 text-white font-bold text-xs px-2.5 py-1 shadow-sm animate-pulse">
                         {tDashboard("todayBirthdayBadge")}
                       </Badge>
                     ) : item.isTomorrow ? (
