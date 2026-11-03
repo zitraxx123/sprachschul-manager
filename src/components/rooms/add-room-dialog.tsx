@@ -20,7 +20,7 @@ const QUICK_PRESETS = [
   "Großer Saal",
 ];
 
-export function AddRoomDialog() {
+export function AddRoomDialog({ locations = [] }: { locations?: string[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const tRooms = useTranslations("rooms");
@@ -97,6 +97,28 @@ export function AddRoomDialog() {
                   autoFocus
                   className="h-10"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="room-location" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {tRooms("locationLabel")}
+                </Label>
+                <Input
+                  id="room-location"
+                  name="location"
+                  defaultValue=""
+                  list="room-location-list"
+                  maxLength={80}
+                  placeholder={tRooms("locationPlaceholder")}
+                  disabled={isPending}
+                  className="h-10"
+                />
+                <datalist id="room-location-list">
+                  {locations.map((l) => (
+                    <option key={l} value={l} />
+                  ))}
+                </datalist>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">{tRooms("locationHint")}</p>
               </div>
 
               {/* Quick Presets */}

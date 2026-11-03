@@ -331,18 +331,21 @@ export type Database = {
           id: string;
           organization_id: string;
           name: string;
+          location: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           organization_id: string;
           name: string;
+          location?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           organization_id?: string;
           name?: string;
+          location?: string | null;
           created_at?: string;
         };
         Relationships: [

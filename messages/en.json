@@ -628,7 +628,12 @@
     "toCourses": "Go to courses",
     "roomCol": "Room Name",
     "assignedCoursesCol": "Assigned Courses",
-    "noCoursesAssigned": "No courses assigned"
+    "noCoursesAssigned": "No courses assigned",
+    "locationLabel": "Location / branch (optional)",
+    "locationPlaceholder": "e.g. Downtown, North",
+    "locationHint": "A label for filtering only, it does not restrict access.",
+    "locationFilter": "Location",
+    "locationAll": "All"
   },
   "portal": {
     "title": "My Teacher Portal",

@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { DoorOpen, Layers, ArrowRight } from "lucide-react";
+import { DoorOpen, Layers, ArrowRight, MapPin } from "lucide-react";
 import { Room } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 
@@ -26,7 +26,12 @@ export const metadata = {
   title: "Räume & Unterrichtsorte • Sprachschul-Manager",
 };
 
-export default async function RoomsPage() {
+export default async function RoomsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ location?: string }>;
+}) {
+  const sp = await searchParams;
   const [teacher, membership, organization, tRooms, tCommon] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
@@ -60,7 +65,11 @@ export default async function RoomsPage() {
       .then((res) => (res.error ? { data: [] } : res)),
   ]);
 
-  const rooms: Room[] = (roomsResult.data as Room[]) || [];
+  const allRooms: Room[] = (roomsResult.data as Room[]) || [];
+  // Location = free-text label on a room (branch / site), used only for filtering
+  const locations = Array.from(new Set(allRooms.map((r) => r.location).filter((l): l is string => !!l))).sort((a, b) => a.localeCompare(b));
+  const locationFilter = sp.location && locations.includes(sp.location) ? sp.location : "";
+  const rooms: Room[] = locationFilter ? allRooms.filter((r) => r.location === locationFilter) : allRooms;
   const courses = (coursesResult.data || []) as Array<{ id: string; name: string; room_id: string | null }>;
 
   // Map courses per room
@@ -86,11 +95,33 @@ export default async function RoomsPage() {
           </p>
         </div>
 
-        <AddRoomDialog />
+        <AddRoomDialog locations={locations} />
       </div>
 
       {/* Tool: Freie Räume finden (Raumplaner) */}
       <RoomAvailabilityFinder />
+
+      {locations.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center space-x-1">
+            <MapPin strokeWidth={1.5} className="w-4 h-4" />
+            <span>{tRooms("locationFilter")}</span>
+          </span>
+          {["", ...locations].map((loc) => (
+            <Link
+              key={loc || "all"}
+              href={loc ? `/rooms?location=${encodeURIComponent(loc)}` : "/rooms"}
+              className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                locationFilter === loc
+                  ? "bg-blue-600 border-blue-600 text-white"
+                  : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+              }`}
+            >
+              {loc || tRooms("locationAll")}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Main Card */}
       <Card>
@@ -119,7 +150,7 @@ export default async function RoomsPage() {
               title={tRooms("emptyTitle")}
               description={tRooms("emptyDesc")}
             >
-              <AddRoomDialog />
+              <AddRoomDialog locations={locations} />
             </EmptyState>
           ) : (
             <>
@@ -152,6 +183,12 @@ export default async function RoomsPage() {
                                 <DoorOpen strokeWidth={1.5} className="w-4 h-4" />
                               </div>
                               <span>{room.name}</span>
+                              {room.location && (
+                                <Badge variant="outline" className="text-[11px] py-0 font-normal space-x-1">
+                                  <MapPin strokeWidth={1.5} className="w-3 h-3" />
+                                  <span>{room.location}</span>
+                                </Badge>
+                              )}
                             </div>
                           </TableCell>
 
@@ -178,7 +215,7 @@ export default async function RoomsPage() {
 
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end space-x-1">
-                              <EditRoomDialog room={room} />
+                              <EditRoomDialog room={room} locations={locations} />
                               <DeleteRoomButton roomId={room.id} roomName={room.name} />
                             </div>
                           </TableCell>
@@ -209,10 +246,15 @@ export default async function RoomsPage() {
                             <DoorOpen strokeWidth={1.5} className="w-4 h-4" />
                           </div>
                           <span className="font-bold text-sm text-slate-900 dark:text-slate-100">{room.name}</span>
+                          {room.location && (
+                            <Badge variant="outline" className="text-[11px] py-0 font-normal">
+                              {room.location}
+                            </Badge>
+                          )}
                         </div>
 
                         <div className="flex items-center space-x-1">
-                          <EditRoomDialog room={room} />
+                          <EditRoomDialog room={room} locations={locations} />
                           <DeleteRoomButton roomId={room.id} roomName={room.name} />
                         </div>
                       </div>

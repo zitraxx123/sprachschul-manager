@@ -628,7 +628,12 @@
     "toCourses": "К курсам",
     "roomCol": "Название кабинета",
     "assignedCoursesCol": "Прикрепленные курсы",
-    "noCoursesAssigned": "Курсы не прикреплены"
+    "noCoursesAssigned": "Курсы не прикреплены",
+    "locationLabel": "Филиал / адрес (необязательно)",
+    "locationPlaceholder": "например, Центр, Север",
+    "locationHint": "Просто метка для фильтра, права доступа не разграничивает.",
+    "locationFilter": "Филиал",
+    "locationAll": "Все"
   },
   "portal": {
     "title": "Мой преподавательский портал",

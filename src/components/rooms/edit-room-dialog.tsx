@@ -13,9 +13,10 @@ import { Pencil, Loader2, AlertCircle, X, DoorOpen } from "lucide-react";
 
 interface EditRoomDialogProps {
   room: Room;
+  locations?: string[];
 }
 
-export function EditRoomDialog({ room }: EditRoomDialogProps) {
+export function EditRoomDialog({ room, locations = [] }: EditRoomDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(room.name);
   const tRooms = useTranslations("rooms");
@@ -101,6 +102,28 @@ export function EditRoomDialog({ room }: EditRoomDialogProps) {
                   autoFocus
                   className="h-10"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor={`room-location-${room.id}`} className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {tRooms("locationLabel")}
+                </Label>
+                <Input
+                  id={`room-location-${room.id}`}
+                  name="location"
+                  defaultValue={room.location ?? ""}
+                  list={`room-location-${room.id}-list`}
+                  maxLength={80}
+                  placeholder={tRooms("locationPlaceholder")}
+                  disabled={isPending}
+                  className="h-10"
+                />
+                <datalist id={`room-location-${room.id}-list`}>
+                  {locations.map((l) => (
+                    <option key={l} value={l} />
+                  ))}
+                </datalist>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">{tRooms("locationHint")}</p>
               </div>
 
               <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end space-x-2">

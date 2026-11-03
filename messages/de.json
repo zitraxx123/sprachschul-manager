@@ -628,7 +628,12 @@
     "toCourses": "Zu den Kursen",
     "roomCol": "Raumbezeichnung",
     "assignedCoursesCol": "Zugeordnete Kurse",
-    "noCoursesAssigned": "Kein Kurs zugewiesen"
+    "noCoursesAssigned": "Kein Kurs zugewiesen",
+    "locationLabel": "Standort / Filiale (optional)",
+    "locationPlaceholder": "z. B. Zentrum, Nord",
+    "locationHint": "Nur eine Markierung zum Filtern, ohne eigene Zugriffsrechte.",
+    "locationFilter": "Standort",
+    "locationAll": "Alle"
   },
   "portal": {
     "title": "Mein Dozenten-Portal",

@@ -269,6 +269,11 @@ export async function getAvailableRoomsForSchedules(params: {
   }
 }
 
+function readLocation(formData: FormData): string | null {
+  const v = ((formData.get("location") as string) || "").trim().slice(0, 80);
+  return v || null;
+}
+
 export async function createRoom(
   prevState: RoomActionState | null,
   formData: FormData
@@ -285,6 +290,7 @@ export async function createRoom(
   const { error } = await supabase.from("rooms").insert({
     organization_id: organization.id,
     name,
+    location: readLocation(formData),
   });
 
   if (error) {
@@ -314,7 +320,7 @@ export async function updateRoom(
   const supabase = await createClient();
   const { error } = await supabase
     .from("rooms")
-    .update({ name })
+    .update({ name, location: readLocation(formData) })
     .eq("id", id)
     .eq("organization_id", organization.id);
 
