@@ -1,9 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { CourseWithStudents } from "@/components/portal/weekly-calendar";
 import { LessonOverride } from "@/lib/schedule";
 import { Calendar as CalendarIcon } from "lucide-react";
+
+function LoadingLabel() {
+  const t = useTranslations("common");
+  return <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{t("loading")}</p>;
+}
 
 const WeeklyCalendar = dynamic(
   () => import("@/components/portal/weekly-calendar").then((m) => m.WeeklyCalendar),
@@ -14,7 +20,7 @@ const WeeklyCalendar = dynamic(
         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
           <CalendarIcon className="w-5 h-5 animate-spin" />
         </div>
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Wochenkalender wird geladen...</p>
+        <LoadingLabel />
       </div>
     ),
   }

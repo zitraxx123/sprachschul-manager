@@ -19,9 +19,10 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { BookOpen, Calendar, Clock, Euro } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
-export const metadata = {
-  title: "Unterrichtsstunden • Sprachschul-Manager",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("common");
+  return { title: `${t("lessons")} • Sprachschul-Manager` };
+}
 
 export default async function LessonsPage() {
   const [teacher, membership, organization, tLessons, tCommon, locale] = await Promise.all([

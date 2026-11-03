@@ -121,9 +121,9 @@ export function EditCourseDialog({
           setAvailableRooms(res.availableRooms);
           setOccupiedRooms(res.occupiedRooms);
 
-          if (selectedRoomId && !res.availableRooms.some((r) => r.id === selectedRoomId)) {
-            setSelectedRoomId("");
-          }
+          setSelectedRoomId((prev) =>
+            prev && !res.availableRooms.some((r) => r.id === prev) ? "" : prev
+          );
         }
       } catch (err) {
         console.error("Error checking room availability:", err);
@@ -186,7 +186,7 @@ export function EditCourseDialog({
         variant="ghost"
         size="icon"
         onClick={() => setIsOpen(true)}
-        className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+        className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40"
         title={t("editCourse")}
       >
         <Pencil strokeWidth={1.5} className="w-4 h-4" />

@@ -119,6 +119,20 @@ export function WeeklyCalendar({
 
   const jsLocale = locale === "ru" ? "ru-RU" : locale === "en" ? "en-US" : "de-DE";
 
+  // Text of the Google Calendar event (localized)
+  const buildGcalDetails = (course: CourseWithStudents, extraNotes?: string) => {
+    const students = course.students || [];
+    const names = students.map((s) => `${s.first_name} ${s.last_name}`).join(", ") || tPortal("gcalNone");
+    const type = course.course_type === "individual" ? tPortal("gcalTypeIndividual") : tPortal("gcalTypeGroup");
+    return [
+      `${tPortal("gcalCourse")}: ${course.name}`,
+      `${tPortal("gcalType")}: ${type}`,
+      `${tPortal("gcalRoom")}: ${course.rooms?.name || tPortal("notAssigned")}`,
+      `${tPortal("gcalParticipants")} (${students.length}): ${names}`,
+      ...(extraNotes ? [`${tPortal("gcalNotes")}: ${extraNotes}`] : []),
+    ].join("\n");
+  };
+
   // Calculate cancellation status (timely vs. late) dynamically
   const cancellationResult = useMemo(() => {
     if (!selectedInstance || !selectedDate) {
@@ -410,7 +424,7 @@ export function WeeklyCalendar({
                       startTime: schedule.start_time,
                       durationHours: Number(schedule.duration) || 1.5,
                       location: course.rooms?.name || "",
-                      details: `Kurs: ${course.name}\nTyp: ${course.course_type === "individual" ? "1:1 Einzelunterricht" : "Gruppenkurs"}\nRaum: ${course.rooms?.name || "Nicht zugewiesen"}\nTeilnehmer (${(course.students || []).length}): ${(course.students || []).map((s) => `${s.first_name} ${s.last_name}`).join(", ") || "Keine"}`,
+                      details: buildGcalDetails(course),
                     });
 
                     return (
@@ -513,7 +527,7 @@ export function WeeklyCalendar({
           startTime: selectedInstance.schedule.start_time,
           durationHours: durationHours,
           location: selectedInstance.course.rooms?.name || "",
-          details: `Kurs: ${selectedInstance.course.name}\nTyp: ${selectedInstance.course.course_type === "individual" ? "1:1 Einzelunterricht" : "Gruppenkurs"}\nRaum: ${selectedInstance.course.rooms?.name || "Nicht zugewiesen"}\nTeilnehmer: ${(selectedInstance.course.students || []).map((s) => `${s.first_name} ${s.last_name}`).join(", ") || "Keine"}${notes ? `\nNotizen: ${notes}` : ""}`,
+          details: buildGcalDetails(selectedInstance.course, notes),
         });
 
         return (

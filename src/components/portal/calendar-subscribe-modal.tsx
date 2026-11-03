@@ -238,23 +238,17 @@ export function CalendarSubscribeModal({
                 <li>
                   <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-semibold underline">calendar.google.com</a>
                 </li>
-                <li>
-                  (+) &quot;Add other calendars&quot; / &quot;Weitere Kalender&quot;
-                </li>
-                <li>
-                  &quot;From URL&quot; / &quot;Per URL&quot;
-                </li>
-                <li>
-                  Paste URL &amp; &quot;Add calendar&quot;
-                </li>
+                <li>{tPortal("subGoogleStep2")}</li>
+                <li>{tPortal("subGoogleStep3")}</li>
+                <li>{tPortal("subGoogleStep4")}</li>
               </ol>
             )}
 
             {activeTab === "apple" && (
               <ol className="text-xs text-slate-600 dark:text-slate-300 space-y-2 list-decimal list-inside bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                <li>iOS Settings &rarr; Calendar &rarr; Accounts &rarr; Add Account</li>
-                <li>Other &rarr; Add Subscribed Calendar</li>
-                <li>Paste URL &amp; Save</li>
+                <li>{tPortal("subAppleStep1")}</li>
+                <li>{tPortal("subAppleStep2")}</li>
+                <li>{tPortal("subAppleStep3")}</li>
               </ol>
             )}
 

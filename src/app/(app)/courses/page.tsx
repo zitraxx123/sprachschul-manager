@@ -20,9 +20,10 @@ import { CourseSchedule, Teacher, Room } from "@/types/database";
 import { formatTimeRange } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Kurse & Gruppen • Sprachschul-Manager",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("common");
+  return { title: `${t("courses")} • Sprachschul-Manager` };
+}
 
 interface CoursesPageProps {
   searchParams?: Promise<{ tab?: string }>;

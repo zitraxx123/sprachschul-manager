@@ -212,7 +212,9 @@
     "customPrice": "Индивидуальная цена",
     "callTeacher": "Позвонить",
     "emailTeacher": "Написать письмо",
-    "birthdayMailSubject": "С днём рождения!"
+    "birthdayMailSubject": "С днём рождения!",
+    "defaultOrgName": "Моя языковая школа",
+    "defaultSchoolName": "Языковая школа"
   },
   "students": {
     "title": "Управление учениками",
@@ -370,7 +372,8 @@
     "searchStudentPlaceholder": "Поиск ученика по имени или почте...",
     "monthlyPrice": "Стоимость в месяц (€)",
     "addAs": "Добавить как",
-    "courseFullSuggestWaiting": "Курс заполнен – активный статус недоступен. Добавьте ученика в лист ожидания."
+    "courseFullSuggestWaiting": "Курс заполнен – активный статус недоступен. Добавьте ученика в лист ожидания.",
+    "namePlaceholder": "напр. Немецкий B2"
   },
   "lessons": {
     "title": "Журнал занятий (Классный журнал)",
@@ -658,7 +661,22 @@
     "saveCancellationBtn": "Зафиксировать отмену в журнале",
     "savingCancellation": "Сохранение...",
     "cancellationNotesPlaceholder": "Причина отмены (напр., болезнь, перенос)...",
-    "attendanceNotNeededDesc": "При отмене урока учеником отдельная отметка посещаемости не требуется."
+    "attendanceNotNeededDesc": "При отмене урока учеником отдельная отметка посещаемости не требуется.",
+    "gcalCourse": "Курс",
+    "gcalType": "Тип",
+    "gcalRoom": "Кабинет",
+    "gcalParticipants": "Участники",
+    "gcalNone": "Нет",
+    "gcalNotes": "Заметки",
+    "gcalTypeIndividual": "Индивидуальное занятие 1:1",
+    "gcalTypeGroup": "Групповой курс",
+    "subGoogleStep2": "(+) «Добавить другие календари»",
+    "subGoogleStep3": "«По URL»",
+    "subGoogleStep4": "Вставьте URL и нажмите «Добавить календарь»",
+    "subAppleStep1": "iOS: Настройки → Календарь → Учётные записи → Добавить учётную запись",
+    "subAppleStep2": "Другое → Добавить подписной календарь",
+    "subAppleStep3": "Вставьте URL и сохраните",
+    "cancellationBookedSuccess": "Отмена успешно записана в журнал занятий!"
   },
   "import": {
     "title": "Импорт данных (Excel / CSV)",

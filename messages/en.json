@@ -212,7 +212,9 @@
     "customPrice": "Custom Price",
     "callTeacher": "Call",
     "emailTeacher": "Send email",
-    "birthdayMailSubject": "Happy Birthday!"
+    "birthdayMailSubject": "Happy Birthday!",
+    "defaultOrgName": "My language school",
+    "defaultSchoolName": "Language school"
   },
   "students": {
     "title": "Student Management",
@@ -370,7 +372,8 @@
     "searchStudentPlaceholder": "Search student by name or email...",
     "monthlyPrice": "Monthly Price (€)",
     "addAs": "Add as",
-    "courseFullSuggestWaiting": "The course is full – active enrollment is not possible. Please add to the waiting list."
+    "courseFullSuggestWaiting": "The course is full – active enrollment is not possible. Please add to the waiting list.",
+    "namePlaceholder": "e.g. German B2"
   },
   "lessons": {
     "title": "Lessons (Class Logbook)",
@@ -658,7 +661,22 @@
     "saveCancellationBtn": "Record Cancellation in Logbook",
     "savingCancellation": "Saving...",
     "cancellationNotesPlaceholder": "Reason for cancellation (e.g. illness, rescheduled)...",
-    "attendanceNotNeededDesc": "Individual attendance check is omitted when a student cancels."
+    "attendanceNotNeededDesc": "Individual attendance check is omitted when a student cancels.",
+    "gcalCourse": "Course",
+    "gcalType": "Type",
+    "gcalRoom": "Room",
+    "gcalParticipants": "Participants",
+    "gcalNone": "None",
+    "gcalNotes": "Notes",
+    "gcalTypeIndividual": "1:1 private lesson",
+    "gcalTypeGroup": "Group course",
+    "subGoogleStep2": "(+) “Add other calendars”",
+    "subGoogleStep3": "“From URL”",
+    "subGoogleStep4": "Paste the URL and choose “Add calendar”",
+    "subAppleStep1": "iOS: Settings → Calendar → Accounts → Add Account",
+    "subAppleStep2": "Other → Add Subscribed Calendar",
+    "subAppleStep3": "Paste the URL and save",
+    "cancellationBookedSuccess": "Cancellation successfully recorded in the class register!"
   },
   "import": {
     "title": "Data Import (Excel / CSV)",

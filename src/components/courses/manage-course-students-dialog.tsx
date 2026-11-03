@@ -314,7 +314,7 @@ export function ManageCourseStudentsDialog({
                   <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
                     {t("addAs")}
                   </span>
-                  <div className="flex items-center space-x-1 p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <div className="flex flex-wrap items-center gap-1 p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400">
                     {(
                       [
                         { value: "active", label: tStudents("statusActive"), activeClass: "text-blue-700 dark:text-blue-300" },

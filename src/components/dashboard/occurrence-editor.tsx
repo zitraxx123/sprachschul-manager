@@ -125,7 +125,7 @@ export function OccurrenceEditor({
   }
 
   const selectClass =
-    "w-full h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm px-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/40";
+    "w-full h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm px-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:[color-scheme:dark]";
 
   return (
     <form
@@ -148,7 +148,7 @@ export function OccurrenceEditor({
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="h-9 text-sm dark:bg-slate-900 dark:text-white"
+            className="h-9 text-sm dark:bg-slate-900 dark:text-white dark:[color-scheme:dark]"
           />
         </div>
         <div className="space-y-1">
@@ -158,7 +158,7 @@ export function OccurrenceEditor({
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
             required
-            className="h-9 text-sm dark:bg-slate-900 dark:text-white"
+            className="h-9 text-sm dark:bg-slate-900 dark:text-white dark:[color-scheme:dark]"
           />
         </div>
         <div className="space-y-1">
@@ -171,7 +171,7 @@ export function OccurrenceEditor({
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
             required
-            className="h-9 text-sm dark:bg-slate-900 dark:text-white"
+            className="h-9 text-sm dark:bg-slate-900 dark:text-white dark:[color-scheme:dark]"
           />
         </div>
       </div>
@@ -199,7 +199,7 @@ export function OccurrenceEditor({
           onChange={(e) => setReason(e.target.value)}
           placeholder={t("reasonPlaceholder")}
           maxLength={200}
-          className="h-9 text-sm dark:bg-slate-900 dark:text-white"
+          className="h-9 text-sm dark:bg-slate-900 dark:text-white dark:[color-scheme:dark]"
         />
       </div>
 

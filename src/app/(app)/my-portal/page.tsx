@@ -31,9 +31,10 @@ interface MyPortalPageProps {
   searchParams: Promise<{ month?: string }>;
 }
 
-export const metadata = {
-  title: "Mein Dozenten-Portal • Sprachschul-Manager",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("common");
+  return { title: `${t("myPortal")} • Sprachschul-Manager` };
+}
 
 export default async function MyPortalPage({ searchParams }: MyPortalPageProps) {
   const { month: selectedMonthParam } = await searchParams;

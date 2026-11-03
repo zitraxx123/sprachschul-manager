@@ -47,7 +47,7 @@ export function CreateOrganizationCard() {
                 id="name"
                 name="name"
                 placeholder={tDashboard("createOrgPlaceholder")}
-                defaultValue="Meine Sprachschule"
+                defaultValue={tDashboard("defaultOrgName")}
                 required
                 disabled={isPending}
                 className="h-11"

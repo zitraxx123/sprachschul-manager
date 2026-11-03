@@ -253,7 +253,7 @@ export function SchoolWeeklySchedule({
                 value={selectedTeacherId}
                 onChange={(e) => setSelectedTeacherId(e.target.value)}
                 className="bg-transparent font-medium text-slate-800 dark:text-slate-200 text-xs focus:outline-none cursor-pointer pr-1"
-                aria-label="Filter"
+                aria-label={tCommon("filter")}
               >
                 <option value="all" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                   {tDashboard("filterAllTeachers", { count: teacherOptions.length })}

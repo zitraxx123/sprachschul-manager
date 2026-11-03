@@ -212,7 +212,9 @@
     "customPrice": "Individueller Preis",
     "callTeacher": "Anrufen",
     "emailTeacher": "E-Mail schreiben",
-    "birthdayMailSubject": "Alles Gute zum Geburtstag!"
+    "birthdayMailSubject": "Alles Gute zum Geburtstag!",
+    "defaultOrgName": "Meine Sprachschule",
+    "defaultSchoolName": "Sprachschule"
   },
   "students": {
     "title": "Schülerverwaltung",
@@ -370,7 +372,8 @@
     "searchStudentPlaceholder": "Schüler nach Name oder E-Mail suchen...",
     "monthlyPrice": "Monatspreis (€)",
     "addAs": "Hinzufügen als",
-    "courseFullSuggestWaiting": "Der Kurs ist voll – Aktiv ist nicht möglich. Bitte als Warteliste hinzufügen."
+    "courseFullSuggestWaiting": "Der Kurs ist voll – Aktiv ist nicht möglich. Bitte als Warteliste hinzufügen.",
+    "namePlaceholder": "z. B. Deutsch B2"
   },
   "lessons": {
     "title": "Unterrichtsstunden (Klassenbuch)",
@@ -658,7 +661,22 @@
     "saveCancellationBtn": "Absage im Klassenbuch erfassen",
     "savingCancellation": "Wird erfasst...",
     "cancellationNotesPlaceholder": "Grund der Absage (z. B. krank, Terminverschiebung)...",
-    "attendanceNotNeededDesc": "Bei Absage durch den Schüler entfällt die Anwesenheitsprüfung."
+    "attendanceNotNeededDesc": "Bei Absage durch den Schüler entfällt die Anwesenheitsprüfung.",
+    "gcalCourse": "Kurs",
+    "gcalType": "Typ",
+    "gcalRoom": "Raum",
+    "gcalParticipants": "Teilnehmer",
+    "gcalNone": "Keine",
+    "gcalNotes": "Notizen",
+    "gcalTypeIndividual": "1:1 Einzelunterricht",
+    "gcalTypeGroup": "Gruppenkurs",
+    "subGoogleStep2": "(+) „Weitere Kalender hinzufügen“",
+    "subGoogleStep3": "„Per URL“",
+    "subGoogleStep4": "URL einfügen und „Kalender hinzufügen“ wählen",
+    "subAppleStep1": "iOS: Einstellungen → Kalender → Accounts → Account hinzufügen",
+    "subAppleStep2": "Andere → Abonnierten Kalender hinzufügen",
+    "subAppleStep3": "URL einfügen und sichern",
+    "cancellationBookedSuccess": "Absage erfolgreich im Klassenbuch erfasst!"
   },
   "import": {
     "title": "Daten-Import (Excel / CSV)",

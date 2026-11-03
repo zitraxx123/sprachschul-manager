@@ -115,9 +115,9 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
           setAvailableRooms(res.availableRooms);
           setOccupiedRooms(res.occupiedRooms);
 
-          if (selectedRoomId && !res.availableRooms.some((r) => r.id === selectedRoomId)) {
-            setSelectedRoomId("");
-          }
+          setSelectedRoomId((prev) =>
+            prev && !res.availableRooms.some((r) => r.id === prev) ? "" : prev
+          );
         }
       } catch (err) {
         console.error("Error checking room availability:", err);
@@ -317,7 +317,7 @@ export function AddCourseDialog({ teachers, rooms = [], students = [] }: AddCour
                   <Input
                     id="name"
                     name="name"
-                    placeholder="Deutsch B2"
+                    placeholder={t("namePlaceholder")}
                     required
                     disabled={isPending}
                     className="h-10"

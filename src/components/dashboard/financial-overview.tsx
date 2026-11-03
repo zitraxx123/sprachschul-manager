@@ -86,7 +86,7 @@ export function FinancialOverview({
       name: debtor.name,
       month: currentMonthLabel,
       amount: formattedAmount,
-      school: schoolName || "Sprachschule",
+      school: schoolName || t("defaultSchoolName"),
     });
 
     if (debtor.email) {

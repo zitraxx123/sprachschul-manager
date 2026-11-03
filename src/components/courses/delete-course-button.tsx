@@ -32,7 +32,7 @@ export function DeleteCourseButton({ courseId }: { courseId: string }) {
       size="icon"
       onClick={handleDelete}
       disabled={isPending}
-      className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+      className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
       title={tCommon("delete")}
     >
       {isPending ? (
