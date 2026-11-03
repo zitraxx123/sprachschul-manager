@@ -105,6 +105,7 @@
     "myPortal": "My Portal",
     "logout": "Log out",
     "roleAdmin": "School Admin",
+    "roleAssistant": "Assistant",
     "roleTeacher": "Teacher (Instructor)",
     "invoices": "Invoices",
     "auditLog": "Audit log"
@@ -1270,5 +1271,26 @@
     "billingNotConfigured": "Payment is not set up yet.",
     "billingForbidden": "Not allowed.",
     "billingFailed": "Action failed. Please try again later."
+  },
+  "team": {
+    "title": "Team",
+    "hint": "Assistant accounts can see students, courses, schedule, attendance and rooms. No access to invoices, SEPA, pay rates, settings and the change log.",
+    "emailLabel": "Assistant e-mail",
+    "emailPlaceholder": "name@example.com",
+    "inviteButton": "Invite",
+    "pending": "invited",
+    "cancelInvite": "Withdraw invitation",
+    "remove": "Remove access",
+    "removeConfirm": "Really remove access for {email}?",
+    "removed": "Access removed",
+    "linkHint": "One-time link to set a password. Please send it to the person yourself (it works only once).",
+    "copy": "Copy",
+    "linkCopied": "Link copied",
+    "linkCopyFailed": "Could not copy, please select the link and copy it manually",
+    "errorForbidden": "Only owners and admins can do this.",
+    "errorEmail": "Please enter a valid e-mail address.",
+    "errorAlreadyInvited": "This e-mail has already been invited.",
+    "errorAccountExists": "An account with this e-mail already exists. Please use another address.",
+    "errorServer": "Invitation failed. Please try again later."
   }
 }

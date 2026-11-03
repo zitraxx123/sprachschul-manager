@@ -101,21 +101,21 @@ export type Database = {
           id: string;
           organization_id: string;
           user_id: string;
-          role: "owner" | "admin" | "teacher";
+          role: "owner" | "admin" | "assistant" | "teacher";
           created_at: string;
         };
         Insert: {
           id?: string;
           organization_id: string;
           user_id: string;
-          role?: "owner" | "admin" | "teacher";
+          role?: "owner" | "admin" | "assistant" | "teacher";
           created_at?: string;
         };
         Update: {
           id?: string;
           organization_id?: string;
           user_id?: string;
-          role?: "owner" | "admin" | "teacher";
+          role?: "owner" | "admin" | "assistant" | "teacher";
           created_at?: string;
         };
         Relationships: [
@@ -447,6 +447,33 @@ export type Database = {
         };
         Insert: never;
         Update: never;
+        Relationships: [];
+      };
+      organization_invites: {
+        Row: {
+          id: string;
+          organization_id: string;
+          email: string;
+          role: "assistant";
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          email: string;
+          role?: "assistant";
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          email?: string;
+          role?: "assistant";
+          created_by?: string | null;
+          created_at?: string;
+        };
         Relationships: [];
       };
       audit_log: {
@@ -827,7 +854,15 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      teachers_directory: {
+        Row: {
+          id: string;
+          organization_id: string;
+          name: string;
+          email: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       get_user_org_ids: {

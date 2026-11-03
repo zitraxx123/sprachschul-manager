@@ -55,6 +55,7 @@ export default async function InvoicesPage({
   ]);
 
   if (membership?.role === "teacher") redirect("/my-portal");
+  if (membership?.role === "assistant") redirect("/students");
   if (!organization) return <CreateOrganizationCard />;
 
   const month = monthParam && /^\d{4}-(0[1-9]|1[0-2])$/.test(monthParam) ? monthParam : berlinMonth();

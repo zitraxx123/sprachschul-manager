@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 
 interface BottomNavProps {
   isTeacher?: boolean;
+  isAssistant?: boolean;
 }
 
 interface BottomTabConfig {
@@ -36,10 +37,16 @@ const teacherTabs: BottomTabConfig[] = [
   { key: "absences", href: "/absences", icon: UserX },
 ];
 
-export function BottomNav({ isTeacher = false }: BottomNavProps) {
+const assistantTabs: BottomTabConfig[] = [
+  { key: "courses", href: "/courses", icon: Layers },
+  { key: "students", href: "/students", icon: Users },
+  { key: "absences", href: "/absences", icon: UserX },
+];
+
+export function BottomNav({ isTeacher = false, isAssistant = false }: BottomNavProps) {
   const t = useTranslations("nav");
   const pathname = usePathname();
-  const tabs = isTeacher ? teacherTabs : adminTabs;
+  const tabs = isTeacher ? teacherTabs : isAssistant ? assistantTabs : adminTabs;
 
   return (
     <nav 

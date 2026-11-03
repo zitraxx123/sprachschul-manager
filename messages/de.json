@@ -105,6 +105,7 @@
     "myPortal": "Mein Portal",
     "logout": "Abmelden",
     "roleAdmin": "Schulleitung",
+    "roleAssistant": "Assistenz",
     "roleTeacher": "Lehrkraft (Dozent)",
     "invoices": "Rechnungen",
     "auditLog": "Änderungsprotokoll"
@@ -1270,5 +1271,26 @@
     "billingNotConfigured": "Die Zahlung ist noch nicht eingerichtet.",
     "billingForbidden": "Keine Berechtigung.",
     "billingFailed": "Aktion fehlgeschlagen. Bitte später erneut versuchen."
+  },
+  "team": {
+    "title": "Team",
+    "hint": "Assistenz-Zugänge: sehen Schüler, Kurse, Stundenplan, Anwesenheit und Räume. Kein Zugriff auf Rechnungen, SEPA, Honorare, Einstellungen und Änderungsprotokoll.",
+    "emailLabel": "E-Mail der Assistenz",
+    "emailPlaceholder": "name@beispiel.de",
+    "inviteButton": "Einladen",
+    "pending": "eingeladen",
+    "cancelInvite": "Einladung zurückziehen",
+    "remove": "Zugang entziehen",
+    "removeConfirm": "Zugang für {email} wirklich entziehen?",
+    "removed": "Zugang entzogen",
+    "linkHint": "Einmal-Link zum Passwort setzen. Bitte selbst an die Person senden (der Link ist nur einmal gültig).",
+    "copy": "Kopieren",
+    "linkCopied": "Link kopiert",
+    "linkCopyFailed": "Kopieren nicht möglich, bitte Link markieren und manuell kopieren",
+    "errorForbidden": "Nur Inhaber und Admins dürfen das.",
+    "errorEmail": "Bitte eine gültige E-Mail-Adresse eingeben.",
+    "errorAlreadyInvited": "Diese E-Mail wurde bereits eingeladen.",
+    "errorAccountExists": "Für diese E-Mail existiert bereits ein Konto. Bitte eine andere Adresse verwenden.",
+    "errorServer": "Einladung fehlgeschlagen. Bitte später erneut versuchen."
   }
 }

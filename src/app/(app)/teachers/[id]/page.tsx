@@ -71,6 +71,10 @@ export default async function TeacherDetailPage({
     redirect("/my-portal");
   }
 
+  if (membership?.role === "assistant") {
+    redirect("/students");
+  }
+
   const { id: teacherId } = resolvedParams;
   const { month: selectedMonthParam } = resolvedSearchParams;
 

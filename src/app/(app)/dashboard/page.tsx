@@ -50,6 +50,10 @@ export default async function DashboardPage() {
     redirect("/my-portal");
   }
 
+  if (membership?.role === "assistant") {
+    redirect("/students");
+  }
+
   if (!organization) {
     return <CreateOrganizationCard />;
   }

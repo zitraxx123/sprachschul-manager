@@ -20,6 +20,7 @@ import { CourseSchedule, Teacher, Room } from "@/types/database";
 import { formatTimeRange } from "@/lib/utils";
 import { WaitlistPromoteButton } from "@/components/courses/waitlist-promote-button";
 import { getTranslations } from "next-intl/server";
+import { getTeacherDirectory, attachTeachers } from "@/lib/teacher-directory";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,9 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   }
 
   const supabase = await createClient();
+  const isAssistant = membership?.role === "assistant";
+  // The assistant has no access to the teachers table (rates, tax id): names only, via the directory view
+  const teacherDir = isAssistant ? await getTeacherDirectory(supabase, organization.id) : [];
 
   // Parallel fetch: Teachers, Rooms, Courses, and Students
   const [
@@ -62,11 +66,13 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     coursesResult,
     studentsResult
   ] = await Promise.all([
-    supabase
-      .from("teachers")
-      .select("*")
-      .eq("organization_id", organization.id)
-      .order("name", { ascending: true }),
+    isAssistant
+      ? Promise.resolve({ data: teacherDir as unknown as Teacher[] })
+      : supabase
+          .from("teachers")
+          .select("*")
+          .eq("organization_id", organization.id)
+          .order("name", { ascending: true }),
     supabase
       .from("rooms")
       .select("*")
@@ -98,6 +104,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const teachers = teachersResult.data || [];
   const rooms: Room[] = (roomsResult.data as Room[]) || [];
   const rawCourses = coursesResult.data || [];
+  if (isAssistant) attachTeachers(rawCourses, teacherDir);
   const allStudents = studentsResult.data || [];
 
   const courses = (rawCourses || []) as unknown as Array<{

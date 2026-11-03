@@ -33,6 +33,7 @@ interface MobileNavProps {
   userEmail: string;
   userName?: string;
   isTeacher?: boolean;
+  isAssistant?: boolean;
 }
 
 interface NavItemConfig {
@@ -61,17 +62,26 @@ const teacherNavItems: NavItemConfig[] = [
   { key: "help", href: "/help", icon: HelpCircle },
 ];
 
+const assistantNavItems: NavItemConfig[] = [
+  { key: "courses", href: "/courses", icon: Layers },
+  { key: "students", href: "/students", icon: Users },
+  { key: "absences", href: "/absences", icon: UserX },
+  { key: "rooms", href: "/rooms", icon: DoorOpen },
+  { key: "help", href: "/help", icon: HelpCircle },
+];
+
 export function MobileNav({
   organizationName,
   logoUrl,
   userEmail,
   userName,
   isTeacher = false,
+  isAssistant = false,
 }: MobileNavProps) {
   const t = useTranslations("nav");
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const navItems = isTeacher ? teacherNavItems : adminNavItems;
+  const navItems = isTeacher ? teacherNavItems : isAssistant ? assistantNavItems : adminNavItems;
 
   return (
     <div className="md:hidden">
@@ -106,7 +116,7 @@ export function MobileNav({
                     {organizationName}
                   </h3>
                   <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                    {isTeacher ? t("roleTeacher") : t("roleAdmin")}
+                    {isTeacher ? t("roleTeacher") : isAssistant ? t("roleAssistant") : t("roleAdmin")}
                   </span>
                 </div>
               </div>
@@ -163,7 +173,7 @@ export function MobileNav({
                   {userName || userEmail}
                 </p>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                  {isTeacher ? t("roleTeacher") : t("roleAdmin")}
+                  {isTeacher ? t("roleTeacher") : isAssistant ? t("roleAssistant") : t("roleAdmin")}
                 </p>
               </div>
 

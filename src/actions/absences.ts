@@ -6,6 +6,7 @@ import {
   getCurrentTeacher, 
   getCurrentMembership 
 } from "@/lib/supabase/server";
+import { getTeacherDirectory, attachTeachers } from "@/lib/teacher-directory";
 
 export type AbsenceRecord = {
   attendanceId: string;
@@ -173,8 +174,7 @@ export async function getAbsencesReport(
         notes,
         teachers!lessons_teacher_id_fkey (
           id,
-          name,
-          hourly_rate
+          name
         ),
         courses (
           id,
@@ -216,6 +216,11 @@ export async function getAbsencesReport(
       range: rangeInfo,
       error: error.message,
     };
+  }
+
+  // The assistant cannot read the teachers table: fill in names from the directory view
+  if (membership?.role === "assistant") {
+    attachTeachers(data, await getTeacherDirectory(supabase, organization.id));
   }
 
   // Map into typed records

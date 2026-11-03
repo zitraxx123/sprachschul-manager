@@ -44,6 +44,7 @@ export default async function ReminderPage({
   ]);
 
   if (membership?.role === "teacher") redirect("/my-portal");
+  if (membership?.role === "assistant") redirect("/students");
   if (!organization) notFound();
 
   const supabase = await createClient();

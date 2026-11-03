@@ -47,6 +47,10 @@ export default async function LessonsPage({
     redirect("/my-portal");
   }
 
+  if (membership?.role === "assistant") {
+    redirect("/students");
+  }
+
   if (!organization) {
     return <CreateOrganizationCard />;
   }

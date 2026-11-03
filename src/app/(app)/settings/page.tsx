@@ -9,6 +9,8 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { SettingsForm } from "@/components/settings/settings-form";
 import { PlanCard } from "@/components/settings/plan-card";
 import { getPlanUsage } from "@/lib/plan-limits";
+import { TeamCard } from "@/components/settings/team-card";
+import { getTeamData } from "@/actions/team";
 import { isStripeConfigured } from "@/lib/stripe";
 import { getTranslations } from "next-intl/server";
 
@@ -35,11 +37,17 @@ export default async function SettingsPage({
     redirect("/my-portal");
   }
 
+  if (membership?.role === "assistant") {
+    redirect("/students");
+  }
+
   if (!organization) {
     return <CreateOrganizationCard />;
   }
 
   const planUsage = await getPlanUsage(await createClient(), organization.id, organization.plan || "free");
+
+  const teamData = await getTeamData(organization.id);
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -61,6 +69,8 @@ export default async function SettingsPage({
           justSubscribed={sp.billing === "success"}
         />
       )}
+
+      <TeamCard team={teamData} />
 
       <SettingsForm organization={organization} />
     </div>

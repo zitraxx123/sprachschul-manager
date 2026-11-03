@@ -25,6 +25,7 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
   ]);
 
   if (membership?.role === "teacher") redirect("/my-portal");
+  if (membership?.role === "assistant") redirect("/students");
   if (!organization) notFound();
 
   const supabase = await createClient();

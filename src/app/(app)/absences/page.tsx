@@ -24,6 +24,7 @@ import {
   Calendar 
 } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
+import { getTeacherDirectory } from "@/lib/teacher-directory";
 
 export const dynamic = "force-dynamic";
 
@@ -61,13 +62,15 @@ export default async function AbsencesPage({ searchParams }: AbsencesPageProps) 
   const supabase = await createClient();
 
   // Fetch teachers for the admin filter dropdown
-  const { data: teachers = [] } = !isTeacher
-    ? await supabase
-        .from("teachers")
-        .select("id, name")
-        .eq("organization_id", organization.id)
-        .order("name", { ascending: true })
-    : { data: [] };
+  const { data: teachers = [] } = isTeacher
+    ? { data: [] }
+    : membership?.role === "assistant"
+      ? { data: await getTeacherDirectory(supabase, organization.id) }
+      : await supabase
+          .from("teachers")
+          .select("id, name")
+          .eq("organization_id", organization.id)
+          .order("name", { ascending: true });
 
   // Fetch absences report data
   const report = await getAbsencesReport({

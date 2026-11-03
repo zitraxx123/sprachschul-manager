@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
+import { isFullAdmin } from "@/lib/roles";
 import { generateInvoicesCore } from "@/lib/invoice-generation";
 
 export type InvoiceActionState = {
@@ -18,7 +19,7 @@ const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
 async function requireAdmin() {
   const [organization, membership] = await Promise.all([getActiveOrganization(), getCurrentMembership()]);
   if (!organization) return { error: "notFound" as const };
-  if (!membership || membership.role === "teacher") return { error: "forbidden" as const };
+  if (!membership || !isFullAdmin(membership.role)) return { error: "forbidden" as const };
   return { organization };
 }
 

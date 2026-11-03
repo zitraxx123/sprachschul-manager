@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
+import { isFullAdmin } from "@/lib/roles";
 import { DATE_RE } from "@/lib/contracts";
 
 export type ContractActionState = {
@@ -37,7 +38,7 @@ export async function updateEnrollmentContract(input: ContractInput): Promise<Co
 
   const [organization, membership] = await Promise.all([getActiveOrganization(), getCurrentMembership()]);
   if (!organization) return { errorCode: "notFound" };
-  if (!membership || membership.role === "teacher") return { errorCode: "forbidden" };
+  if (!membership || !isFullAdmin(membership.role)) return { errorCode: "forbidden" };
 
   const supabase = await createClient();
   const { data, error } = await supabase

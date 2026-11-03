@@ -11,6 +11,7 @@ interface HeaderProps {
   userEmail?: string;
   userName?: string;
   isTeacher?: boolean;
+  isAssistant?: boolean;
 }
 
 export async function Header({
@@ -19,6 +20,7 @@ export async function Header({
   userEmail = "",
   userName = "",
   isTeacher = false,
+  isAssistant = false,
 }: HeaderProps) {
   const t = await getTranslations("common");
 
@@ -31,6 +33,7 @@ export async function Header({
           userEmail={userEmail}
           userName={userName}
           isTeacher={isTeacher}
+          isAssistant={isAssistant}
         />
 
         <div className="flex items-center space-x-2">

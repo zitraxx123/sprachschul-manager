@@ -36,6 +36,7 @@ export default async function AuditLogPage({
   ]);
 
   if (membership?.role === "teacher") redirect("/my-portal");
+  if (membership?.role === "assistant") redirect("/students");
   if (!organization) return <CreateOrganizationCard />;
 
   const table = (TABLES as readonly string[]).includes(sp.table || "") ? sp.table! : null;

@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, User, Mail, Phone, CheckCircle2, AlertCircle } from "lucide-react";
 import { Course, CourseSchedule } from "@/types/database";
 import { getTranslations, getLocale } from "next-intl/server";
+import { getTeacherDirectory, attachTeachers } from "@/lib/teacher-directory";
 import { ListFilters } from "@/components/ui/list-filters";
 import type { ContractEnrollment } from "@/components/students/contract-dialog";
 
@@ -79,6 +80,8 @@ export default async function StudentsPage({
   }
 
   const supabase = await createClient();
+  const isAssistant = membership?.role === "assistant";
+  const teacherDir = isAssistant ? await getTeacherDirectory(supabase, organization.id) : [];
 
   const now = new Date();
   const currentMonthYear = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -116,6 +119,10 @@ export default async function StudentsPage({
 
   const students = studentsResult.data || [];
   const rawCourses = coursesResult.data || [];
+  if (isAssistant) {
+    attachTeachers(students, teacherDir);
+    attachTeachers(rawCourses, teacherDir);
+  }
   const monthlyPayments = paymentsResult.data || [];
 
   const courses = rawCourses as unknown as Array<Course & { teachers?: { name: string; phone?: string | null; email?: string | null } | null; rooms?: { name: string } | null; course_schedules?: CourseSchedule[] }>;

@@ -26,6 +26,7 @@ export default async function AppLayout({
 
   // If user is linked to teacher profile and has role 'teacher', treat as teacher
   const isTeacher = !!teacher && membership?.role === "teacher";
+  const isAssistant = membership?.role === "assistant";
 
   // If user is logged in but has no organization yet, fallback to a default name
   const orgName = organization?.name || "Meine Sprachschule";
@@ -38,6 +39,7 @@ export default async function AppLayout({
         userEmail={user.email || ""} 
         userName={teacher?.name || user.email || ""}
         isTeacher={isTeacher}
+        isAssistant={isAssistant}
       />
       <div className="flex-1 flex flex-col min-w-0 print:w-full print:block">
         <Header 
@@ -45,12 +47,13 @@ export default async function AppLayout({
           logoUrl={organization?.logo_url || null}
           userEmail={user.email || ""} 
           userName={teacher?.name || user.email || ""} 
-          isTeacher={isTeacher} 
+          isTeacher={isTeacher}
+          isAssistant={isAssistant}
         />
         <main className="flex-1 px-3 sm:px-8 py-4 sm:py-8 pb-24 md:pb-8 overflow-y-auto print:p-0 print:overflow-visible print:bg-white">
           {children}
         </main>
-        <BottomNav isTeacher={isTeacher} />
+        <BottomNav isTeacher={isTeacher} isAssistant={isAssistant} />
       </div>
     </div>
   );

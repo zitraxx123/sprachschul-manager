@@ -28,6 +28,7 @@ interface SidebarProps {
   userEmail: string;
   userName?: string;
   isTeacher?: boolean;
+  isAssistant?: boolean;
 }
 
 interface NavItemConfig {
@@ -56,10 +57,18 @@ const teacherNavItems: NavItemConfig[] = [
   { key: "help", href: "/help", icon: HelpCircle },
 ];
 
-export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeacher }: SidebarProps) {
+const assistantNavItems: NavItemConfig[] = [
+  { key: "courses", href: "/courses", icon: Layers },
+  { key: "students", href: "/students", icon: Users },
+  { key: "absences", href: "/absences", icon: UserX },
+  { key: "rooms", href: "/rooms", icon: DoorOpen },
+  { key: "help", href: "/help", icon: HelpCircle },
+];
+
+export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeacher, isAssistant }: SidebarProps) {
   const t = useTranslations("nav");
   const pathname = usePathname();
-  const navItems = isTeacher ? teacherNavItems : adminNavItems;
+  const navItems = isTeacher ? teacherNavItems : isAssistant ? assistantNavItems : adminNavItems;
 
   return (
     <aside className="hidden md:flex w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-col h-screen sticky top-0 shrink-0 print:hidden transition-colors">
@@ -71,7 +80,7 @@ export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeac
             {organizationName || "Sprachschule"}
           </h2>
           <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium block truncate">
-            {isTeacher ? t("roleTeacher") : t("roleAdmin")}
+            {isTeacher ? t("roleTeacher") : isAssistant ? t("roleAssistant") : t("roleAdmin")}
           </span>
         </div>
       </div>
@@ -110,7 +119,7 @@ export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeac
             {userName || userEmail}
           </p>
           <p className="text-[11px] text-slate-400 dark:text-slate-500">
-            {isTeacher ? t("roleTeacher") : t("roleAdmin")}
+            {isTeacher ? t("roleTeacher") : isAssistant ? t("roleAssistant") : t("roleAdmin")}
           </p>
         </div>
         <form action={signOut}>
