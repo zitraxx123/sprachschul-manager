@@ -1008,5 +1008,21 @@
     "docIban": "IBAN",
     "docBic": "BIC",
     "docCancelled": "CANCELLED"
+  },
+  "onboarding": {
+    "title": "Welcome! Set up your school",
+    "progress": "{done} of {total} steps completed",
+    "start": "Get started",
+    "dismiss": "Hide",
+    "teacherTitle": "Add a teacher",
+    "teacherDesc": "Add your first teacher with an hourly rate.",
+    "courseTitle": "Create a course",
+    "courseDesc": "Create a course with weekday, time and monthly price.",
+    "studentTitle": "Add students",
+    "studentDesc": "Add students and assign them to a course.",
+    "lessonTitle": "Record your first lesson",
+    "lessonDesc": "Record a lesson so that teacher fees can be calculated.",
+    "billingTitle": "Enter billing details",
+    "billingDesc": "Address, tax number and bank account for your invoices."
   }
 }

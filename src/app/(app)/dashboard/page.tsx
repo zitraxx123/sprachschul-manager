@@ -26,6 +26,7 @@ import {
 import { ImportDataDialog } from "@/components/import/import-data-dialog";
 import { Users, BookOpen, Euro, Plus, ArrowRight, UserCheck, Calendar as CalendarIcon } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
+import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 
 export const dynamic = "force-dynamic";
 
@@ -328,6 +329,24 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Setup guide for new schools (hides itself when done or dismissed) */}
+      <OnboardingChecklist
+        organizationId={organization.id}
+        steps={[
+          { key: "teacher", done: teachers.length > 0, href: "/teachers" },
+          { key: "course", done: rawCourses.length > 0, href: "/courses" },
+          { key: "student", done: students.length > 0, href: "/students" },
+          { key: "lesson", done: lessons.length > 0, href: "/lessons" },
+          {
+            key: "billing",
+            done:
+              !!(organization.address_street?.trim() && organization.address_zip?.trim() && organization.address_city?.trim()) &&
+              !!(organization.tax_number?.trim() || organization.vat_id?.trim()),
+            href: "/settings",
+          },
+        ]}
+      />
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

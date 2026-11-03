@@ -1008,5 +1008,21 @@
     "docIban": "IBAN",
     "docBic": "BIC",
     "docCancelled": "STORNIERT"
+  },
+  "onboarding": {
+    "title": "Willkommen! Richten Sie Ihre Schule ein",
+    "progress": "{done} von {total} Schritten erledigt",
+    "start": "Los geht's",
+    "dismiss": "Ausblenden",
+    "teacherTitle": "Lehrkraft anlegen",
+    "teacherDesc": "Legen Sie Ihre erste Lehrkraft mit Stundensatz an.",
+    "courseTitle": "Kurs erstellen",
+    "courseDesc": "Erstellen Sie einen Kurs mit Wochentag, Uhrzeit und Monatspreis.",
+    "studentTitle": "Schüler hinzufügen",
+    "studentDesc": "Fügen Sie Schüler hinzu und weisen Sie sie einem Kurs zu.",
+    "lessonTitle": "Ersten Unterricht erfassen",
+    "lessonDesc": "Erfassen Sie eine Unterrichtsstunde, damit Honorare berechnet werden.",
+    "billingTitle": "Rechnungsdaten hinterlegen",
+    "billingDesc": "Adresse, Steuernummer und Bankverbindung für Ihre Rechnungen."
   }
 }
