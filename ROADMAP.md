@@ -59,6 +59,10 @@
 - Supabase → Authentication → URL Configuration → Redirect URLs: добавить `https://<домен>/auth/callback` и localhost; проверить шаблон Reset Password; затем проверить сброс пароля на сайте (пункт 1).
 - Пункт 4 (Sentry): завести проект на sentry.io, задать `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` в Vercel, сказать «готово»; тогда слить ветку `feat/sentry` в main.
 - Пункт 5 (Supabase CLI): выполнить login / link / repair по `supabase/README.md`.
+- ВЕТКИ, ЖДУЩИЕ «готово» (в main не слиты, потому что нужны миграции/переменные окружения):
+  - `feat/saas-migrations`: пункты 7, 9, 10, 11, 12. Порядок: применить миграции `20261109000000_audit_log`, `20261110000000_plans_and_limits`, `20261111000000_stripe_billing`, `20261112000000_organization_type` (по порядку), затем сказать «готово», тогда слить в main. Пункт 10 (Stripe) работает только после ключей Stripe (см. пункт 10) и пока не проверен на реальном Stripe. Подробности по каждому пункту ниже в плане (в ветке).
+  - `feat/sentry`: пункт 4 (нужны `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` в Vercel).
+  - При слиянии второй ветки будут конфликты в `package.json`, `package-lock.json`, `ROADMAP.md`: решать вручную.
 
 ## Важно знать
 - **Vercel Hobby (бесплатный) запрещает коммерческое использование.** Для продажи сервиса нужен план Pro. Это нужно сделать до первых платящих клиентов.
