@@ -106,7 +106,8 @@
     "logout": "Log out",
     "roleAdmin": "School Admin",
     "roleTeacher": "Teacher (Instructor)",
-    "invoices": "Invoices"
+    "invoices": "Invoices",
+    "auditLog": "Audit log"
   },
   "auth": {
     "title": "Language School Manager",
@@ -1214,5 +1215,27 @@
     "hours": "Hours",
     "total": "Total",
     "signature": "Signature / stamp"
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "subtitle": "Who changed what and when (invoices, payments, students, teachers, contracts, mandates). The latest {count} entries.",
+    "allTables": "All areas",
+    "filter": "Filter",
+    "when": "Time",
+    "who": "User",
+    "what": "Action",
+    "changes": "Changes",
+    "system": "System (automatic)",
+    "empty": "No entries yet.",
+    "notAvailable": "The log is not set up yet (database migration missing).",
+    "action_INSERT": "Created",
+    "action_UPDATE": "Changed",
+    "action_DELETE": "Deleted",
+    "table_invoices": "Invoice",
+    "table_monthly_payments": "Payment",
+    "table_students": "Student",
+    "table_teachers": "Teacher",
+    "table_student_courses": "Enrollment / contract",
+    "table_student_sepa_mandates": "SEPA mandate"
   }
 }

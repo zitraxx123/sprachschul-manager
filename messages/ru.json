@@ -106,7 +106,8 @@
     "logout": "Выйти",
     "roleAdmin": "Руководство школы",
     "roleTeacher": "Преподаватель",
-    "invoices": "Счета"
+    "invoices": "Счета",
+    "auditLog": "Журнал изменений"
   },
   "auth": {
     "title": "Менеджер языковой школы",
@@ -1214,5 +1215,27 @@
     "hours": "Часов",
     "total": "Всего",
     "signature": "Подпись / печать"
+  },
+  "auditLog": {
+    "title": "Журнал изменений",
+    "subtitle": "Кто, что и когда менял (счета, платежи, ученики, учителя, договоры, мандаты). Последние {count} записей.",
+    "allTables": "Все разделы",
+    "filter": "Применить",
+    "when": "Время",
+    "who": "Пользователь",
+    "what": "Действие",
+    "changes": "Изменения",
+    "system": "Система (автоматически)",
+    "empty": "Записей пока нет.",
+    "notAvailable": "Журнал ещё не настроен (не применена миграция базы данных).",
+    "action_INSERT": "Создано",
+    "action_UPDATE": "Изменено",
+    "action_DELETE": "Удалено",
+    "table_invoices": "Счёт",
+    "table_monthly_payments": "Платёж",
+    "table_students": "Ученик",
+    "table_teachers": "Учитель",
+    "table_student_courses": "Запись на курс / договор",
+    "table_student_sepa_mandates": "SEPA-мандат"
   }
 }

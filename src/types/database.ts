@@ -421,6 +421,23 @@ export type Database = {
         };
         Relationships: [];
       };
+      audit_log: {
+        Row: {
+          id: number;
+          organization_id: string;
+          actor_id: string | null;
+          actor_email: string | null;
+          table_name: string;
+          record_id: string | null;
+          action: "INSERT" | "UPDATE" | "DELETE";
+          old_data: Record<string, unknown> | null;
+          new_data: Record<string, unknown> | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       invoices: {
         Row: {
           id: string;

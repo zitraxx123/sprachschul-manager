@@ -106,7 +106,8 @@
     "logout": "Abmelden",
     "roleAdmin": "Schulleitung",
     "roleTeacher": "Lehrkraft (Dozent)",
-    "invoices": "Rechnungen"
+    "invoices": "Rechnungen",
+    "auditLog": "Änderungsprotokoll"
   },
   "auth": {
     "title": "Sprachschul-Manager",
@@ -1214,5 +1215,27 @@
     "hours": "Stunden",
     "total": "Gesamt",
     "signature": "Unterschrift / Stempel"
+  },
+  "auditLog": {
+    "title": "Änderungsprotokoll",
+    "subtitle": "Wer hat wann was geändert (Rechnungen, Zahlungen, Schüler, Lehrkräfte, Verträge, Mandate). Die letzten {count} Einträge.",
+    "allTables": "Alle Bereiche",
+    "filter": "Filtern",
+    "when": "Zeitpunkt",
+    "who": "Benutzer",
+    "what": "Aktion",
+    "changes": "Änderungen",
+    "system": "System (automatisch)",
+    "empty": "Noch keine Einträge.",
+    "notAvailable": "Das Protokoll ist noch nicht eingerichtet (Datenbank-Migration fehlt).",
+    "action_INSERT": "Neu",
+    "action_UPDATE": "Geändert",
+    "action_DELETE": "Gelöscht",
+    "table_invoices": "Rechnung",
+    "table_monthly_payments": "Zahlung",
+    "table_students": "Schüler",
+    "table_teachers": "Lehrkraft",
+    "table_student_courses": "Kurszuordnung / Vertrag",
+    "table_student_sepa_mandates": "SEPA-Mandat"
   }
 }
