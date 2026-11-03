@@ -1245,6 +1245,17 @@
     "unlimited": "unbegrenzt",
     "limitReached": "Das Limit Ihres Tarifs ist erreicht. Für weitere Einträge wechseln Sie bitte auf einen höheren Tarif.",
     "limitStudents": "Das Schüler-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif.",
-    "limitTeachers": "Das Lehrkräfte-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif."
+    "limitTeachers": "Das Lehrkräfte-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif.",
+    "perMonth": "{price} / Monat",
+    "currentPlan": "Aktueller Tarif",
+    "startTrial": "14 Tage testen",
+    "switchTo": "Wechseln",
+    "manageBilling": "Abo & Rechnungen verwalten",
+    "billingSuccess": "Vielen Dank! Ihr Abo wird eingerichtet, der Tarif ist in wenigen Sekunden aktiv.",
+    "statusTrialing": "Testphase aktiv.",
+    "statusPastDue": "Die letzte Zahlung ist fehlgeschlagen. Bitte aktualisieren Sie Ihre Zahlungsmethode.",
+    "billingNotConfigured": "Die Zahlung ist noch nicht eingerichtet.",
+    "billingForbidden": "Keine Berechtigung.",
+    "billingFailed": "Aktion fehlgeschlagen. Bitte später erneut versuchen."
   }
 }

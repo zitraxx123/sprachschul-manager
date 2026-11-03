@@ -11,6 +11,14 @@ export function planLimitError(message: string | null | undefined): PlanLimitErr
   return null;
 }
 
+export interface PlanOption {
+  key: string;
+  name: string;
+  maxStudents: number | null;
+  maxTeachers: number | null;
+  monthlyPrice: number;
+}
+
 export interface PlanUsage {
   plan: string;
   planName: string;
@@ -19,6 +27,7 @@ export interface PlanUsage {
   monthlyPrice: number;
   students: number;
   teachers: number;
+  options: PlanOption[];
 }
 
 export async function getPlanUsage(
@@ -26,10 +35,11 @@ export async function getPlanUsage(
   organizationId: string,
   planKey: string
 ): Promise<PlanUsage | null> {
-  const [planRes, studentsRes, teachersRes] = await Promise.all([
+  const [planRes, studentsRes, teachersRes, allPlansRes] = await Promise.all([
     supabase.from("plans").select("*").eq("key", planKey).maybeSingle(),
     supabase.from("students").select("id", { count: "exact", head: true }).eq("organization_id", organizationId),
     supabase.from("teachers").select("id", { count: "exact", head: true }).eq("organization_id", organizationId),
+    supabase.from("plans").select("*").order("sort_order", { ascending: true }),
   ]);
   // Plans table missing (migration not applied yet): no limits shown, nothing enforced
   if (planRes.error || !planRes.data) return null;
@@ -41,5 +51,12 @@ export async function getPlanUsage(
     monthlyPrice: Number(planRes.data.monthly_price_eur),
     students: studentsRes.count ?? 0,
     teachers: teachersRes.count ?? 0,
+    options: (allPlansRes.data || []).map((p) => ({
+      key: p.key,
+      name: p.name,
+      maxStudents: p.max_students,
+      maxTeachers: p.max_teachers,
+      monthlyPrice: Number(p.monthly_price_eur),
+    })),
   };
 }

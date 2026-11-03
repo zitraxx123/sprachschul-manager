@@ -40,7 +40,7 @@
 
 ### Этап C. Сервис (SaaS)
 9. ~~Тарифы и лимиты~~ КОД ГОТОВ 03.11.2026, ветка `feat/saas-migrations` (ждёт миграцию `20261110000000_plans_and_limits.sql`). Таблица `plans` (Free 5 уч./2 учит., Starter 30/5 за 29 €, Professional и Enterprise без лимита, цены из audit_report.md; правятся SQL), `organizations.plan`, триггеры лимитов, карточка тарифа в Настройках. Существующие школы получают enterprise, новые стартуют с free. Тариф клиент сам менять не может. РЕШЕНИЕ ВЛАДЕЛЬЦА: подтвердить лимиты и цены.
-10. Оплата подписки (Stripe): пробный период, смена тарифа, счета. Нужны аккаунт Stripe и ключи.
+10. ~~Оплата подписки (Stripe)~~ КОД ГОТОВ 03.11.2026, ветка `feat/saas-migrations`, НЕ проверен на реальном Stripe. Без ключей ничего не показывает. Нужно: миграция `20261111000000_stripe_billing.sql`; в Stripe создать 3 цены (Starter/Professional/Enterprise, ежемесячно); в Vercel: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_PROFESSIONAL`, `STRIPE_PRICE_ENTERPRISE`; webhook в Stripe на `https://<домен>/api/stripe/webhook` (события checkout.session.completed, customer.subscription.created/updated/deleted); включить Customer Portal. Пробный период 14 дней. Сначала проверить в тестовом режиме Stripe.
 11. Настройка терминологии и типа организации (языковая школа, танцы и т. д.): убрать жёсткие «Sprachschule», «Kurs», «Lehrkraft» там, где нужно.
 12. Регистрация новой школы без ручных шагов (проверить весь путь: регистрация, школа, онбординг).
 

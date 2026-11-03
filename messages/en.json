@@ -1245,6 +1245,17 @@
     "unlimited": "unlimited",
     "limitReached": "Your plan limit has been reached. Please switch to a higher plan to add more.",
     "limitStudents": "The student limit of your plan has been reached. Please switch to a higher plan.",
-    "limitTeachers": "The teacher limit of your plan has been reached. Please switch to a higher plan."
+    "limitTeachers": "The teacher limit of your plan has been reached. Please switch to a higher plan.",
+    "perMonth": "{price} / month",
+    "currentPlan": "Current plan",
+    "startTrial": "Try 14 days",
+    "switchTo": "Switch",
+    "manageBilling": "Manage subscription & invoices",
+    "billingSuccess": "Thank you! Your subscription is being set up, the plan will be active in a few seconds.",
+    "statusTrialing": "Trial period active.",
+    "statusPastDue": "The last payment failed. Please update your payment method.",
+    "billingNotConfigured": "Payment is not set up yet.",
+    "billingForbidden": "Not allowed.",
+    "billingFailed": "Action failed. Please try again later."
   }
 }
