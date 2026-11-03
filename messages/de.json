@@ -106,7 +106,8 @@
     "logout": "Abmelden",
     "roleAdmin": "Schulleitung",
     "roleTeacher": "Lehrkraft (Dozent)",
-    "invoices": "Rechnungen"
+    "invoices": "Rechnungen",
+    "auditLog": "Änderungsprotokoll"
   },
   "auth": {
     "title": "Sprachschul-Manager",
@@ -145,7 +146,18 @@
     "errorPasswordShort": "Das Passwort muss mindestens 6 Zeichen lang sein.",
     "errorPasswordMismatch": "Die Passwörter stimmen nicht überein.",
     "errorLinkExpired": "Der Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
-    "errorUpdateFailed": "Das Passwort konnte nicht geändert werden."
+    "errorUpdateFailed": "Das Passwort konnte nicht geändert werden.",
+    "orgType": "Art der Einrichtung",
+    "orgTypeLanguage": "Sprachschule",
+    "orgTypeDance": "Tanzschule",
+    "orgTypeMusic": "Musikschule",
+    "orgTypeOther": "Andere Bildungseinrichtung",
+    "errorInvalidCredentials": "E-Mail oder Passwort ist falsch.",
+    "errorEmailNotConfirmed": "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse (Link in der E-Mail).",
+    "errorUserExists": "Mit dieser E-Mail existiert bereits ein Konto. Bitte melden Sie sich an.",
+    "errorGeneric": "Aktion fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "errorFieldsRequired": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "checkEmail": "Fast geschafft! Wir haben Ihnen eine E-Mail geschickt. Bitte bestätigen Sie Ihre Adresse über den Link, danach geht es direkt weiter."
   },
   "dashboard": {
     "title": "Übersicht",
@@ -958,7 +970,9 @@
     "sepaCreditorIdLabel": "Gläubiger-ID (SEPA)",
     "sepaCreditorIdHelp": "Für Lastschriften erforderlich. Die Gläubiger-ID wird bei der Deutschen Bundesbank beantragt.",
     "autoInvoiceLabel": "Rechnungen automatisch am 1. jedes Monats erstellen",
-    "autoInvoiceHelp": "Für alle Schüler mit aktiver Kursanmeldung wird am Monatsersten automatisch eine Rechnung erstellt (ca. 6–7 Uhr deutscher Zeit). Vorhandene Rechnungen werden nicht doppelt erstellt. Erfordert vollständige Rechnungsdaten."
+    "autoInvoiceHelp": "Für alle Schüler mit aktiver Kursanmeldung wird am Monatsersten automatisch eine Rechnung erstellt (ca. 6–7 Uhr deutscher Zeit). Vorhandene Rechnungen werden nicht doppelt erstellt. Erfordert vollständige Rechnungsdaten.",
+    "orgTypeLabel": "Art der Einrichtung",
+    "orgTypeHelp": "Bestimmt Begriffe in der Oberfläche (z. B. „Tanzschule“ statt „Sprachschule“)."
   },
   "schedule": {
     "monday": "Montag",
@@ -1214,5 +1228,47 @@
     "hours": "Stunden",
     "total": "Gesamt",
     "signature": "Unterschrift / Stempel"
+  },
+  "auditLog": {
+    "title": "Änderungsprotokoll",
+    "subtitle": "Wer hat wann was geändert (Rechnungen, Zahlungen, Schüler, Lehrkräfte, Verträge, Mandate). Die letzten {count} Einträge.",
+    "allTables": "Alle Bereiche",
+    "filter": "Filtern",
+    "when": "Zeitpunkt",
+    "who": "Benutzer",
+    "what": "Aktion",
+    "changes": "Änderungen",
+    "system": "System (automatisch)",
+    "empty": "Noch keine Einträge.",
+    "notAvailable": "Das Protokoll ist noch nicht eingerichtet (Datenbank-Migration fehlt).",
+    "action_INSERT": "Neu",
+    "action_UPDATE": "Geändert",
+    "action_DELETE": "Gelöscht",
+    "table_invoices": "Rechnung",
+    "table_monthly_payments": "Zahlung",
+    "table_students": "Schüler",
+    "table_teachers": "Lehrkraft",
+    "table_student_courses": "Kurszuordnung / Vertrag",
+    "table_student_sepa_mandates": "SEPA-Mandat"
+  },
+  "plan": {
+    "title": "Ihr Tarif",
+    "students": "Schüler",
+    "teachers": "Lehrkräfte",
+    "unlimited": "unbegrenzt",
+    "limitReached": "Das Limit Ihres Tarifs ist erreicht. Für weitere Einträge wechseln Sie bitte auf einen höheren Tarif.",
+    "limitStudents": "Das Schüler-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif.",
+    "limitTeachers": "Das Lehrkräfte-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif.",
+    "perMonth": "{price} / Monat",
+    "currentPlan": "Aktueller Tarif",
+    "startTrial": "14 Tage testen",
+    "switchTo": "Wechseln",
+    "manageBilling": "Abo & Rechnungen verwalten",
+    "billingSuccess": "Vielen Dank! Ihr Abo wird eingerichtet, der Tarif ist in wenigen Sekunden aktiv.",
+    "statusTrialing": "Testphase aktiv.",
+    "statusPastDue": "Die letzte Zahlung ist fehlgeschlagen. Bitte aktualisieren Sie Ihre Zahlungsmethode.",
+    "billingNotConfigured": "Die Zahlung ist noch nicht eingerichtet.",
+    "billingForbidden": "Keine Berechtigung.",
+    "billingFailed": "Aktion fehlgeschlagen. Bitte später erneut versuchen."
   }
 }

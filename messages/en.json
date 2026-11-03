@@ -106,7 +106,8 @@
     "logout": "Log out",
     "roleAdmin": "School Admin",
     "roleTeacher": "Teacher (Instructor)",
-    "invoices": "Invoices"
+    "invoices": "Invoices",
+    "auditLog": "Audit log"
   },
   "auth": {
     "title": "Language School Manager",
@@ -145,7 +146,18 @@
     "errorPasswordShort": "The password must be at least 6 characters long.",
     "errorPasswordMismatch": "The passwords do not match.",
     "errorLinkExpired": "The link is invalid or has expired. Please request a new one.",
-    "errorUpdateFailed": "The password could not be changed."
+    "errorUpdateFailed": "The password could not be changed.",
+    "orgType": "Type of institution",
+    "orgTypeLanguage": "Language school",
+    "orgTypeDance": "Dance school",
+    "orgTypeMusic": "Music school",
+    "orgTypeOther": "Other educational institution",
+    "errorInvalidCredentials": "Email or password is incorrect.",
+    "errorEmailNotConfirmed": "Please confirm your email address first (link in the email).",
+    "errorUserExists": "An account with this email already exists. Please sign in.",
+    "errorGeneric": "Action failed. Please try again.",
+    "errorFieldsRequired": "Please fill in all required fields.",
+    "checkEmail": "Almost done! We have sent you an email. Please confirm your address via the link, then you can continue right away."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -958,7 +970,9 @@
     "sepaCreditorIdLabel": "Creditor ID (SEPA)",
     "sepaCreditorIdHelp": "Required for direct debits. The creditor ID is applied for at the Deutsche Bundesbank.",
     "autoInvoiceLabel": "Create invoices automatically on the 1st of each month",
-    "autoInvoiceHelp": "On the first of the month an invoice is created automatically for every student with an active course enrollment (about 6–7 am German time). Existing invoices are never duplicated. Requires complete billing details."
+    "autoInvoiceHelp": "On the first of the month an invoice is created automatically for every student with an active course enrollment (about 6–7 am German time). Existing invoices are never duplicated. Requires complete billing details.",
+    "orgTypeLabel": "Type of institution",
+    "orgTypeHelp": "Controls terms in the interface (e.g. \"dance school\" instead of \"language school\")."
   },
   "schedule": {
     "monday": "Monday",
@@ -1214,5 +1228,47 @@
     "hours": "Hours",
     "total": "Total",
     "signature": "Signature / stamp"
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "subtitle": "Who changed what and when (invoices, payments, students, teachers, contracts, mandates). The latest {count} entries.",
+    "allTables": "All areas",
+    "filter": "Filter",
+    "when": "Time",
+    "who": "User",
+    "what": "Action",
+    "changes": "Changes",
+    "system": "System (automatic)",
+    "empty": "No entries yet.",
+    "notAvailable": "The log is not set up yet (database migration missing).",
+    "action_INSERT": "Created",
+    "action_UPDATE": "Changed",
+    "action_DELETE": "Deleted",
+    "table_invoices": "Invoice",
+    "table_monthly_payments": "Payment",
+    "table_students": "Student",
+    "table_teachers": "Teacher",
+    "table_student_courses": "Enrollment / contract",
+    "table_student_sepa_mandates": "SEPA mandate"
+  },
+  "plan": {
+    "title": "Your plan",
+    "students": "Students",
+    "teachers": "Teachers",
+    "unlimited": "unlimited",
+    "limitReached": "Your plan limit has been reached. Please switch to a higher plan to add more.",
+    "limitStudents": "The student limit of your plan has been reached. Please switch to a higher plan.",
+    "limitTeachers": "The teacher limit of your plan has been reached. Please switch to a higher plan.",
+    "perMonth": "{price} / month",
+    "currentPlan": "Current plan",
+    "startTrial": "Try 14 days",
+    "switchTo": "Switch",
+    "manageBilling": "Manage subscription & invoices",
+    "billingSuccess": "Thank you! Your subscription is being set up, the plan will be active in a few seconds.",
+    "statusTrialing": "Trial period active.",
+    "statusPastDue": "The last payment failed. Please update your payment method.",
+    "billingNotConfigured": "Payment is not set up yet.",
+    "billingForbidden": "Not allowed.",
+    "billingFailed": "Action failed. Please try again later."
   }
 }

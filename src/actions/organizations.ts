@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getCurrentUser, getActiveOrganization } from "@/lib/supabase/server";
+import { isOrgType } from "@/lib/terminology";
 import type { Database } from "@/types/database";
 import { isValidCreditorId, normalizeCreditorId } from "@/lib/sepa";
 
@@ -95,6 +96,10 @@ export async function updateOrganizationSettings(
   };
   if (name) {
     updateData.name = name;
+  }
+  const orgType = formData.get("org_type");
+  if (isOrgType(orgType)) {
+    updateData.org_type = orgType;
   }
 
   // Billing data (Rechnungsdaten). Fields that are not part of the form stay untouched.

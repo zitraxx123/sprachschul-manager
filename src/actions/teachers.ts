@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { planLimitError } from "@/lib/plan-limits";
 
 export type TeacherActionState = {
   error?: string;
@@ -89,6 +90,8 @@ export async function createTeacher(
   });
 
   if (error) {
+    const limit = planLimitError(error.message);
+    if (limit) return { error: limit };
     return { error: `Fehler beim Erstellen: ${error.message}` };
   }
 

@@ -30,6 +30,11 @@ export type Database = {
           minijob_monthly_limit: number;
           sepa_creditor_id: string | null;
           auto_invoice_enabled: boolean;
+          plan: string;
+          org_type: "language_school" | "dance_school" | "music_school" | "other";
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          subscription_status: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -53,6 +58,11 @@ export type Database = {
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
+          plan?: string;
+          org_type?: "language_school" | "dance_school" | "music_school" | "other";
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          subscription_status?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -76,6 +86,11 @@ export type Database = {
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
+          plan?: string;
+          org_type?: "language_school" | "dance_school" | "music_school" | "other";
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          subscription_status?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -419,6 +434,36 @@ export type Database = {
           sequence_type?: "FRST" | "RCUR";
           updated_at?: string;
         };
+        Relationships: [];
+      };
+      plans: {
+        Row: {
+          key: string;
+          name: string;
+          max_students: number | null;
+          max_teachers: number | null;
+          monthly_price_eur: number;
+          sort_order: number;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      audit_log: {
+        Row: {
+          id: number;
+          organization_id: string;
+          actor_id: string | null;
+          actor_email: string | null;
+          table_name: string;
+          record_id: string | null;
+          action: "INSERT" | "UPDATE" | "DELETE";
+          old_data: Record<string, unknown> | null;
+          new_data: Record<string, unknown> | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
         Relationships: [];
       };
       invoices: {

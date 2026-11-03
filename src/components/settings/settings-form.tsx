@@ -31,6 +31,7 @@ interface SettingsFormProps {
 export function SettingsForm({ organization }: SettingsFormProps) {
   const tSettings = useTranslations("settings");
   const tCommon = useTranslations("common");
+  const tAuth = useTranslations("auth");
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(organization.logo_url || null);
   const [isLogoRemoved, setIsLogoRemoved] = useState(false);
@@ -118,6 +119,26 @@ export function SettingsForm({ organization }: SettingsFormProps) {
               disabled={isPending}
               className="h-10 text-sm"
             />
+          </div>
+
+          {/* Type of institution (controls terminology) */}
+          <div className="space-y-2 max-w-md">
+            <Label htmlFor="org_type" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {tSettings("orgTypeLabel")}
+            </Label>
+            <select
+              id="org_type"
+              name="org_type"
+              defaultValue={organization.org_type || "language_school"}
+              disabled={isPending}
+              className="h-10 w-full rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 text-sm"
+            >
+              <option value="language_school">{tAuth("orgTypeLanguage")}</option>
+              <option value="dance_school">{tAuth("orgTypeDance")}</option>
+              <option value="music_school">{tAuth("orgTypeMusic")}</option>
+              <option value="other">{tAuth("orgTypeOther")}</option>
+            </select>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{tSettings("orgTypeHelp")}</p>
           </div>
 
           {/* School Logo (White-Label) */}

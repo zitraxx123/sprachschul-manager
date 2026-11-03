@@ -17,7 +17,8 @@ import {
   DoorOpen,
   HelpCircle,
   Settings,
-  Receipt
+  Receipt,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/actions/auth";
@@ -35,7 +36,7 @@ interface MobileNavProps {
 }
 
 interface NavItemConfig {
-  key: "dashboard" | "courses" | "students" | "invoices" | "teachers" | "lessons" | "absences" | "rooms" | "settings" | "help" | "myPortal";
+  key: "dashboard" | "courses" | "students" | "invoices" | "teachers" | "lessons" | "absences" | "rooms" | "settings" | "auditLog" | "help" | "myPortal";
   href: string;
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
@@ -50,6 +51,7 @@ const adminNavItems: NavItemConfig[] = [
   { key: "absences", href: "/absences", icon: UserX },
   { key: "rooms", href: "/rooms", icon: DoorOpen },
   { key: "settings", href: "/settings", icon: Settings },
+  { key: "auditLog", href: "/audit-log", icon: History },
   { key: "help", href: "/help", icon: HelpCircle },
 ];
 
