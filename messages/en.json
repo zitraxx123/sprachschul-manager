@@ -1024,5 +1024,30 @@
     "lessonDesc": "Record a lesson so that teacher fees can be calculated.",
     "billingTitle": "Enter billing details",
     "billingDesc": "Address, tax number and bank account for your invoices."
+  },
+  "contracts": {
+    "title": "Contracts",
+    "subtitle": "Term and cancellation per course for {name}",
+    "empty": "This student is not enrolled in any course.",
+    "start": "Contract start",
+    "end": "Contract end",
+    "notice": "Notice period",
+    "weeks": "weeks",
+    "cancelledOn": "Cancelled on",
+    "calcEnd": "Calculate end from cancellation",
+    "calcNeedsDate": "Please enter the cancellation date first.",
+    "hint": "The end is calculated from the cancellation date and notice period, rounded up to the end of the month. You can adjust it. Invoices are only created for months in which the contract is running.",
+    "saved": "Contract saved.",
+    "close": "Close",
+    "state_none": "No contract recorded",
+    "state_upcoming": "Starts soon",
+    "state_active": "Running",
+    "state_ended": "Ended",
+    "stateCancelled": "Cancelled, ends {date}",
+    "errForbidden": "No permission.",
+    "errNotFound": "Enrollment not found.",
+    "errInvalid": "Invalid input.",
+    "errDates": "The contract end must not be before the start.",
+    "errDb": "Database error: {detail}"
   }
 }

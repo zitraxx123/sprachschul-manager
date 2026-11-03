@@ -591,6 +591,10 @@ export type Database = {
           student_id: string;
           course_id: string;
           status: "active" | "trial" | "waiting";
+          contract_start: string | null;
+          contract_end: string | null;
+          notice_period_weeks: number;
+          cancelled_on: string | null;
           created_at: string;
         };
         Insert: {
@@ -599,6 +603,10 @@ export type Database = {
           student_id: string;
           course_id: string;
           status?: "active" | "trial" | "waiting";
+          contract_start?: string | null;
+          contract_end?: string | null;
+          notice_period_weeks?: number;
+          cancelled_on?: string | null;
           created_at?: string;
         };
         Update: {
@@ -607,6 +615,10 @@ export type Database = {
           student_id?: string;
           course_id?: string;
           status?: "active" | "trial" | "waiting";
+          contract_start?: string | null;
+          contract_end?: string | null;
+          notice_period_weeks?: number;
+          cancelled_on?: string | null;
           created_at?: string;
         };
         Relationships: [

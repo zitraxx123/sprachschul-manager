@@ -1024,5 +1024,30 @@
     "lessonDesc": "Erfassen Sie eine Unterrichtsstunde, damit Honorare berechnet werden.",
     "billingTitle": "Rechnungsdaten hinterlegen",
     "billingDesc": "Adresse, Steuernummer und Bankverbindung für Ihre Rechnungen."
+  },
+  "contracts": {
+    "title": "Verträge",
+    "subtitle": "Laufzeit und Kündigung je Kurs für {name}",
+    "empty": "Dieser Schüler ist keinem Kurs zugeordnet.",
+    "start": "Vertragsbeginn",
+    "end": "Vertragsende",
+    "notice": "Kündigungsfrist",
+    "weeks": "Wochen",
+    "cancelledOn": "Gekündigt am",
+    "calcEnd": "Ende aus Kündigung berechnen",
+    "calcNeedsDate": "Bitte zuerst das Kündigungsdatum eintragen.",
+    "hint": "Das Ende wird aus Kündigungsdatum und Frist berechnet und auf das Monatsende gerundet. Sie können es anpassen. Rechnungen werden nur für Monate erstellt, in denen der Vertrag läuft.",
+    "saved": "Vertrag gespeichert.",
+    "close": "Schließen",
+    "state_none": "Kein Vertrag erfasst",
+    "state_upcoming": "Startet bald",
+    "state_active": "Laufend",
+    "state_ended": "Beendet",
+    "stateCancelled": "Gekündigt zum {date}",
+    "errForbidden": "Keine Berechtigung.",
+    "errNotFound": "Anmeldung nicht gefunden.",
+    "errInvalid": "Ungültige Eingabe.",
+    "errDates": "Das Vertragsende darf nicht vor dem Beginn liegen.",
+    "errDb": "Datenbankfehler: {detail}"
   }
 }

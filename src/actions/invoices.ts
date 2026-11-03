@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
 import type { InvoiceItem } from "@/types/database";
+import { contractCoversMonth } from "@/lib/contracts";
 
 export type InvoiceActionState = {
   success?: boolean;
@@ -43,6 +44,8 @@ interface StudentForBilling {
   custom_monthly_price: number | null;
   student_courses: Array<{
     status: string | null;
+    contract_start: string | null;
+    contract_end: string | null;
     courses: { name: string; monthly_price: number | null } | null;
   }> | null;
 }
@@ -68,7 +71,7 @@ export async function generateInvoicesForMonth(monthYear: string): Promise<Invoi
   const [studentsRes, invoicesRes, paymentsRes] = await Promise.all([
     supabase
       .from("students")
-      .select("id, first_name, last_name, parent_name, custom_monthly_price, student_courses(status, courses(name, monthly_price))")
+      .select("id, first_name, last_name, parent_name, custom_monthly_price, student_courses(status, contract_start, contract_end, courses(name, monthly_price))")
       .eq("organization_id", org.id)
       .order("last_name", { ascending: true })
       .order("first_name", { ascending: true }),
@@ -123,7 +126,12 @@ export async function generateInvoicesForMonth(monthYear: string): Promise<Invoi
     }
 
     const activeCourses = (student.student_courses || [])
-      .filter((sc) => sc.status === "active" && sc.courses)
+      .filter(
+        (sc) =>
+          sc.status === "active" &&
+          sc.courses &&
+          contractCoversMonth({ contractStart: sc.contract_start, contractEnd: sc.contract_end }, monthYear)
+      )
       .map((sc) => sc.courses!);
 
     if (activeCourses.length === 0) {

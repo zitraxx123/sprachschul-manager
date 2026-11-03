@@ -20,12 +20,40 @@ import { Users, User, Mail, Phone, CheckCircle2, AlertCircle } from "lucide-reac
 import { Course, CourseSchedule } from "@/types/database";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ListFilters } from "@/components/ui/list-filters";
+import type { ContractEnrollment } from "@/components/students/contract-dialog";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Schüler & Monatsabos • Sprachschul-Manager",
 };
+
+function buildContractEnrollments(student: unknown): ContractEnrollment[] {
+  const list =
+    (
+      student as {
+        student_courses?: Array<{
+          course_id: string;
+          status?: string | null;
+          contract_start?: string | null;
+          contract_end?: string | null;
+          notice_period_weeks?: number | null;
+          cancelled_on?: string | null;
+          courses?: { name?: string } | null;
+        }>;
+      }
+    ).student_courses || [];
+  return list
+    .filter((sc) => sc.status !== "waiting")
+    .map((sc) => ({
+      courseId: sc.course_id,
+      courseName: sc.courses?.name || "",
+      contractStart: sc.contract_start ?? null,
+      contractEnd: sc.contract_end ?? null,
+      noticePeriodWeeks: sc.notice_period_weeks ?? 4,
+      cancelledOn: sc.cancelled_on ?? null,
+    }));
+}
 
 export default async function StudentsPage({
   searchParams,
@@ -412,6 +440,7 @@ export default async function StudentsPage({
                               courses={courses || []}
                               assignedCourseIds={((student as unknown as { student_courses?: Array<{ course_id: string }> }).student_courses || []).map((sc) => sc.course_id)}
                               enrolledCourseDetails={enrolledCourses}
+                              contractEnrollments={buildContractEnrollments(student)}
                               payment={payment}
                               currentMonthYear={currentMonthYear}
                               isAlreadyPaid={isPaid}
@@ -589,6 +618,7 @@ export default async function StudentsPage({
                           courses={courses || []}
                           assignedCourseIds={((student as unknown as { student_courses?: Array<{ course_id: string }> }).student_courses || []).map((sc) => sc.course_id)}
                           enrolledCourseDetails={enrolledCourses}
+                              contractEnrollments={buildContractEnrollments(student)}
                           payment={payment}
                           currentMonthYear={currentMonthYear}
                           isAlreadyPaid={isPaid}

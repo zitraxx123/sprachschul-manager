@@ -7,6 +7,7 @@ import { Course, Student, CourseSchedule, MonthlyPayment } from "@/types/databas
 import { RecordPaymentDialog } from "@/components/students/record-payment-dialog";
 import { EditStudentDialog } from "@/components/students/edit-student-dialog";
 import { StudentProfileDialog } from "@/components/students/student-profile-dialog";
+import { ContractDialog, ContractEnrollment } from "@/components/students/contract-dialog";
 import { CourseInfoData } from "@/components/courses/course-info-dialog";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ interface StudentActionsProps {
   courses?: Array<Course & { course_schedules?: CourseSchedule[] }>;
   assignedCourseIds?: string[];
   enrolledCourseDetails?: CourseInfoData[];
+  contractEnrollments?: ContractEnrollment[];
   payment?: MonthlyPayment | null;
   currentMonthYear?: string;
   isAlreadyPaid?: boolean;
@@ -27,6 +29,7 @@ export function StudentActions({
   courses = [],
   assignedCourseIds = [],
   enrolledCourseDetails = [],
+  contractEnrollments = [],
   payment,
   currentMonthYear,
   isAlreadyPaid = false,
@@ -86,6 +89,8 @@ export function StudentActions({
           <Eye strokeWidth={1.5} className="w-4 h-4" />
         </Button>
       </StudentProfileDialog>
+
+      <ContractDialog studentId={student.id} studentName={studentName} enrollments={contractEnrollments} />
 
       <RecordPaymentDialog
         studentId={student.id}
