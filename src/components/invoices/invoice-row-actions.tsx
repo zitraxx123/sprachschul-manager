@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Eye, CheckCircle2, Undo2, Ban, Loader2 } from "lucide-react";
+import { Eye, CheckCircle2, Undo2, Ban, Loader2, BellRing } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/toast";
@@ -13,10 +13,12 @@ import { setInvoiceStatus, InvoiceActionState } from "@/actions/invoices";
 interface InvoiceRowActionsProps {
   invoiceId: string;
   status: "open" | "paid" | "cancelled";
+  overdue?: boolean;
 }
 
-export function InvoiceRowActions({ invoiceId, status }: InvoiceRowActionsProps) {
+export function InvoiceRowActions({ invoiceId, status, overdue = false }: InvoiceRowActionsProps) {
   const t = useTranslations("invoices");
+  const tReminder = useTranslations("reminder");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -61,6 +63,19 @@ export function InvoiceRowActions({ invoiceId, status }: InvoiceRowActionsProps)
         <Eye strokeWidth={1.5} className="w-4 h-4" />
         <span>{t("view")}</span>
       </Link>
+
+      {status === "open" && overdue && (
+
+        <Link href={`/invoices/${invoiceId}/reminder`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), btn, "text-amber-700 dark:text-amber-400")}>
+
+          <BellRing strokeWidth={1.5} className="w-4 h-4" />
+
+          <span>{tReminder("button")}</span>
+
+        </Link>
+
+      )}
+
 
       {status === "open" && (
         <Button

@@ -1177,5 +1177,25 @@
     "to": "To",
     "invoices": "Invoices",
     "payouts": "Teacher payouts"
+  },
+  "reminder": {
+    "level": "Level",
+    "level0": "Payment reminder",
+    "level1": "First reminder",
+    "level2": "Second reminder (final notice)",
+    "fee": "Reminder fee (€)",
+    "days": "Payment period (days)",
+    "apply": "Apply",
+    "feeHint": "Only enter a reminder fee if it is contractually agreed or legally permitted. The letter is not saved; please note it down yourself after printing.",
+    "salutation": "Dear Sir or Madam,",
+    "body0": "while reviewing our accounts we noticed that the invoice below has not been paid yet. If you have already made the payment in the meantime, please disregard this letter.",
+    "body1": "despite our payment reminder we have not received your payment so far. Please transfer the outstanding amount by {date}.",
+    "body2": "unfortunately we have not received payment after our reminder either. This is our final request to settle the outstanding amount by {date}. Otherwise we reserve the right to take further steps.",
+    "invoiceLine": "Invoice {number} dated {date}, due on {due}",
+    "feeLine": "Reminder fee",
+    "totalDue": "Amount due",
+    "payBy": "Please transfer the amount by {date}, quoting the invoice number, to the following account:",
+    "closing": "Kind regards",
+    "button": "Reminder"
   }
 }

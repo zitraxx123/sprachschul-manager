@@ -1177,5 +1177,25 @@
     "to": "Bis",
     "invoices": "Rechnungen",
     "payouts": "Honorare"
+  },
+  "reminder": {
+    "level": "Stufe",
+    "level0": "Zahlungserinnerung",
+    "level1": "1. Mahnung",
+    "level2": "2. Mahnung (letzte Aufforderung)",
+    "fee": "Mahngebühr (€)",
+    "days": "Zahlungsfrist (Tage)",
+    "apply": "Übernehmen",
+    "feeHint": "Mahngebühren nur eintragen, wenn sie vertraglich vereinbart oder gesetzlich zulässig sind. Das Schreiben wird nicht gespeichert; nach dem Druck bitte selbst vermerken.",
+    "salutation": "Sehr geehrte Damen und Herren,",
+    "body0": "bei der Durchsicht unserer Buchhaltung haben wir festgestellt, dass die unten genannte Rechnung noch nicht beglichen wurde. Sollten Sie die Zahlung zwischenzeitlich veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos.",
+    "body1": "trotz unserer Zahlungserinnerung konnten wir bisher keinen Zahlungseingang feststellen. Wir bitten Sie, den offenen Betrag bis zum {date} zu überweisen.",
+    "body2": "leider haben wir auch auf unsere Mahnung hin keinen Zahlungseingang verzeichnet. Wir fordern Sie letztmalig auf, den offenen Betrag bis zum {date} zu begleichen. Danach behalten wir uns weitere Schritte vor.",
+    "invoiceLine": "Rechnung {number} vom {date}, fällig am {due}",
+    "feeLine": "Mahngebühr",
+    "totalDue": "Zu zahlender Betrag",
+    "payBy": "Bitte überweisen Sie den Betrag bis zum {date} unter Angabe der Rechnungsnummer auf das folgende Konto:",
+    "closing": "Mit freundlichen Grüßen",
+    "button": "Mahnung"
   }
 }

@@ -33,6 +33,10 @@ const STATUS_VARIANT: Record<InvoiceStatus, "warning" | "success" | "secondary">
   cancelled: "secondary",
 };
 
+function berlinDay(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date());
+}
+
 function berlinMonth(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date()).slice(0, 7);
 }
@@ -207,7 +211,7 @@ export default async function InvoicesPage({
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <InvoiceRowActions invoiceId={inv.id} status={inv.status as InvoiceStatus} />
+                      <InvoiceRowActions invoiceId={inv.id} status={inv.status as InvoiceStatus} overdue={inv.status === "open" && inv.due_date < berlinDay()} />
                     </td>
                   </tr>
                 ))}
@@ -239,7 +243,7 @@ export default async function InvoicesPage({
                     {formatCurrency(Number(inv.total_amount))}
                   </span>
                 </div>
-                <InvoiceRowActions invoiceId={inv.id} status={inv.status as InvoiceStatus} />
+                <InvoiceRowActions invoiceId={inv.id} status={inv.status as InvoiceStatus} overdue={inv.status === "open" && inv.due_date < berlinDay()} />
               </div>
             ))}
           </div>
