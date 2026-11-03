@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { getRequestOrigin } from "@/lib/origin";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = {
@@ -134,10 +134,7 @@ export async function requestPasswordReset(
     return { error: "errorEmailRequired" };
   }
 
-  const h = await headers();
-  const host = h.get("x-forwarded-host") || h.get("host");
-  const proto = h.get("x-forwarded-proto") || (host?.startsWith("localhost") ? "http" : "https");
-  const origin = h.get("origin") || `${proto}://${host}`;
+  const origin = await getRequestOrigin();
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {

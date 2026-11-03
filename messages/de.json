@@ -363,7 +363,18 @@
     "taxId": "Steuer-ID",
     "minijobOf": "{amount} von {limit} (Minijob-Grenze)",
     "minijobNear": "{amount} von {limit}: Grenze fast erreicht",
-    "minijobOver": "Minijob-Grenze von {limit} überschritten"
+    "minijobOver": "Minijob-Grenze von {limit} überschritten",
+    "inviteButton": "Einladen",
+    "inviteTitle": "Einladungslink für Lehrkraft",
+    "inviteHint": "Senden Sie diesen Link der Lehrkraft (z. B. per Messenger). Über den Link legt sie ein Passwort fest und erhält Zugang zum Portal. Der Link ist nur kurz gültig und einmalig nutzbar.",
+    "inviteCopy": "Kopieren",
+    "inviteCopied": "Link kopiert",
+    "inviteCopyFailed": "Kopieren nicht möglich",
+    "inviteErrorForbidden": "Keine Berechtigung.",
+    "inviteErrorNotFound": "Lehrkraft nicht gefunden.",
+    "inviteErrorNoEmail": "Bitte zuerst eine E-Mail-Adresse bei der Lehrkraft hinterlegen.",
+    "inviteErrorAlreadyLinked": "Die Lehrkraft hat bereits Zugang.",
+    "inviteErrorServer": "Einladung konnte nicht erstellt werden."
   },
   "courses": {
     "title": "Kurse & Gruppen",

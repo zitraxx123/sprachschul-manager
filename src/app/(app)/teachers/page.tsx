@@ -9,6 +9,7 @@ import {
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { AddTeacherDialog } from "@/components/teachers/add-teacher-dialog";
 import { EditTeacherDialog } from "@/components/teachers/edit-teacher-dialog";
+import { InviteTeacherButton } from "@/components/teachers/invite-teacher-button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -235,6 +236,7 @@ export default async function TeachersPage({
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end space-x-2">
+                              {t.email && !t.user_id && <InviteTeacherButton teacherId={t.id} />}
                               <EditTeacherDialog teacher={t} variant="icon" />
                               <Link href={`/teachers/${t.id}`}>
                                 <Button variant="outline" size="sm" className="space-x-1 text-xs">
@@ -326,6 +328,7 @@ export default async function TeachersPage({
 
                       {/* Action */}
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                        {t.email && !t.user_id && <InviteTeacherButton teacherId={t.id} />}
                         <EditTeacherDialog teacher={t} variant="button" />
                         <Link href={`/teachers/${t.id}`} className="flex-1">
                           <Button variant="outline" className="w-full justify-between h-9 text-xs font-semibold">

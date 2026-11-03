@@ -363,7 +363,18 @@
     "taxId": "Налоговый ID (Steuer-ID)",
     "minijobOf": "{amount} из {limit} (лимит Minijob)",
     "minijobNear": "{amount} из {limit}: лимит почти достигнут",
-    "minijobOver": "Лимит Minijob {limit} превышен"
+    "minijobOver": "Лимит Minijob {limit} превышен",
+    "inviteButton": "Пригласить",
+    "inviteTitle": "Ссылка-приглашение для учителя",
+    "inviteHint": "Отправьте эту ссылку учителю (например, в мессенджере). По ней он задаст пароль и получит доступ к порталу. Ссылка действует недолго и одноразовая.",
+    "inviteCopy": "Копировать",
+    "inviteCopied": "Ссылка скопирована",
+    "inviteCopyFailed": "Не удалось скопировать",
+    "inviteErrorForbidden": "Нет прав.",
+    "inviteErrorNotFound": "Учитель не найден.",
+    "inviteErrorNoEmail": "Сначала укажите email учителя.",
+    "inviteErrorAlreadyLinked": "У учителя уже есть доступ.",
+    "inviteErrorServer": "Не удалось создать приглашение."
   },
   "courses": {
     "title": "Управление курсами и группами",

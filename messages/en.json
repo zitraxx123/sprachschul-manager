@@ -363,7 +363,18 @@
     "taxId": "Tax ID",
     "minijobOf": "{amount} of {limit} (mini-job limit)",
     "minijobNear": "{amount} of {limit}: limit almost reached",
-    "minijobOver": "Mini-job limit of {limit} exceeded"
+    "minijobOver": "Mini-job limit of {limit} exceeded",
+    "inviteButton": "Invite",
+    "inviteTitle": "Invitation link for teacher",
+    "inviteHint": "Send this link to the teacher (e.g. via messenger). They use it to set a password and get access to the portal. The link is valid for a short time and can be used once.",
+    "inviteCopy": "Copy",
+    "inviteCopied": "Link copied",
+    "inviteCopyFailed": "Could not copy",
+    "inviteErrorForbidden": "Not allowed.",
+    "inviteErrorNotFound": "Teacher not found.",
+    "inviteErrorNoEmail": "Please add an email address to the teacher first.",
+    "inviteErrorAlreadyLinked": "The teacher already has access.",
+    "inviteErrorServer": "The invitation could not be created."
   },
   "courses": {
     "title": "Course Management & Groups",
