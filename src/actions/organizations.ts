@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, getCurrentUser, getActiveOrganization } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
+import { isValidCreditorId, normalizeCreditorId } from "@/lib/sepa";
 
 type OrganizationUpdate = Database["public"]["Tables"]["organizations"]["Update"];
 
@@ -133,6 +134,14 @@ export async function updateOrganizationSettings(
       return { error: "Ungültige Minijob-Grenze." };
     }
     updateData.minijob_monthly_limit = limit;
+  }
+
+  if (formData.has("sepa_creditor_id")) {
+    const creditorId = normalizeCreditorId(String(formData.get("sepa_creditor_id") || ""));
+    if (creditorId && !isValidCreditorId(creditorId)) {
+      return { error: "Ungültige Gläubiger-ID." };
+    }
+    updateData.sepa_creditor_id = creditorId || null;
   }
 
   // Handle Logo Upload / Removal

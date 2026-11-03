@@ -120,6 +120,13 @@ export default async function StudentsPage({
 
   const courses = rawCourses as unknown as Array<Course & { teachers?: { name: string; phone?: string | null; email?: string | null } | null; rooms?: { name: string } | null; course_schedules?: CourseSchedule[] }>;
 
+  // SEPA mandates (admin-only table; empty if the migration has not been applied yet)
+  const { data: sepaRows } = await supabase
+    .from("student_sepa_mandates")
+    .select("*")
+    .eq("organization_id", organization.id);
+  const sepaMap = new Map((sepaRows || []).map((r) => [r.student_id, r]));
+
   const paymentMap = new Map((monthlyPayments || []).map((p) => [p.student_id, p]));
 
   // Search & filters (URL parameters q, course, payment)
@@ -441,6 +448,7 @@ export default async function StudentsPage({
                               assignedCourseIds={((student as unknown as { student_courses?: Array<{ course_id: string }> }).student_courses || []).map((sc) => sc.course_id)}
                               enrolledCourseDetails={enrolledCourses}
                               contractEnrollments={buildContractEnrollments(student)}
+                              sepaMandate={sepaMap.get(student.id) ?? null}
                               payment={payment}
                               currentMonthYear={currentMonthYear}
                               isAlreadyPaid={isPaid}
@@ -619,6 +627,7 @@ export default async function StudentsPage({
                           assignedCourseIds={((student as unknown as { student_courses?: Array<{ course_id: string }> }).student_courses || []).map((sc) => sc.course_id)}
                           enrolledCourseDetails={enrolledCourses}
                               contractEnrollments={buildContractEnrollments(student)}
+                              sepaMandate={sepaMap.get(student.id) ?? null}
                           payment={payment}
                           currentMonthYear={currentMonthYear}
                           isAlreadyPaid={isPaid}

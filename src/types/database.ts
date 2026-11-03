@@ -28,6 +28,7 @@ export type Database = {
           invoice_vat_rate: number;
           invoice_tax_note: string | null;
           minijob_monthly_limit: number;
+          sepa_creditor_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -49,6 +50,7 @@ export type Database = {
           invoice_vat_rate?: number;
           invoice_tax_note?: string | null;
           minijob_monthly_limit?: number;
+          sepa_creditor_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -70,6 +72,7 @@ export type Database = {
           invoice_vat_rate?: number;
           invoice_tax_note?: string | null;
           minijob_monthly_limit?: number;
+          sepa_creditor_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -378,6 +381,42 @@ export type Database = {
             referencedColumns: ["id"];
           }
         ];
+      };
+      student_sepa_mandates: {
+        Row: {
+          student_id: string;
+          organization_id: string;
+          account_holder: string;
+          iban: string;
+          bic: string | null;
+          mandate_ref: string;
+          mandate_date: string;
+          sequence_type: "FRST" | "RCUR";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          student_id: string;
+          organization_id: string;
+          account_holder: string;
+          iban: string;
+          bic?: string | null;
+          mandate_ref: string;
+          mandate_date: string;
+          sequence_type?: "FRST" | "RCUR";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          account_holder?: string;
+          iban?: string;
+          bic?: string | null;
+          mandate_ref?: string;
+          mandate_date?: string;
+          sequence_type?: "FRST" | "RCUR";
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       invoices: {
         Row: {
@@ -793,6 +832,7 @@ export interface InvoiceItem {
 }
 
 export type InvoiceRow = Database["public"]["Tables"]["invoices"]["Row"];
+export type SepaMandateRow = Database["public"]["Tables"]["student_sepa_mandates"]["Row"];
 
 export type Organization = Database["public"]["Tables"]["organizations"]["Row"];
 export type OrganizationMember = Database["public"]["Tables"]["organization_members"]["Row"];

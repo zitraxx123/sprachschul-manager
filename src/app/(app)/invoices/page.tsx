@@ -10,6 +10,8 @@ import {
 import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { InvoiceGenerator } from "@/components/invoices/invoice-generator";
 import { InvoiceRowActions } from "@/components/invoices/invoice-row-actions";
+import { SepaExport } from "@/components/invoices/sepa-export";
+import { isValidCreditorId, isValidIban } from "@/lib/sepa";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
@@ -55,7 +57,7 @@ export default async function InvoicesPage({
   const supabase = await createClient();
   const { data } = await supabase
     .from("invoices")
-    .select("id, invoice_number, student_name, recipient_name, issue_date, due_date, total_amount, status")
+    .select("id, invoice_number, student_id, student_name, recipient_name, issue_date, due_date, total_amount, status")
     .eq("organization_id", organization.id)
     .eq("month_year", month)
     .order("invoice_seq", { ascending: true });
@@ -70,6 +72,31 @@ export default async function InvoicesPage({
   const billingComplete =
     !!(organization.address_street?.trim() && organization.address_zip?.trim() && organization.address_city?.trim()) &&
     !!(organization.tax_number?.trim() || organization.vat_id?.trim());
+
+  // SEPA export readiness: open invoices whose student has a valid mandate
+  const openInvoices = invoices.filter((i) => i.status === "open");
+  const openStudentIds = openInvoices.map((i) => i.student_id).filter((id): id is string => !!id);
+  let mandateStudentIds = new Set<string>();
+  if (openStudentIds.length > 0) {
+    const { data: mandates } = await supabase
+      .from("student_sepa_mandates")
+      .select("student_id, iban")
+      .eq("organization_id", organization.id)
+      .in("student_id", openStudentIds);
+    mandateStudentIds = new Set((mandates || []).filter((m) => isValidIban(m.iban)).map((m) => m.student_id));
+  }
+  const sepaEligible = openInvoices.filter((i) => i.student_id && mandateStudentIds.has(i.student_id)).length;
+  const sepaMissing = openInvoices.length - sepaEligible;
+  const creditorReady =
+    !!organization.iban &&
+    isValidIban(organization.iban) &&
+    !!organization.sepa_creditor_id &&
+    isValidCreditorId(organization.sepa_creditor_id);
+  const [ty, tm, td] = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  const defaultCollectionDate = new Date(Date.UTC(ty, tm - 1, td + 3)).toISOString().slice(0, 10);
 
   const statusLabel = (s: InvoiceStatus) =>
     s === "open" ? t("statusOpen") : s === "paid" ? t("statusPaid") : t("statusCancelled");
@@ -113,6 +140,16 @@ export default async function InvoicesPage({
           <InvoiceGenerator month={month} billingComplete={billingComplete} />
         </CardContent>
       </Card>
+
+      {openInvoices.length > 0 && (
+        <SepaExport
+          month={month}
+          eligible={sepaEligible}
+          missing={sepaMissing}
+          creditorReady={creditorReady}
+          defaultDate={defaultCollectionDate}
+        />
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {summary.map((s) => (

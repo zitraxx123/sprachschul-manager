@@ -3,7 +3,8 @@
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { deleteStudent } from "@/actions/students";
-import { Course, Student, CourseSchedule, MonthlyPayment } from "@/types/database";
+import { Course, Student, CourseSchedule, MonthlyPayment, SepaMandateRow } from "@/types/database";
+import { SepaMandateDialog } from "@/components/students/sepa-mandate-dialog";
 import { RecordPaymentDialog } from "@/components/students/record-payment-dialog";
 import { EditStudentDialog } from "@/components/students/edit-student-dialog";
 import { StudentProfileDialog } from "@/components/students/student-profile-dialog";
@@ -19,6 +20,7 @@ interface StudentActionsProps {
   assignedCourseIds?: string[];
   enrolledCourseDetails?: CourseInfoData[];
   contractEnrollments?: ContractEnrollment[];
+  sepaMandate?: SepaMandateRow | null;
   payment?: MonthlyPayment | null;
   currentMonthYear?: string;
   isAlreadyPaid?: boolean;
@@ -30,6 +32,7 @@ export function StudentActions({
   assignedCourseIds = [],
   enrolledCourseDetails = [],
   contractEnrollments = [],
+  sepaMandate = null,
   payment,
   currentMonthYear,
   isAlreadyPaid = false,
@@ -91,6 +94,8 @@ export function StudentActions({
       </StudentProfileDialog>
 
       <ContractDialog studentId={student.id} studentName={studentName} enrollments={contractEnrollments} />
+
+      <SepaMandateDialog studentId={student.id} studentName={studentName} mandate={sepaMandate} />
 
       <RecordPaymentDialog
         studentId={student.id}

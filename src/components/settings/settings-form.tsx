@@ -376,6 +376,22 @@ export function SettingsForm({ organization }: SettingsFormProps) {
               </Label>
               <Input id="bank_name" name="bank_name" defaultValue={organization.bank_name ?? ""} disabled={isPending} className="h-10 text-sm" />
             </div>
+            <div className="space-y-2 sm:col-span-6">
+              <Label htmlFor="sepa_creditor_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("sepaCreditorIdLabel")}
+              </Label>
+              <Input
+                id="sepa_creditor_id"
+                name="sepa_creditor_id"
+                defaultValue={organization.sepa_creditor_id ?? ""}
+                disabled={isPending}
+                placeholder="DE98ZZZ09999999999"
+                className="h-10 text-sm font-mono"
+              />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {tSettings("sepaCreditorIdHelp")}
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
