@@ -29,6 +29,7 @@ export type Database = {
           invoice_tax_note: string | null;
           minijob_monthly_limit: number;
           sepa_creditor_id: string | null;
+          auto_invoice_enabled: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -51,6 +52,7 @@ export type Database = {
           invoice_tax_note?: string | null;
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
+          auto_invoice_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -73,6 +75,7 @@ export type Database = {
           invoice_tax_note?: string | null;
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
+          auto_invoice_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -794,6 +797,24 @@ export type Database = {
       };
       get_current_teacher_id: {
         Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      create_invoice_system: {
+        Args: {
+          p_org: string;
+          p_student: string;
+          p_student_name: string;
+          p_recipient_name: string;
+          p_month_year: string;
+          p_issue_date: string;
+          p_due_date: string;
+          p_items: InvoiceItem[];
+          p_net: number;
+          p_vat_rate: number;
+          p_vat_amount: number;
+          p_total: number;
+          p_status: "open" | "paid";
+        };
         Returns: string;
       };
       create_invoice: {

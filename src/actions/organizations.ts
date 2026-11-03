@@ -144,6 +144,10 @@ export async function updateOrganizationSettings(
     updateData.sepa_creditor_id = creditorId || null;
   }
 
+  if (formData.has("auto_invoice_enabled")) {
+    updateData.auto_invoice_enabled = formData.getAll("auto_invoice_enabled").includes("true");
+  }
+
   // Handle Logo Upload / Removal
   const removeLogo = formData.get("remove_logo") as string | null;
   const logoFile = formData.get("logo") as File | null;

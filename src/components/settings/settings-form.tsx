@@ -392,6 +392,27 @@ export function SettingsForm({ organization }: SettingsFormProps) {
                 {tSettings("sepaCreditorIdHelp")}
               </p>
             </div>
+            <div className="sm:col-span-6 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-3">
+              <input type="hidden" name="auto_invoice_enabled" value="false" />
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="auto_invoice_enabled"
+                  value="true"
+                  defaultChecked={organization.auto_invoice_enabled ?? false}
+                  disabled={isPending}
+                  className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-700 text-blue-600 bg-white dark:bg-slate-800 shrink-0"
+                />
+                <span className="space-y-0.5">
+                  <span className="block text-xs font-semibold text-slate-800 dark:text-slate-200">
+                    {tSettings("autoInvoiceLabel")}
+                  </span>
+                  <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    {tSettings("autoInvoiceHelp")}
+                  </span>
+                </span>
+              </label>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">

@@ -907,7 +907,9 @@
     "minijobLimitLabel": "Minijob-Grenze pro Monat",
     "minijobLimitHelp": "Bei Lehrkräften mit der Beschäftigungsart Minijob wird der Monatsverdienst mit dieser Grenze verglichen. Ab 80 % erscheint eine Warnung. Bitte den aktuellen Wert prüfen und bei Änderungen anpassen.",
     "sepaCreditorIdLabel": "Gläubiger-ID (SEPA)",
-    "sepaCreditorIdHelp": "Für Lastschriften erforderlich. Die Gläubiger-ID wird bei der Deutschen Bundesbank beantragt."
+    "sepaCreditorIdHelp": "Für Lastschriften erforderlich. Die Gläubiger-ID wird bei der Deutschen Bundesbank beantragt.",
+    "autoInvoiceLabel": "Rechnungen automatisch am 1. jedes Monats erstellen",
+    "autoInvoiceHelp": "Für alle Schüler mit aktiver Kursanmeldung wird am Monatsersten automatisch eine Rechnung erstellt (ca. 6–7 Uhr deutscher Zeit). Vorhandene Rechnungen werden nicht doppelt erstellt. Erfordert vollständige Rechnungsdaten."
   },
   "schedule": {
     "monday": "Montag",

@@ -907,7 +907,9 @@
     "minijobLimitLabel": "Mini-job limit per month",
     "minijobLimitHelp": "For teachers with the employment type Mini-job, the monthly earnings are compared with this limit. A warning appears from 80 %. Please check the current value and adjust it when it changes.",
     "sepaCreditorIdLabel": "Creditor ID (SEPA)",
-    "sepaCreditorIdHelp": "Required for direct debits. The creditor ID is applied for at the Deutsche Bundesbank."
+    "sepaCreditorIdHelp": "Required for direct debits. The creditor ID is applied for at the Deutsche Bundesbank.",
+    "autoInvoiceLabel": "Create invoices automatically on the 1st of each month",
+    "autoInvoiceHelp": "On the first of the month an invoice is created automatically for every student with an active course enrollment (about 6–7 am German time). Existing invoices are never duplicated. Requires complete billing details."
   },
   "schedule": {
     "monday": "Monday",
