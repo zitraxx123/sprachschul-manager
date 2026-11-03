@@ -2,6 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getCurrentUser, getActiveOrganization } from "@/lib/supabase/server";
+import type { Database } from "@/types/database";
+
+type OrganizationUpdate = Database["public"]["Tables"]["organizations"]["Update"];
+
+const BILLING_TEXT_FIELDS = [
+  "address_street",
+  "address_zip",
+  "address_city",
+  "tax_number",
+  "vat_id",
+  "bic",
+  "bank_name",
+  "invoice_tax_note",
+] as const;
 
 export type OrgActionState = {
   error?: string;
@@ -74,17 +88,43 @@ export async function updateOrganizationSettings(
   }
 
   const supabase = await createClient();
-  const updateData: {
-    late_cancellation_hours: number;
-    late_cancellation_pay_percent: number;
-    name?: string;
-    logo_url?: string | null;
-  } = {
+  const updateData: OrganizationUpdate = {
     late_cancellation_hours: lateCancellationHours,
     late_cancellation_pay_percent: lateCancellationPayPercent,
   };
   if (name) {
     updateData.name = name;
+  }
+
+  // Billing data (Rechnungsdaten). Fields that are not part of the form stay untouched.
+  for (const field of BILLING_TEXT_FIELDS) {
+    if (formData.has(field)) {
+      updateData[field] = ((formData.get(field) as string) || "").trim() || null;
+    }
+  }
+
+  if (formData.has("iban")) {
+    const iban = ((formData.get("iban") as string) || "").replace(/\s+/g, "").toUpperCase();
+    if (iban && !/^[A-Z]{2}[0-9A-Z]{13,32}$/.test(iban)) {
+      return { error: "Ungültige IBAN." };
+    }
+    updateData.iban = iban || null;
+  }
+
+  if (formData.has("invoice_payment_days")) {
+    const days = parseInt(formData.get("invoice_payment_days") as string, 10);
+    if (isNaN(days) || days < 0 || days > 365) {
+      return { error: "Ungültiges Zahlungsziel (0 - 365 Tage)." };
+    }
+    updateData.invoice_payment_days = days;
+  }
+
+  if (formData.has("invoice_vat_rate")) {
+    const rate = parseFloat(((formData.get("invoice_vat_rate") as string) || "0").replace(",", "."));
+    if (isNaN(rate) || rate < 0 || rate > 100) {
+      return { error: "Ungültiger Umsatzsteuersatz (0 - 100%)." };
+    }
+    updateData.invoice_vat_rate = rate;
   }
 
   // Handle Logo Upload / Removal
@@ -140,6 +180,7 @@ export async function updateOrganizationSettings(
   }
 
   revalidatePath("/settings");
+  revalidatePath("/invoices");
   revalidatePath("/", "layout");
   revalidatePath("/login");
   revalidatePath("/my-portal");

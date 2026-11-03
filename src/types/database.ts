@@ -16,6 +16,17 @@ export type Database = {
           logo_url: string | null;
           late_cancellation_hours: number;
           late_cancellation_pay_percent: number;
+          address_street: string | null;
+          address_zip: string | null;
+          address_city: string | null;
+          tax_number: string | null;
+          vat_id: string | null;
+          iban: string | null;
+          bic: string | null;
+          bank_name: string | null;
+          invoice_payment_days: number;
+          invoice_vat_rate: number;
+          invoice_tax_note: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -25,6 +36,17 @@ export type Database = {
           logo_url?: string | null;
           late_cancellation_hours?: number;
           late_cancellation_pay_percent?: number;
+          address_street?: string | null;
+          address_zip?: string | null;
+          address_city?: string | null;
+          tax_number?: string | null;
+          vat_id?: string | null;
+          iban?: string | null;
+          bic?: string | null;
+          bank_name?: string | null;
+          invoice_payment_days?: number;
+          invoice_vat_rate?: number;
+          invoice_tax_note?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -34,6 +56,17 @@ export type Database = {
           logo_url?: string | null;
           late_cancellation_hours?: number;
           late_cancellation_pay_percent?: number;
+          address_street?: string | null;
+          address_zip?: string | null;
+          address_city?: string | null;
+          tax_number?: string | null;
+          vat_id?: string | null;
+          iban?: string | null;
+          bic?: string | null;
+          bank_name?: string | null;
+          invoice_payment_days?: number;
+          invoice_vat_rate?: number;
+          invoice_tax_note?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -336,6 +369,60 @@ export type Database = {
             referencedColumns: ["id"];
           }
         ];
+      };
+      invoices: {
+        Row: {
+          id: string;
+          organization_id: string;
+          student_id: string | null;
+          student_name: string;
+          recipient_name: string;
+          month_year: string;
+          invoice_year: number;
+          invoice_seq: number;
+          invoice_number: string;
+          issue_date: string;
+          due_date: string;
+          items: InvoiceItem[];
+          net_amount: number;
+          vat_rate: number;
+          vat_amount: number;
+          total_amount: number;
+          status: "open" | "paid" | "cancelled";
+          paid_at: string | null;
+          cancelled_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          student_id?: string | null;
+          student_name: string;
+          recipient_name: string;
+          month_year: string;
+          invoice_year: number;
+          invoice_seq: number;
+          invoice_number: string;
+          issue_date: string;
+          due_date: string;
+          items?: InvoiceItem[];
+          net_amount: number;
+          vat_rate?: number;
+          vat_amount?: number;
+          total_amount: number;
+          status?: "open" | "paid" | "cancelled";
+          paid_at?: string | null;
+          cancelled_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          status?: "open" | "paid" | "cancelled";
+          paid_at?: string | null;
+          cancelled_at?: string | null;
+        };
+        Relationships: [];
       };
       lesson_overrides: {
         Row: {
@@ -649,6 +736,24 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string;
       };
+      create_invoice: {
+        Args: {
+          p_org: string;
+          p_student: string;
+          p_student_name: string;
+          p_recipient_name: string;
+          p_month_year: string;
+          p_issue_date: string;
+          p_due_date: string;
+          p_items: InvoiceItem[];
+          p_net: number;
+          p_vat_rate: number;
+          p_vat_amount: number;
+          p_total: number;
+          p_status: "open" | "paid";
+        };
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;
@@ -658,6 +763,15 @@ export type Database = {
     };
   };
 };
+
+export interface InvoiceItem {
+  description: string;
+  quantity: number;
+  unit_price: number;
+  total: number;
+}
+
+export type InvoiceRow = Database["public"]["Tables"]["invoices"]["Row"];
 
 export type Organization = Database["public"]["Tables"]["organizations"]["Row"];
 export type OrganizationMember = Database["public"]["Tables"]["organization_members"]["Row"];

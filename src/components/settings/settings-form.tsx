@@ -19,7 +19,8 @@ import {
   HelpCircle,
   UploadCloud,
   Trash2,
-  GraduationCap
+  GraduationCap,
+  Receipt
 } from "lucide-react";
 
 interface SettingsFormProps {
@@ -295,6 +296,145 @@ export function SettingsForm({ organization }: SettingsFormProps) {
                   {tSettings("lateCancellationFeePercentHelp")}
                 </li>
               </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 3. Rechnungsdaten (billing data printed on invoices) */}
+      <Card>
+        <CardHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center space-x-2">
+            <Receipt strokeWidth={1.5} className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div>
+              <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                {tSettings("billingTitle")}
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {tSettings("billingDesc")}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <div className="space-y-2 sm:col-span-6">
+              <Label htmlFor="address_street" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingAddressStreet")}
+              </Label>
+              <Input id="address_street" name="address_street" defaultValue={organization.address_street ?? ""} disabled={isPending} className="h-10 text-sm" />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="address_zip" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingAddressZip")}
+              </Label>
+              <Input id="address_zip" name="address_zip" defaultValue={organization.address_zip ?? ""} disabled={isPending} className="h-10 text-sm" />
+            </div>
+            <div className="space-y-2 sm:col-span-4">
+              <Label htmlFor="address_city" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingAddressCity")}
+              </Label>
+              <Input id="address_city" name="address_city" defaultValue={organization.address_city ?? ""} disabled={isPending} className="h-10 text-sm" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="space-y-2">
+              <Label htmlFor="tax_number" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingTaxNumber")}
+              </Label>
+              <Input id="tax_number" name="tax_number" defaultValue={organization.tax_number ?? ""} disabled={isPending} className="h-10 text-sm font-mono" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="vat_id" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingVatId")}
+              </Label>
+              <Input id="vat_id" name="vat_id" defaultValue={organization.vat_id ?? ""} disabled={isPending} className="h-10 text-sm font-mono" />
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 sm:col-span-2 -mt-2">
+              {tSettings("billingTaxHelp")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="space-y-2 sm:col-span-3">
+              <Label htmlFor="iban" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingIban")}
+              </Label>
+              <Input id="iban" name="iban" defaultValue={organization.iban ?? ""} disabled={isPending} className="h-10 text-sm font-mono" />
+            </div>
+            <div className="space-y-2 sm:col-span-3">
+              <Label htmlFor="bic" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingBic")}
+              </Label>
+              <Input id="bic" name="bic" defaultValue={organization.bic ?? ""} disabled={isPending} className="h-10 text-sm font-mono" />
+            </div>
+            <div className="space-y-2 sm:col-span-6">
+              <Label htmlFor="bank_name" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingBankName")}
+              </Label>
+              <Input id="bank_name" name="bank_name" defaultValue={organization.bank_name ?? ""} disabled={isPending} className="h-10 text-sm" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="space-y-2">
+              <Label htmlFor="invoice_payment_days" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingPaymentDays")}
+              </Label>
+              <div className="relative">
+                <Input
+                  id="invoice_payment_days"
+                  name="invoice_payment_days"
+                  type="number"
+                  min="0"
+                  max="365"
+                  defaultValue={organization.invoice_payment_days ?? 14}
+                  required
+                  disabled={isPending}
+                  className="h-10 text-sm pr-14 font-mono"
+                />
+                <span className="absolute right-3 top-2.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
+                  {tSettings("daysUnit")}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="invoice_vat_rate" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingVatRate")}
+              </Label>
+              <div className="relative">
+                <Input
+                  id="invoice_vat_rate"
+                  name="invoice_vat_rate"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  defaultValue={organization.invoice_vat_rate ?? 0}
+                  required
+                  disabled={isPending}
+                  className="h-10 text-sm pr-10 font-mono"
+                />
+                <span className="absolute right-3 top-2.5 text-xs text-slate-400 dark:text-slate-500 font-bold">%</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {tSettings("billingVatRateHelp")}
+              </p>
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="invoice_tax_note" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tSettings("billingTaxNote")}
+              </Label>
+              <textarea
+                id="invoice_tax_note"
+                name="invoice_tax_note"
+                rows={2}
+                defaultValue={organization.invoice_tax_note ?? ""}
+                disabled={isPending}
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">{tSettings("billingTaxNoteHelp")}</p>
             </div>
           </div>
         </CardContent>

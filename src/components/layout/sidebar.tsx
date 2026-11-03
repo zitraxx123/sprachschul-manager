@@ -13,7 +13,8 @@ import {
   UserX,
   DoorOpen,
   HelpCircle,
-  Settings
+  Settings,
+  Receipt
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/actions/auth";
@@ -29,7 +30,7 @@ interface SidebarProps {
 }
 
 interface NavItemConfig {
-  key: "dashboard" | "courses" | "students" | "teachers" | "lessons" | "absences" | "rooms" | "settings" | "help" | "myPortal";
+  key: "dashboard" | "courses" | "students" | "invoices" | "teachers" | "lessons" | "absences" | "rooms" | "settings" | "help" | "myPortal";
   href: string;
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
@@ -38,6 +39,7 @@ const adminNavItems: NavItemConfig[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "courses", href: "/courses", icon: Layers },
   { key: "students", href: "/students", icon: Users },
+  { key: "invoices", href: "/invoices", icon: Receipt },
   { key: "teachers", href: "/teachers", icon: GraduationCap },
   { key: "lessons", href: "/lessons", icon: BookOpen },
   { key: "absences", href: "/absences", icon: UserX },
