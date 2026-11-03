@@ -300,7 +300,18 @@
     "filterPayment": "Zahlung",
     "allPayments": "Alle Zahlungen",
     "filterPaid": "Bezahlt",
-    "filterUnpaid": "Offen"
+    "filterUnpaid": "Offen",
+    "privacyTitle": "Datenschutz (DSGVO)",
+    "privacyExportHint": "Auskunft / Datenübertragbarkeit: alle gespeicherten Daten dieses Schülers als JSON-Datei herunterladen.",
+    "privacyExportButton": "Daten exportieren (JSON)",
+    "privacyExported": "Export heruntergeladen",
+    "privacyAnonymizeHint": "Löschung: personenbezogene Daten (Name, Kontakt, Eltern, Bankdaten) werden unwiderruflich entfernt. Rechnungen und Zahlungen bleiben wegen der gesetzlichen Aufbewahrungspflicht erhalten.",
+    "privacyAnonymizeButton": "Schüler anonymisieren",
+    "privacyAnonymizeConfirm": "{name} wirklich unwiderruflich anonymisieren? Dies kann nicht rückgängig gemacht werden.",
+    "privacyAnonymized": "Schüler anonymisiert",
+    "privacyErrorForbidden": "Keine Berechtigung.",
+    "privacyErrorNotFound": "Schüler nicht gefunden.",
+    "privacyErrorFailed": "Aktion fehlgeschlagen."
   },
   "teachers": {
     "title": "Dozenten & Lehrkräfte",

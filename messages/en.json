@@ -300,7 +300,18 @@
     "filterPayment": "Payment",
     "allPayments": "All payments",
     "filterPaid": "Paid",
-    "filterUnpaid": "Unpaid"
+    "filterUnpaid": "Unpaid",
+    "privacyTitle": "Privacy (GDPR)",
+    "privacyExportHint": "Access / portability: download all stored data of this student as a JSON file.",
+    "privacyExportButton": "Export data (JSON)",
+    "privacyExported": "Export downloaded",
+    "privacyAnonymizeHint": "Erasure: personal data (name, contact, parents, bank details) is removed irreversibly. Invoices and payments are kept because of legal retention duties.",
+    "privacyAnonymizeButton": "Anonymize student",
+    "privacyAnonymizeConfirm": "Really anonymize {name} irreversibly? This cannot be undone.",
+    "privacyAnonymized": "Student anonymized",
+    "privacyErrorForbidden": "Not allowed.",
+    "privacyErrorNotFound": "Student not found.",
+    "privacyErrorFailed": "Action failed."
   },
   "teachers": {
     "title": "Teachers & Instructors",

@@ -300,7 +300,18 @@
     "filterPayment": "Оплата",
     "allPayments": "Любая оплата",
     "filterPaid": "Оплачено",
-    "filterUnpaid": "Не оплачено"
+    "filterUnpaid": "Не оплачено",
+    "privacyTitle": "Защита данных (GDPR)",
+    "privacyExportHint": "Запрос данных / переносимость: скачать все сохранённые данные ученика в файле JSON.",
+    "privacyExportButton": "Экспорт данных (JSON)",
+    "privacyExported": "Экспорт скачан",
+    "privacyAnonymizeHint": "Удаление: личные данные (имя, контакты, родители, банковские реквизиты) стираются безвозвратно. Счета и платежи сохраняются из-за обязательного срока хранения по закону.",
+    "privacyAnonymizeButton": "Обезличить ученика",
+    "privacyAnonymizeConfirm": "Точно обезличить {name} без возможности восстановления?",
+    "privacyAnonymized": "Ученик обезличен",
+    "privacyErrorForbidden": "Нет прав.",
+    "privacyErrorNotFound": "Ученик не найден.",
+    "privacyErrorFailed": "Не удалось выполнить действие."
   },
   "teachers": {
     "title": "Преподаватели",

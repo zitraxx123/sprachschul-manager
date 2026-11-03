@@ -7,6 +7,7 @@ import { Course, Student, CourseSchedule, MonthlyPayment, SepaMandateRow } from 
 import { SepaMandateDialog } from "@/components/students/sepa-mandate-dialog";
 import { RecordPaymentDialog } from "@/components/students/record-payment-dialog";
 import { EditStudentDialog } from "@/components/students/edit-student-dialog";
+import { StudentPrivacyDialog } from "@/components/students/student-privacy-dialog";
 import { StudentProfileDialog } from "@/components/students/student-profile-dialog";
 import { ContractDialog, ContractEnrollment } from "@/components/students/contract-dialog";
 import { CourseInfoData } from "@/components/courses/course-info-dialog";
@@ -110,6 +111,8 @@ export function StudentActions({
         courses={courses}
         assignedCourseIds={assignedCourseIds}
       />
+
+      <StudentPrivacyDialog studentId={student.id} studentName={studentName} />
 
       <Button
         type="button"
