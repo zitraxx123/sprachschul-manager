@@ -31,6 +31,7 @@ export type Database = {
           sepa_creditor_id: string | null;
           auto_invoice_enabled: boolean;
           plan: string;
+          org_type: "language_school" | "dance_school" | "music_school" | "other";
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
           subscription_status: string | null;
@@ -58,6 +59,7 @@ export type Database = {
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
           plan?: string;
+          org_type?: "language_school" | "dance_school" | "music_school" | "other";
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_status?: string | null;
@@ -85,6 +87,7 @@ export type Database = {
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
           plan?: string;
+          org_type?: "language_school" | "dance_school" | "music_school" | "other";
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_status?: string | null;

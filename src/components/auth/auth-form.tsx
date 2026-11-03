@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import { GraduationCap, Layers, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface AuthFormProps {
@@ -100,6 +100,26 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
           )}
 
           <form action={mode === "login" ? signInAction : signUpAction} className="space-y-4">
+            {mode === "signup" && (
+              <div className="space-y-2">
+                <Label htmlFor="organizationType" className="flex items-center space-x-2 text-slate-700 dark:text-slate-300">
+                  <Layers strokeWidth={1.5} className="w-4 h-4 text-slate-400" />
+                  <span>{t("orgType")}</span>
+                </Label>
+                <select
+                  id="organizationType"
+                  name="organizationType"
+                  defaultValue="language_school"
+                  className="h-10 w-full rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 text-sm"
+                >
+                  <option value="language_school">{t("orgTypeLanguage")}</option>
+                  <option value="dance_school">{t("orgTypeDance")}</option>
+                  <option value="music_school">{t("orgTypeMusic")}</option>
+                  <option value="other">{t("orgTypeOther")}</option>
+                </select>
+              </div>
+            )}
+
             {mode === "signup" && (
               <div className="space-y-2">
                 <Label htmlFor="organizationName" className="flex items-center space-x-2 text-slate-700 dark:text-slate-300">

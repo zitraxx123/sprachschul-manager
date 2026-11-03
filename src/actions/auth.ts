@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getRequestOrigin } from "@/lib/origin";
+import { isOrgType } from "@/lib/terminology";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = {
@@ -69,6 +70,8 @@ export async function signUp(
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const organizationName = (formData.get("organizationName") as string)?.trim() || "Meine Sprachschule";
+  const orgTypeRaw = formData.get("organizationType");
+  const orgType = isOrgType(orgTypeRaw) ? orgTypeRaw : "language_school";
 
   if (!email || !password) {
     return { error: "Bitte geben Sie alle Pflichtfelder ein." };
@@ -87,6 +90,7 @@ export async function signUp(
     options: {
       data: {
         organization_name: organizationName,
+        organization_type: orgType,
       },
     },
   });
@@ -110,6 +114,7 @@ export async function signUp(
       await supabase.from("organizations").insert({
         id: orgId,
         name: organizationName,
+        org_type: orgType,
       });
 
       await supabase.from("organization_members").insert({

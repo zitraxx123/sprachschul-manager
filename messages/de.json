@@ -146,7 +146,12 @@
     "errorPasswordShort": "Das Passwort muss mindestens 6 Zeichen lang sein.",
     "errorPasswordMismatch": "Die Passwörter stimmen nicht überein.",
     "errorLinkExpired": "Der Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
-    "errorUpdateFailed": "Das Passwort konnte nicht geändert werden."
+    "errorUpdateFailed": "Das Passwort konnte nicht geändert werden.",
+    "orgType": "Art der Einrichtung",
+    "orgTypeLanguage": "Sprachschule",
+    "orgTypeDance": "Tanzschule",
+    "orgTypeMusic": "Musikschule",
+    "orgTypeOther": "Andere Bildungseinrichtung"
   },
   "dashboard": {
     "title": "Übersicht",
@@ -959,7 +964,9 @@
     "sepaCreditorIdLabel": "Gläubiger-ID (SEPA)",
     "sepaCreditorIdHelp": "Für Lastschriften erforderlich. Die Gläubiger-ID wird bei der Deutschen Bundesbank beantragt.",
     "autoInvoiceLabel": "Rechnungen automatisch am 1. jedes Monats erstellen",
-    "autoInvoiceHelp": "Für alle Schüler mit aktiver Kursanmeldung wird am Monatsersten automatisch eine Rechnung erstellt (ca. 6–7 Uhr deutscher Zeit). Vorhandene Rechnungen werden nicht doppelt erstellt. Erfordert vollständige Rechnungsdaten."
+    "autoInvoiceHelp": "Für alle Schüler mit aktiver Kursanmeldung wird am Monatsersten automatisch eine Rechnung erstellt (ca. 6–7 Uhr deutscher Zeit). Vorhandene Rechnungen werden nicht doppelt erstellt. Erfordert vollständige Rechnungsdaten.",
+    "orgTypeLabel": "Art der Einrichtung",
+    "orgTypeHelp": "Bestimmt Begriffe in der Oberfläche (z. B. „Tanzschule“ statt „Sprachschule“)."
   },
   "schedule": {
     "monday": "Montag",

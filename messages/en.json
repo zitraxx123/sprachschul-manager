@@ -146,7 +146,12 @@
     "errorPasswordShort": "The password must be at least 6 characters long.",
     "errorPasswordMismatch": "The passwords do not match.",
     "errorLinkExpired": "The link is invalid or has expired. Please request a new one.",
-    "errorUpdateFailed": "The password could not be changed."
+    "errorUpdateFailed": "The password could not be changed.",
+    "orgType": "Type of institution",
+    "orgTypeLanguage": "Language school",
+    "orgTypeDance": "Dance school",
+    "orgTypeMusic": "Music school",
+    "orgTypeOther": "Other educational institution"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -959,7 +964,9 @@
     "sepaCreditorIdLabel": "Creditor ID (SEPA)",
     "sepaCreditorIdHelp": "Required for direct debits. The creditor ID is applied for at the Deutsche Bundesbank.",
     "autoInvoiceLabel": "Create invoices automatically on the 1st of each month",
-    "autoInvoiceHelp": "On the first of the month an invoice is created automatically for every student with an active course enrollment (about 6–7 am German time). Existing invoices are never duplicated. Requires complete billing details."
+    "autoInvoiceHelp": "On the first of the month an invoice is created automatically for every student with an active course enrollment (about 6–7 am German time). Existing invoices are never duplicated. Requires complete billing details.",
+    "orgTypeLabel": "Type of institution",
+    "orgTypeHelp": "Controls terms in the interface (e.g. \"dance school\" instead of \"language school\")."
   },
   "schedule": {
     "monday": "Monday",
