@@ -57,6 +57,8 @@
 
 ## Ждёт владельца (напоминать в конце каждого отчёта)
 - Supabase → Authentication → URL Configuration → Redirect URLs: добавить `https://<домен>/auth/callback` и localhost; проверить шаблон Reset Password; затем проверить сброс пароля на сайте (пункт 1).
+- Пункт 4 (Sentry): завести проект на sentry.io, задать `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` в Vercel, сказать «готово»; тогда слить ветку `feat/sentry` в main.
+- Пункт 5 (Supabase CLI): выполнить login / link / repair по `supabase/README.md`.
 
 ## Важно знать
 - **Vercel Hobby (бесплатный) запрещает коммерческое использование.** Для продажи сервиса нужен план Pro. Это нужно сделать до первых платящих клиентов.
