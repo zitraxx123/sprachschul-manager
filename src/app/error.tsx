@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -16,6 +17,7 @@ export default function ErrorBoundary({
 
   useEffect(() => {
     console.error("Application error:", error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (

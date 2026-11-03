@@ -30,7 +30,7 @@
 1. ~~Сброс пароля~~ СДЕЛАНО 03.11.2026: `/forgot-password`, `/auth/callback`, `/reset-password`. Нужно один раз в Supabase: Authentication → URL Configuration → Redirect URLs добавить `https://<домен>/auth/callback` (и localhost для разработки), проверить шаблон письма Reset Password.
 2. ~~Приглашение учителя~~ СДЕЛАНО 03.11.2026: кнопка «Пригласить» на странице Lehrkräfte создаёт одноразовую ссылку (без почтового сервиса), админ отправляет её сам. Нужен `SUPABASE_SERVICE_ROLE_KEY` (уже задан для cron).
 3. ~~Автотесты~~ СДЕЛАНО 03.11.2026: Vitest, `npm test`, 37 тестов в `src/lib/__tests__` (payroll, schedule, contracts, sepa, missed-lessons, invoice-generation). Добавлять тест к каждой новой денежной функции.
-4. Мониторинг ошибок (Sentry).
+4. ~~Мониторинг ошибок (Sentry)~~ КОД ГОТОВ 03.11.2026, ветка `feat/sentry` (НЕ в main, ждёт «готово» владельца). Без DSN ничего не делает. Нужно: создать проект на sentry.io (Next.js), в Vercel задать `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` (один и тот же DSN), затем слить ветку в main. Source maps не загружаются (нужен `SENTRY_AUTH_TOKEN` и `withSentryConfig`, по желанию позже).
 5. ~~Синхронизация базы через Supabase CLI~~ ПОДГОТОВЛЕНО 03.11.2026: CLI в проекте, `supabase/config.toml`, скрипты `npm run db:*`, инструкция в `supabase/README.md`. Владельцу один раз: login, link, repair (команды в README).
 
 ### Этап B. Правовое и безопасность
