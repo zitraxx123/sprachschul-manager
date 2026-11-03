@@ -7,9 +7,23 @@ import { isOrgType } from "@/lib/terminology";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = {
+  /** i18n key under "auth" */
   error?: string;
   success?: boolean;
+  /** Sign-up succeeded but the e-mail address must be confirmed first */
+  needsConfirmation?: boolean;
 };
+
+/** Maps raw Supabase auth errors to i18n keys under "auth". */
+function authErrorKey(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("invalid login credentials")) return "errorInvalidCredentials";
+  if (m.includes("email not confirmed")) return "errorEmailNotConfirmed";
+  if (m.includes("already registered") || m.includes("already been registered")) return "errorUserExists";
+  if (m.includes("rate limit") || m.includes("too many")) return "errorRateLimit";
+  if (m.includes("password") && m.includes("characters")) return "errorPasswordShort";
+  return "errorGeneric";
+}
 
 export async function signIn(
   prevState: AuthState | null,
@@ -19,7 +33,7 @@ export async function signIn(
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    return { error: "Bitte geben Sie E-Mail und Passwort ein." };
+    return { error: "errorFieldsRequired" };
   }
 
   const supabase = await createClient();
@@ -30,7 +44,7 @@ export async function signIn(
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: authErrorKey(error.message) };
   }
 
   // Ensure user has an organization upon login (fallback if trigger or signup missed it)
@@ -74,20 +88,22 @@ export async function signUp(
   const orgType = isOrgType(orgTypeRaw) ? orgTypeRaw : "language_school";
 
   if (!email || !password) {
-    return { error: "Bitte geben Sie alle Pflichtfelder ein." };
+    return { error: "errorFieldsRequired" };
   }
 
   if (password.length < 6) {
-    return { error: "Das Passwort muss mindestens 6 Zeichen lang sein." };
+    return { error: "errorPasswordShort" };
   }
 
   const supabase = await createClient();
+  const origin = await getRequestOrigin();
 
   // 1. Register user with organization_name in metadata
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
       data: {
         organization_name: organizationName,
         organization_type: orgType,
@@ -96,7 +112,13 @@ export async function signUp(
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: authErrorKey(error.message) };
+  }
+
+  // E-mail confirmation is enabled: there is no session yet. The database trigger creates the school
+  // from the sign-up metadata; the user continues after clicking the link in the e-mail.
+  if (data?.user && !data.session) {
+    return { success: true, needsConfirmation: true };
   }
 
   // 2. Ensure organization exists (without .select() to avoid RLS SELECT block)

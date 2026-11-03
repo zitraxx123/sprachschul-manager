@@ -151,7 +151,13 @@
     "orgTypeLanguage": "Sprachschule",
     "orgTypeDance": "Tanzschule",
     "orgTypeMusic": "Musikschule",
-    "orgTypeOther": "Andere Bildungseinrichtung"
+    "orgTypeOther": "Andere Bildungseinrichtung",
+    "errorInvalidCredentials": "E-Mail oder Passwort ist falsch.",
+    "errorEmailNotConfirmed": "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse (Link in der E-Mail).",
+    "errorUserExists": "Mit dieser E-Mail existiert bereits ein Konto. Bitte melden Sie sich an.",
+    "errorGeneric": "Aktion fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "errorFieldsRequired": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "checkEmail": "Fast geschafft! Wir haben Ihnen eine E-Mail geschickt. Bitte bestätigen Sie Ihre Adresse über den Link, danach geht es direkt weiter."
   },
   "dashboard": {
     "title": "Übersicht",

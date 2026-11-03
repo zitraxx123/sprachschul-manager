@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Layers, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import { GraduationCap, Layers, CheckCircle2, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface AuthFormProps {
@@ -30,7 +30,9 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
     null
   );
 
-  const error = mode === "login" ? signInState?.error : signUpState?.error;
+  const errorKey = mode === "login" ? signInState?.error : signUpState?.error;
+  const error = errorKey ? (t.has(errorKey) ? t(errorKey) : errorKey) : null;
+  const needsConfirmation = mode === "signup" && !!signUpState?.needsConfirmation;
   const isPending = mode === "login" ? isSigningIn : isSigningUp;
 
   return (
@@ -96,6 +98,13 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
             <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2 text-sm text-red-700 dark:text-red-300">
               <AlertCircle strokeWidth={1.5} className="w-4 h-4 mt-0.5 shrink-0" />
               <span>{error}</span>
+            </div>
+          )}
+
+          {needsConfirmation && (
+            <div className="mb-4 p-3 rounded-lg bg-green-50 dark:bg-green-950/60 border border-green-200 dark:border-green-900 flex items-start space-x-2 text-sm text-green-700 dark:text-green-300">
+              <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{t("checkEmail")}</span>
             </div>
           )}
 

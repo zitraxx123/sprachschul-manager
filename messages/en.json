@@ -151,7 +151,13 @@
     "orgTypeLanguage": "Language school",
     "orgTypeDance": "Dance school",
     "orgTypeMusic": "Music school",
-    "orgTypeOther": "Other educational institution"
+    "orgTypeOther": "Other educational institution",
+    "errorInvalidCredentials": "Email or password is incorrect.",
+    "errorEmailNotConfirmed": "Please confirm your email address first (link in the email).",
+    "errorUserExists": "An account with this email already exists. Please sign in.",
+    "errorGeneric": "Action failed. Please try again.",
+    "errorFieldsRequired": "Please fill in all required fields.",
+    "checkEmail": "Almost done! We have sent you an email. Please confirm your address via the link, then you can continue right away."
   },
   "dashboard": {
     "title": "Dashboard",
