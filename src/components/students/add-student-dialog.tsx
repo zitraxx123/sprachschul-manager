@@ -31,6 +31,7 @@ interface AddStudentDialogProps {
 export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
   const t = useTranslations("students");
   const tCommon = useTranslations("common");
+  const tPlan = useTranslations("plan");
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
@@ -45,7 +46,7 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
         setSelectedCourseIds([]);
         setCourseName("");
       } else if (res?.error) {
-        toast.error(res.error);
+        toast.error(res.error === "plan_limit_students" ? tPlan("limitStudents") : res.error);
       }
       return res;
     },
@@ -86,7 +87,7 @@ export function AddStudentDialog({ courses = [] }: AddStudentDialogProps) {
             {state?.error && (
               <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2 text-xs text-red-700 dark:text-red-300">
                 <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{state.error}</span>
+                <span>{state.error === "plan_limit_students" ? tPlan("limitStudents") : state.error}</span>
               </div>
             )}
 

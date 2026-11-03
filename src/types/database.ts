@@ -30,6 +30,7 @@ export type Database = {
           minijob_monthly_limit: number;
           sepa_creditor_id: string | null;
           auto_invoice_enabled: boolean;
+          plan: string;
           created_at: string;
           updated_at: string;
         };
@@ -53,6 +54,7 @@ export type Database = {
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
+          plan?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -76,6 +78,7 @@ export type Database = {
           minijob_monthly_limit?: number;
           sepa_creditor_id?: string | null;
           auto_invoice_enabled?: boolean;
+          plan?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -419,6 +422,19 @@ export type Database = {
           sequence_type?: "FRST" | "RCUR";
           updated_at?: string;
         };
+        Relationships: [];
+      };
+      plans: {
+        Row: {
+          key: string;
+          name: string;
+          max_students: number | null;
+          max_teachers: number | null;
+          monthly_price_eur: number;
+          sort_order: number;
+        };
+        Insert: never;
+        Update: never;
         Relationships: [];
       };
       audit_log: {

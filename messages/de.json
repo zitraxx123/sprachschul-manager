@@ -1237,5 +1237,14 @@
     "table_teachers": "Lehrkraft",
     "table_student_courses": "Kurszuordnung / Vertrag",
     "table_student_sepa_mandates": "SEPA-Mandat"
+  },
+  "plan": {
+    "title": "Ihr Tarif",
+    "students": "Schüler",
+    "teachers": "Lehrkräfte",
+    "unlimited": "unbegrenzt",
+    "limitReached": "Das Limit Ihres Tarifs ist erreicht. Für weitere Einträge wechseln Sie bitte auf einen höheren Tarif.",
+    "limitStudents": "Das Schüler-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif.",
+    "limitTeachers": "Das Lehrkräfte-Limit Ihres Tarifs ist erreicht. Bitte wechseln Sie auf einen höheren Tarif."
   }
 }

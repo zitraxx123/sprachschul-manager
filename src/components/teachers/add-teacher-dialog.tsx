@@ -30,6 +30,7 @@ import {
 export function AddTeacherDialog() {
   const t = useTranslations("teachers");
   const tCommon = useTranslations("common");
+  const tPlan = useTranslations("plan");
 
   const [isOpen, setIsOpen] = useState(false);
   const [showAdvancedRates, setShowAdvancedRates] = useState(false);
@@ -42,7 +43,7 @@ export function AddTeacherDialog() {
         setIsOpen(false);
         setShowAdvancedRates(false);
       } else if (res?.error) {
-        toast.error(res.error);
+        toast.error(res.error === "plan_limit_teachers" ? tPlan("limitTeachers") : res.error);
       }
       return res;
     },
@@ -89,7 +90,7 @@ export function AddTeacherDialog() {
               {state?.error && (
                 <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 flex items-start space-x-2 text-xs text-red-700 dark:text-red-300">
                   <AlertCircle strokeWidth={1.5} className="w-4 h-4 shrink-0 mt-0.5" />
-                  <span>{state.error}</span>
+                  <span>{state.error === "plan_limit_teachers" ? tPlan("limitTeachers") : state.error}</span>
                 </div>
               )}
 

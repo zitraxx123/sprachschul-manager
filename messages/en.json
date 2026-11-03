@@ -1237,5 +1237,14 @@
     "table_teachers": "Teacher",
     "table_student_courses": "Enrollment / contract",
     "table_student_sepa_mandates": "SEPA mandate"
+  },
+  "plan": {
+    "title": "Your plan",
+    "students": "Students",
+    "teachers": "Teachers",
+    "unlimited": "unlimited",
+    "limitReached": "Your plan limit has been reached. Please switch to a higher plan to add more.",
+    "limitStudents": "The student limit of your plan has been reached. Please switch to a higher plan.",
+    "limitTeachers": "The teacher limit of your plan has been reached. Please switch to a higher plan."
   }
 }

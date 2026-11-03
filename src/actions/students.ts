@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, getActiveOrganization } from "@/lib/supabase/server";
+import { planLimitError } from "@/lib/plan-limits";
 
 export type StudentActionState = {
   error?: string;
@@ -64,6 +65,8 @@ export async function createStudent(
     .single();
 
   if (sErr || !student) {
+    const limit = planLimitError(sErr?.message);
+    if (limit) return { error: limit };
     return { error: `Fehler beim Erstellen des Schülers: ${sErr?.message}` };
   }
 
@@ -276,6 +279,7 @@ export async function importStudents(
 
     // 3. Process students in batches or sequential inserts
     let importedCount = 0;
+    let limitHit = false;
     const studentCourseInserts: Array<{
       organization_id: string;
       student_id: string;
@@ -306,6 +310,10 @@ export async function importStudents(
 
       if (sErr || !student) {
         console.error("Failed to insert student during CSV import:", sErr);
+        if (planLimitError(sErr?.message)) {
+          limitHit = true;
+          break;
+        }
         continue;
       }
 
@@ -340,6 +348,7 @@ export async function importStudents(
     revalidatePath("/lessons");
     revalidatePath("/dashboard");
 
+    if (limitHit) return { success: importedCount > 0, count: importedCount, error: "plan_limit_students" };
     return { success: true, count: importedCount };
   } catch (err: unknown) {
     console.error("Error in importStudents:", err);
