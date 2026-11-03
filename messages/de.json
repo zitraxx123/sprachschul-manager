@@ -311,7 +311,8 @@
     "privacyAnonymized": "Schüler anonymisiert",
     "privacyErrorForbidden": "Keine Berechtigung.",
     "privacyErrorNotFound": "Schüler nicht gefunden.",
-    "privacyErrorFailed": "Aktion fehlgeschlagen."
+    "privacyErrorFailed": "Aktion fehlgeschlagen.",
+    "certificateButton": "Teilnahmebescheinigung"
   },
   "teachers": {
     "title": "Dozenten & Lehrkräfte",
@@ -1197,5 +1198,21 @@
     "payBy": "Bitte überweisen Sie den Betrag bis zum {date} unter Angabe der Rechnungsnummer auf das folgende Konto:",
     "closing": "Mit freundlichen Grüßen",
     "button": "Mahnung"
+  },
+  "certificate": {
+    "title": "Teilnahmebescheinigung",
+    "back": "Zurück zu den Schülern",
+    "from": "Von",
+    "to": "Bis",
+    "apply": "Übernehmen",
+    "hint": "Einfache Bescheinigung der Schule über besuchte Unterrichtsstunden (laut erfasster Anwesenheit). Keine amtliche Bescheinigung, z. B. nach BAMF.",
+    "text": "Hiermit wird bestätigt, dass {name} im Zeitraum vom {from} bis {to} regelmäßig am Unterricht teilgenommen hat. Laut unseren Aufzeichnungen wurden folgende Unterrichtsstunden besucht:",
+    "noCourse": "Einzelunterricht",
+    "noAttendance": "Im gewählten Zeitraum ist keine Teilnahme erfasst.",
+    "course": "Kurs",
+    "lessons": "Termine",
+    "hours": "Stunden",
+    "total": "Gesamt",
+    "signature": "Unterschrift / Stempel"
   }
 }

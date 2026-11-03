@@ -13,7 +13,8 @@ import { ContractDialog, ContractEnrollment } from "@/components/students/contra
 import { CourseInfoData } from "@/components/courses/course-info-dialog";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye } from "lucide-react";
+import Link from "next/link";
+import { Trash2, Loader2, Eye, Award } from "lucide-react";
 
 interface StudentActionsProps {
   student: Student;
@@ -111,6 +112,14 @@ export function StudentActions({
         courses={courses}
         assignedCourseIds={assignedCourseIds}
       />
+
+      <Link
+        href={`/students/${student.id}/certificate`}
+        title={t("certificateButton")}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800"
+      >
+        <Award strokeWidth={1.5} className="w-4 h-4" />
+      </Link>
 
       <StudentPrivacyDialog studentId={student.id} studentName={studentName} />
 

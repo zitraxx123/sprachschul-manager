@@ -311,7 +311,8 @@
     "privacyAnonymized": "Student anonymized",
     "privacyErrorForbidden": "Not allowed.",
     "privacyErrorNotFound": "Student not found.",
-    "privacyErrorFailed": "Action failed."
+    "privacyErrorFailed": "Action failed.",
+    "certificateButton": "Certificate of attendance"
   },
   "teachers": {
     "title": "Teachers & Instructors",
@@ -1197,5 +1198,21 @@
     "payBy": "Please transfer the amount by {date}, quoting the invoice number, to the following account:",
     "closing": "Kind regards",
     "button": "Reminder"
+  },
+  "certificate": {
+    "title": "Certificate of Attendance",
+    "back": "Back to students",
+    "from": "From",
+    "to": "To",
+    "apply": "Apply",
+    "hint": "A simple school certificate of attended lessons (based on recorded attendance). Not an official certificate, e.g. under BAMF.",
+    "text": "This is to certify that {name} attended classes between {from} and {to}. According to our records the following lessons were attended:",
+    "noCourse": "Private lessons",
+    "noAttendance": "No attendance recorded in the selected period.",
+    "course": "Course",
+    "lessons": "Lessons",
+    "hours": "Hours",
+    "total": "Total",
+    "signature": "Signature / stamp"
   }
 }
