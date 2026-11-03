@@ -60,7 +60,7 @@
 - Пункт 4 (Sentry): завести проект на sentry.io, задать `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` в Vercel, сказать «готово»; тогда слить ветку `feat/sentry` в main.
 - Пункт 5 (Supabase CLI): выполнить login / link / repair по `supabase/README.md`.
 - ВЕТКИ, ЖДУЩИЕ «готово» (в main не слиты, потому что нужны миграции/переменные окружения):
-  - `feat/saas-migrations`: пункты 7, 9, 10, 11, 12. Порядок: применить миграции `20261109000000_audit_log`, `20261110000000_plans_and_limits`, `20261111000000_stripe_billing`, `20261112000000_organization_type` (по порядку), затем сказать «готово», тогда слить в main. Пункт 10 (Stripe) работает только после ключей Stripe (см. пункт 10) и пока не проверен на реальном Stripe. Подробности по каждому пункту ниже в плане (в ветке).
+  - `feat/saas-migrations` СЛИТА В MAIN 04.11.2026 (миграции 20261109-20261112 применены владельцем). Пункт 10 (Stripe) заработает после ключей Stripe в Vercel и пока не проверен на реальном Stripe.
   - `feat/sentry`: пункт 4 (нужны `SENTRY_DSN` и `NEXT_PUBLIC_SENTRY_DSN` в Vercel).
   - При слиянии второй ветки будут конфликты в `package.json`, `package-lock.json`, `ROADMAP.md`: решать вручную.
 
