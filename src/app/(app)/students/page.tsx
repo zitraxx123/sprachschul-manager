@@ -20,6 +20,8 @@ import { Users, User, Mail, Phone, CheckCircle2, AlertCircle } from "lucide-reac
 import { Course, CourseSchedule } from "@/types/database";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Schüler & Monatsabos • Sprachschul-Manager",
 };

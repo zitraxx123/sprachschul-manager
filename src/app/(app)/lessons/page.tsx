@@ -19,6 +19,8 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { BookOpen, Calendar, Clock, Euro } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const t = await getTranslations("common");
   return { title: `${t("lessons")} • Sprachschul-Manager` };

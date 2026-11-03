@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 interface AbsencesPageProps {
   searchParams: Promise<{
     range?: string;

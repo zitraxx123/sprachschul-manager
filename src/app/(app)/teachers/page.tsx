@@ -18,6 +18,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Users, Mail, Phone, Cake, ArrowRight } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Lehrkräfte • Sprachschul-Manager",
 };

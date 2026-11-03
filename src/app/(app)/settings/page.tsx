@@ -8,6 +8,8 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { SettingsForm } from "@/components/settings/settings-form";
 import { getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Einstellungen • Sprachschul-Manager",
 };

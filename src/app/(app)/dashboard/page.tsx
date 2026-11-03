@@ -27,6 +27,8 @@ import { ImportDataDialog } from "@/components/import/import-data-dialog";
 import { Users, BookOpen, Euro, Plus, ArrowRight, UserCheck, Calendar as CalendarIcon } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Dashboard • Sprachschul-Manager",
 };

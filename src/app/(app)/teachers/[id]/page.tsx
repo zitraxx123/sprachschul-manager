@@ -32,6 +32,8 @@ import {
 } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 interface TeacherDetailPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ month?: string }>;

@@ -20,6 +20,8 @@ import { CourseSchedule, Teacher, Room } from "@/types/database";
 import { formatTimeRange } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const t = await getTranslations("common");
   return { title: `${t("courses")} • Sprachschul-Manager` };

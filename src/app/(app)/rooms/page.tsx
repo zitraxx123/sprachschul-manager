@@ -20,6 +20,8 @@ import { DoorOpen, Layers, ArrowRight } from "lucide-react";
 import { Room } from "@/types/database";
 import { getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Räume & Unterrichtsorte • Sprachschul-Manager",
 };
