@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, User, Mail, Phone, CheckCircle2, AlertCircle } from "lucide-react";
 import { Course, CourseSchedule } from "@/types/database";
 import { getTranslations, getLocale } from "next-intl/server";
+import { ListFilters } from "@/components/ui/list-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -26,13 +27,18 @@ export const metadata = {
   title: "Schüler & Monatsabos • Sprachschul-Manager",
 };
 
-export default async function StudentsPage() {
-  const [teacher, membership, organization, tStudents, tCourses, locale] = await Promise.all([
+export default async function StudentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; course?: string; payment?: string }>;
+}) {
+  const [teacher, membership, organization, tStudents, tCourses, tCommon, locale] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
     getActiveOrganization(),
     getTranslations("students"),
     getTranslations("courses"),
+    getTranslations("common"),
     getLocale(),
   ]);
 
@@ -87,6 +93,35 @@ export default async function StudentsPage() {
   const courses = rawCourses as unknown as Array<Course & { teachers?: { name: string; phone?: string | null; email?: string | null } | null; rooms?: { name: string } | null; course_schedules?: CourseSchedule[] }>;
 
   const paymentMap = new Map((monthlyPayments || []).map((p) => [p.student_id, p]));
+
+  // Search & filters (URL parameters q, course, payment)
+  const sp = await searchParams;
+  const q = (sp.q || "").trim().toLowerCase();
+  const courseFilter = sp.course || "";
+  const paymentFilter = sp.payment === "paid" || sp.payment === "unpaid" ? sp.payment : "";
+  const filteredStudents = students.filter((s) => {
+    const enrollments =
+      (s as unknown as { student_courses?: Array<{ course_id: string; courses?: { name?: string } | null }> })
+        .student_courses || [];
+    if (q) {
+      const hay = [
+        s.first_name,
+        s.last_name,
+        `${s.first_name} ${s.last_name}`,
+        s.email,
+        s.phone,
+        s.parent_name,
+        ...enrollments.map((e) => e.courses?.name || ""),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    if (courseFilter && !enrollments.some((e) => e.course_id === courseFilter)) return false;
+    if (paymentFilter && (paymentFilter === "paid") !== !!paymentMap.get(s.id)?.is_paid) return false;
+    return true;
+  });
 
   // Compute stats
   const totalStudents = students?.length || 0;
@@ -152,6 +187,31 @@ export default async function StudentsPage() {
         </div>
       </div>
 
+      {students.length > 0 && (
+        <ListFilters
+          searchPlaceholder={tStudents("listSearchPlaceholder")}
+          shown={filteredStudents.length}
+          total={students.length}
+          filters={[
+            {
+              param: "course",
+              label: tStudents("filterCourse"),
+              allLabel: tStudents("allCourses"),
+              options: courses.map((c) => ({ value: c.id, label: c.name })),
+            },
+            {
+              param: "payment",
+              label: tStudents("filterPayment"),
+              allLabel: tStudents("allPayments"),
+              options: [
+                { value: "paid", label: tStudents("filterPaid") },
+                { value: "unpaid", label: tStudents("filterUnpaid") },
+              ],
+            },
+          ]}
+        />
+      )}
+
       {/* Students Table Card */}
       <Card>
         <CardHeader>
@@ -174,6 +234,10 @@ export default async function StudentsPage() {
                 <AddStudentDialog courses={courses || []} />
               </div>
             </EmptyState>
+          ) : filteredStudents.length === 0 ? (
+            <div className="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+              {tCommon("noResults")}
+            </div>
           ) : (
             <>
               {/* Desktop Table View (Hidden on mobile) */}
@@ -189,7 +253,7 @@ export default async function StudentsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {students.map((student) => {
+                    {filteredStudents.map((student) => {
                       const payment = paymentMap.get(student.id);
                       const isPaid = !!payment?.is_paid;
 
@@ -362,7 +426,7 @@ export default async function StudentsPage() {
 
               {/* Mobile Native Card View (Shown on screens < md) */}
               <div className="md:hidden space-y-3">
-                {students.map((student) => {
+                {filteredStudents.map((student) => {
                   const payment = paymentMap.get(student.id);
                   const isPaid = !!payment?.is_paid;
 

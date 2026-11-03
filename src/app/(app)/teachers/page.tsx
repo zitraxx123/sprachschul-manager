@@ -17,6 +17,7 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { EmptyState } from "@/components/ui/empty-state";
 import { Users, Mail, Phone, Cake, ArrowRight } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
+import { ListFilters } from "@/components/ui/list-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,11 @@ export const metadata = {
   title: "Lehrkräfte • Sprachschul-Manager",
 };
 
-export default async function TeachersPage() {
+export default async function TeachersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const [teacher, membership, organization, tTeachers, tCommon, locale] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
@@ -64,6 +69,15 @@ export default async function TeachersPage() {
   const teachers = teachersResult.data || [];
   const lessons = lessonsResult.data || [];
 
+  // Search (URL parameter q)
+  const sp = await searchParams;
+  const q = (sp.q || "").trim().toLowerCase();
+  const filteredTeachers = q
+    ? teachers.filter((tc) =>
+        [tc.name, tc.email, tc.phone].filter(Boolean).join(" ").toLowerCase().includes(q)
+      )
+    : teachers;
+
   // Map monthly hours per teacher
   const monthlyHoursMap = new Map<string, number>();
   (lessons || []).forEach((l) => {
@@ -85,6 +99,14 @@ export default async function TeachersPage() {
         <AddTeacherDialog />
       </div>
 
+      {teachers.length > 0 && (
+        <ListFilters
+          searchPlaceholder={tTeachers("listSearchPlaceholder")}
+          shown={filteredTeachers.length}
+          total={teachers.length}
+        />
+      )}
+
       {/* Teachers Table Card */}
       <Card>
         <CardHeader>
@@ -102,6 +124,10 @@ export default async function TeachersPage() {
             >
               <AddTeacherDialog />
             </EmptyState>
+          ) : filteredTeachers.length === 0 ? (
+            <div className="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+              {tCommon("noResults")}
+            </div>
           ) : (
             <>
               {/* Desktop Table View (Hidden on mobile) */}
@@ -118,7 +144,7 @@ export default async function TeachersPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {teachers.map((t) => {
+                    {filteredTeachers.map((t) => {
                       const monthHours = monthlyHoursMap.get(t.id) || 0;
                       const monthEarnings = monthHours * Number(t.hourly_rate);
 
@@ -210,7 +236,7 @@ export default async function TeachersPage() {
 
               {/* Mobile Native Card View (Shown on screens < md) */}
               <div className="md:hidden space-y-3">
-                {teachers.map((t) => {
+                {filteredTeachers.map((t) => {
                   const monthHours = monthlyHoursMap.get(t.id) || 0;
                   const monthEarnings = monthHours * Number(t.hourly_rate);
 

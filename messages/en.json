@@ -87,7 +87,10 @@
     "backToDashboard": "Back to Dashboard",
     "errorTitle": "An error occurred",
     "errorDesc": "The requested page could not be loaded.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "clearFilters": "Reset",
+    "noResults": "No results for this search.",
+    "resultCount": "{shown} of {total} shown"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -271,7 +274,14 @@
     "deletedSuccess": "Student was deleted successfully.",
     "deleteError": "Error deleting student.",
     "customMonthlyPrice": "Custom Monthly Price (€, optional)",
-    "customMonthlyPriceDesc": "Overrides course prices for this student (e.g. discount)."
+    "customMonthlyPriceDesc": "Overrides course prices for this student (e.g. discount).",
+    "listSearchPlaceholder": "Search name, email, parent or course…",
+    "filterCourse": "Course",
+    "allCourses": "All courses",
+    "filterPayment": "Payment",
+    "allPayments": "All payments",
+    "filterPaid": "Paid",
+    "filterUnpaid": "Unpaid"
   },
   "teachers": {
     "title": "Teachers & Instructors",
@@ -325,7 +335,8 @@
     "signatureTeacher": "Location, Date / Teacher Signature",
     "signatureSchool": "School Management Signature",
     "currentMonthSummary": "Current Month",
-    "ongoingPayout": "Ongoing Fee"
+    "ongoingPayout": "Ongoing Fee",
+    "listSearchPlaceholder": "Search name, email or phone…"
   },
   "courses": {
     "title": "Course Management & Groups",
@@ -447,7 +458,11 @@
     "statusCancelledLate": "Late cancellation",
     "statusLabel": "Status",
     "lateCancellationFeeBadge": "{percent}% cancellation fee",
-    "freeCancellationBadge": "0 € (Timely)"
+    "freeCancellationBadge": "0 € (Timely)",
+    "listSearchPlaceholder": "Search teacher, student, course or note…",
+    "filterTeacher": "Teacher",
+    "allTeachers": "All teachers",
+    "allStatuses": "All statuses"
   },
   "absences": {
     "title": "Absences & Attendance Report",

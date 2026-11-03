@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { BookOpen, Calendar, Clock, Euro } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
+import { ListFilters } from "@/components/ui/list-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,11 @@ export async function generateMetadata() {
   return { title: `${t("lessons")} • Sprachschul-Manager` };
 }
 
-export default async function LessonsPage() {
+export default async function LessonsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; teacher?: string; status?: string }>;
+}) {
   const [teacher, membership, organization, tLessons, tCommon, locale] = await Promise.all([
     getCurrentTeacher(),
     getCurrentMembership(),
@@ -72,6 +77,34 @@ export default async function LessonsPage() {
   // Map teachers & students by id
   const teacherMap = new Map((teachers || []).map((t) => [t.id, t]));
   const studentMap = new Map((students || []).map((s) => [s.id, s]));
+
+  // Search & filters (URL parameters q, teacher, status)
+  const sp = await searchParams;
+  const q = (sp.q || "").trim().toLowerCase();
+  const teacherFilter = sp.teacher || "";
+  const statusFilter = sp.status || "";
+  const filteredLessons = lessons.filter((l) => {
+    if (teacherFilter && l.teacher_id !== teacherFilter && l.original_teacher_id !== teacherFilter) return false;
+    if (statusFilter && l.status !== statusFilter) return false;
+    if (q) {
+      const extra = l as unknown as { courses?: { name?: string } | null; notes?: string | null };
+      const hay = [
+        teacherMap.get(l.teacher_id)?.name,
+        l.original_teacher_id ? teacherMap.get(l.original_teacher_id)?.name : "",
+        l.student_id
+          ? `${studentMap.get(l.student_id)?.first_name || ""} ${studentMap.get(l.student_id)?.last_name || ""}`
+          : "",
+        extra.courses?.name,
+        extra.notes,
+        l.lesson_date,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
 
   // Calculate totals
   const totalHours = (lessons || []).reduce(
@@ -140,6 +173,32 @@ export default async function LessonsPage() {
         </div>
       </div>
 
+      {lessons.length > 0 && (
+        <ListFilters
+          searchPlaceholder={tLessons("listSearchPlaceholder")}
+          shown={filteredLessons.length}
+          total={lessons.length}
+          filters={[
+            {
+              param: "teacher",
+              label: tLessons("filterTeacher"),
+              allLabel: tLessons("allTeachers"),
+              options: teachers.map((t) => ({ value: t.id, label: t.name })),
+            },
+            {
+              param: "status",
+              label: tLessons("statusLabel"),
+              allLabel: tLessons("allStatuses"),
+              options: [
+                { value: "completed", label: tLessons("statusCompleted") },
+                { value: "cancelled_by_student", label: tLessons("statusCancelledByStudent") },
+                { value: "cancelled_late", label: tLessons("statusCancelledLate") },
+              ],
+            },
+          ]}
+        />
+      )}
+
       {/* Lessons Table Card */}
       <Card>
         <CardHeader>
@@ -157,6 +216,10 @@ export default async function LessonsPage() {
             >
               <AddLessonDialog teachers={teachers || []} students={students || []} />
             </EmptyState>
+          ) : filteredLessons.length === 0 ? (
+            <div className="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+              {tCommon("noResults")}
+            </div>
           ) : (
             <>
               {/* Desktop Table View (Hidden on mobile) */}
@@ -176,7 +239,7 @@ export default async function LessonsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {lessons.map((lesson) => {
+                    {filteredLessons.map((lesson) => {
                       const teacher = teacherMap.get(lesson.teacher_id);
                       const originalTeacher = lesson.original_teacher_id
                         ? teacherMap.get(lesson.original_teacher_id)
@@ -304,7 +367,7 @@ export default async function LessonsPage() {
 
               {/* Mobile Native Card View (Shown on screens < md) */}
               <div className="md:hidden space-y-3">
-                {lessons.map((lesson) => {
+                {filteredLessons.map((lesson) => {
                   const teacher = teacherMap.get(lesson.teacher_id);
                   const originalTeacher = lesson.original_teacher_id
                     ? teacherMap.get(lesson.original_teacher_id)

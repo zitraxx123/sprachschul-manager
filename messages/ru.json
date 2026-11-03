@@ -87,7 +87,10 @@
     "backToDashboard": "Вернуться в дашборд",
     "errorTitle": "Произошла ошибка",
     "errorDesc": "Не удалось загрузить запрошенную страницу.",
-    "retry": "Повторить попытку"
+    "retry": "Повторить попытку",
+    "clearFilters": "Сбросить",
+    "noResults": "По вашему запросу ничего не найдено.",
+    "resultCount": "Показано {shown} из {total}"
   },
   "nav": {
     "dashboard": "Обзор",
@@ -271,7 +274,14 @@
     "deletedSuccess": "Ученик успешно удалён.",
     "deleteError": "Ошибка при удалении ученика.",
     "customMonthlyPrice": "Индивидуальная цена в месяц (€, опционально)",
-    "customMonthlyPriceDesc": "Переопределяет стоимость курсов для этого ученика (например, скидка)."
+    "customMonthlyPriceDesc": "Переопределяет стоимость курсов для этого ученика (например, скидка).",
+    "listSearchPlaceholder": "Поиск по имени, email, родителю или курсу…",
+    "filterCourse": "Курс",
+    "allCourses": "Все курсы",
+    "filterPayment": "Оплата",
+    "allPayments": "Любая оплата",
+    "filterPaid": "Оплачено",
+    "filterUnpaid": "Не оплачено"
   },
   "teachers": {
     "title": "Преподаватели",
@@ -325,7 +335,8 @@
     "signatureTeacher": "Дата / Подпись преподавателя",
     "signatureSchool": "Подпись руководства школы",
     "currentMonthSummary": "Текущий месяц",
-    "ongoingPayout": "Текущий гонорар"
+    "ongoingPayout": "Текущий гонорар",
+    "listSearchPlaceholder": "Поиск по имени, email или телефону…"
   },
   "courses": {
     "title": "Управление курсами и группами",
@@ -447,7 +458,11 @@
     "statusCancelledLate": "Поздняя отмена",
     "statusLabel": "Статус",
     "lateCancellationFeeBadge": "{percent}% компенсация",
-    "freeCancellationBadge": "0 € (Своевременно)"
+    "freeCancellationBadge": "0 € (Своевременно)",
+    "listSearchPlaceholder": "Поиск по учителю, ученику, курсу или заметке…",
+    "filterTeacher": "Учитель",
+    "allTeachers": "Все учителя",
+    "allStatuses": "Все статусы"
   },
   "absences": {
     "title": "Отчёт о пропусках и посещаемости",

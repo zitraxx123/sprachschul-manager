@@ -87,7 +87,10 @@
     "backToDashboard": "Zurück zum Dashboard",
     "errorTitle": "Ein Fehler ist aufgetreten",
     "errorDesc": "Die angeforderte Seite konnte nicht geladen werden.",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "clearFilters": "Zurücksetzen",
+    "noResults": "Keine Ergebnisse für diese Suche.",
+    "resultCount": "{shown} von {total} angezeigt"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -271,7 +274,14 @@
     "deletedSuccess": "Schüler wurde erfolgreich gelöscht.",
     "deleteError": "Fehler beim Löschen des Schülers.",
     "customMonthlyPrice": "Individueller Monatspreis (€, optional)",
-    "customMonthlyPriceDesc": "Überschreibt Kurspreise für diesen Schüler (z. B. bei Rabatt)."
+    "customMonthlyPriceDesc": "Überschreibt Kurspreise für diesen Schüler (z. B. bei Rabatt).",
+    "listSearchPlaceholder": "Name, E-Mail, Eltern oder Kurs suchen…",
+    "filterCourse": "Kurs",
+    "allCourses": "Alle Kurse",
+    "filterPayment": "Zahlung",
+    "allPayments": "Alle Zahlungen",
+    "filterPaid": "Bezahlt",
+    "filterUnpaid": "Offen"
   },
   "teachers": {
     "title": "Dozenten & Lehrkräfte",
@@ -325,7 +335,8 @@
     "signatureTeacher": "Ort, Datum / Unterschrift Lehrkraft",
     "signatureSchool": "Unterschrift Schulleitung",
     "currentMonthSummary": "Laufender Monat",
-    "ongoingPayout": "Lfd. Honorar"
+    "ongoingPayout": "Lfd. Honorar",
+    "listSearchPlaceholder": "Name, E-Mail oder Telefon suchen…"
   },
   "courses": {
     "title": "Kurse & Gruppen",
@@ -447,7 +458,11 @@
     "statusCancelledLate": "Spät abgesagt",
     "statusLabel": "Status",
     "lateCancellationFeeBadge": "{percent}% Ausfallhonorar",
-    "freeCancellationBadge": "0 € (Rechtzeitig)"
+    "freeCancellationBadge": "0 € (Rechtzeitig)",
+    "listSearchPlaceholder": "Lehrkraft, Schüler, Kurs oder Notiz suchen…",
+    "filterTeacher": "Lehrkraft",
+    "allTeachers": "Alle Lehrkräfte",
+    "allStatuses": "Alle Status"
   },
   "absences": {
     "title": "Fehlzeiten & Abwesenheitsbericht",
