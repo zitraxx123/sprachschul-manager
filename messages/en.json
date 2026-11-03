@@ -1169,5 +1169,13 @@
     "errNothing": "The selected lessons are no longer open.",
     "errInvalid": "Invalid selection.",
     "errDb": "Database error: {detail}"
+  },
+  "accountingExport": {
+    "title": "Export for the tax advisor",
+    "hint": "CSV files (Excel compatible, semicolon, decimal comma) for the selected period.",
+    "from": "From",
+    "to": "To",
+    "invoices": "Invoices",
+    "payouts": "Teacher payouts"
   }
 }

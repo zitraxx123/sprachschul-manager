@@ -1169,5 +1169,13 @@
     "errNothing": "Die ausgewählten Termine sind nicht mehr offen.",
     "errInvalid": "Ungültige Auswahl.",
     "errDb": "Datenbankfehler: {detail}"
+  },
+  "accountingExport": {
+    "title": "Export für den Steuerberater",
+    "hint": "CSV-Dateien (Excel-kompatibel, Semikolon, Dezimalkomma) für den gewählten Zeitraum.",
+    "from": "Von",
+    "to": "Bis",
+    "invoices": "Rechnungen",
+    "payouts": "Honorare"
   }
 }

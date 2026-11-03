@@ -10,6 +10,7 @@ import {
 import { CreateOrganizationCard } from "@/components/dashboard/create-organization-card";
 import { InvoiceGenerator } from "@/components/invoices/invoice-generator";
 import { InvoiceRowActions } from "@/components/invoices/invoice-row-actions";
+import { AccountingExport } from "@/components/invoices/accounting-export";
 import { SepaExport } from "@/components/invoices/sepa-export";
 import { isValidCreditorId, isValidIban } from "@/lib/sepa";
 import { Badge } from "@/components/ui/badge";
@@ -150,6 +151,8 @@ export default async function InvoicesPage({
           defaultDate={defaultCollectionDate}
         />
       )}
+
+      <AccountingExport month={month} />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {summary.map((s) => (
