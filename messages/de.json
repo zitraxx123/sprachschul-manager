@@ -393,7 +393,14 @@
     "monthlyPrice": "Monatspreis (€)",
     "addAs": "Hinzufügen als",
     "courseFullSuggestWaiting": "Der Kurs ist voll – Aktiv ist nicht möglich. Bitte als Warteliste hinzufügen.",
-    "namePlaceholder": "z. B. Deutsch B2"
+    "namePlaceholder": "z. B. Deutsch B2",
+    "promoteWaitlist": "Platz frei: {count} von der Warteliste nachrücken lassen",
+    "waitlistPromoted": "Aus der Warteliste aktiviert: {names}",
+    "waitlistForbidden": "Keine Berechtigung.",
+    "waitlistFull": "Der Kurs hat keinen freien Platz mehr.",
+    "waitlistNobody": "Die Warteliste ist leer.",
+    "waitlistNotFound": "Kurs nicht gefunden.",
+    "waitlistDb": "Datenbankfehler: {detail}"
   },
   "lessons": {
     "title": "Unterrichtsstunden (Klassenbuch)",

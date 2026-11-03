@@ -393,7 +393,14 @@
     "monthlyPrice": "Стоимость в месяц (€)",
     "addAs": "Добавить как",
     "courseFullSuggestWaiting": "Курс заполнен – активный статус недоступен. Добавьте ученика в лист ожидания.",
-    "namePlaceholder": "напр. Немецкий B2"
+    "namePlaceholder": "напр. Немецкий B2",
+    "promoteWaitlist": "Есть место: перевести из листа ожидания ({count})",
+    "waitlistPromoted": "Переведены из листа ожидания: {names}",
+    "waitlistForbidden": "Нет прав доступа.",
+    "waitlistFull": "В курсе не осталось свободных мест.",
+    "waitlistNobody": "Лист ожидания пуст.",
+    "waitlistNotFound": "Курс не найден.",
+    "waitlistDb": "Ошибка базы данных: {detail}"
   },
   "lessons": {
     "title": "Журнал занятий (Классный журнал)",

@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Layers, Users, Calendar, User, Clock, DoorOpen } from "lucide-react";
 import { CourseSchedule, Teacher, Room } from "@/types/database";
 import { formatTimeRange } from "@/lib/utils";
+import { WaitlistPromoteButton } from "@/components/courses/waitlist-promote-button";
 import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
@@ -410,6 +411,13 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                                   )}
                                 </div>
                               )}
+
+                              {Math.min(Math.max(0, maxCapacity - activeCount), waitingStudents.length) > 0 && (
+                                <WaitlistPromoteButton
+                                  courseId={course.id}
+                                  count={Math.min(Math.max(0, maxCapacity - activeCount), waitingStudents.length)}
+                                />
+                              )}
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
@@ -530,6 +538,12 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
                               </span>
                             )}
                           </div>
+                        )}
+                        {Math.min(Math.max(0, maxCapacity - activeCount), waitingStudents.length) > 0 && (
+                          <WaitlistPromoteButton
+                            courseId={course.id}
+                            count={Math.min(Math.max(0, maxCapacity - activeCount), waitingStudents.length)}
+                          />
                         )}
                         <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-300">
                           <User strokeWidth={1.5} className="w-4 h-4 text-slate-400 shrink-0" />

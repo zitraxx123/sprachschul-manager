@@ -393,7 +393,14 @@
     "monthlyPrice": "Monthly Price (€)",
     "addAs": "Add as",
     "courseFullSuggestWaiting": "The course is full – active enrollment is not possible. Please add to the waiting list.",
-    "namePlaceholder": "e.g. German B2"
+    "namePlaceholder": "e.g. German B2",
+    "promoteWaitlist": "Place available: move up {count} from the waiting list",
+    "waitlistPromoted": "Activated from the waiting list: {names}",
+    "waitlistForbidden": "No permission.",
+    "waitlistFull": "The course has no free place left.",
+    "waitlistNobody": "The waiting list is empty.",
+    "waitlistNotFound": "Course not found.",
+    "waitlistDb": "Database error: {detail}"
   },
   "lessons": {
     "title": "Lessons (Class Logbook)",
