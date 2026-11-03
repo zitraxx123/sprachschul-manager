@@ -27,6 +27,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  applicationName: "Sprachschul-Manager",
+  appleWebApp: { capable: true, title: "Schul-Manager", statusBarStyle: "default" },
+  icons: { icon: "/pwa-icon/192", apple: "/pwa-icon/180" },
   title: "Sprachschul-Manager • SaaS für Sprachschulen in Deutschland",
   description:
     "Multi-Tenant Verwaltungssoftware für Sprachschulen: Dozentenverwaltung, Unterrichtsstunden und automatische Honorarabrechnung.",
