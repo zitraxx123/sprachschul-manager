@@ -19,6 +19,8 @@ import { CreateOrganizationCard } from "@/components/dashboard/create-organizati
 import { BookOpen, Calendar, Clock, Euro } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ListFilters } from "@/components/ui/list-filters";
+import { MissedLessonsPanel } from "@/components/lessons/missed-lessons-panel";
+import { loadUnrecordedLessons } from "@/lib/missed-lessons-data";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +79,9 @@ export default async function LessonsPage({
   // Map teachers & students by id
   const teacherMap = new Map((teachers || []).map((t) => [t.id, t]));
   const studentMap = new Map((students || []).map((s) => [s.id, s]));
+
+  // Past scheduled lessons that were never recorded (admin confirms them in bulk)
+  const unrecorded = await loadUnrecordedLessons(supabase, organization.id);
 
   // Search & filters (URL parameters q, teacher, status)
   const sp = await searchParams;
@@ -139,6 +144,22 @@ export default async function LessonsPage({
 
         <AddLessonDialog teachers={teachers || []} students={students || []} />
       </div>
+
+      {unrecorded.length > 0 && (
+        <MissedLessonsPanel
+          key={unrecorded.map((u) => u.key).join(",")}
+          items={unrecorded.map((u) => ({
+            key: u.key,
+            courseName: u.courseName,
+            date: u.date,
+            startTime: u.startTime,
+            duration: u.duration,
+            teacherName: teacherMap.get(u.teacherId)?.name || "",
+            isSubstituted: u.isSubstituted,
+            isMoved: u.isMoved,
+          }))}
+        />
+      )}
 
       {/* Summary KPI Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

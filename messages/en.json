@@ -1102,5 +1102,22 @@
     "errCollectionDate": "The collection date must be in the future (at most 90 days).",
     "errNothing": "No open invoice with a valid mandate found.",
     "errDb": "Database error: {detail}"
+  },
+  "missedLessons": {
+    "title": "Lessons to record ({count})",
+    "subtitle": "These scheduled lessons have taken place but have not been recorded yet.",
+    "selectAll": "Select all ({selected} of {total})",
+    "substitute": "Substitute",
+    "moved": "Moved",
+    "recordCompleted": "Record as held",
+    "recordCancelled": "Mark as cancelled",
+    "noneSelected": "Please select at least one lesson.",
+    "recorded": "{count} lessons recorded.",
+    "skipped": "{count} lessons were already recorded and were skipped.",
+    "hint": "Only past lessons of the last 30 days according to the course schedule are shown. “Held” lessons are paid, “cancelled” ones are not. Attendance is not recorded this way.",
+    "errForbidden": "No permission.",
+    "errNothing": "The selected lessons are no longer open.",
+    "errInvalid": "Invalid selection.",
+    "errDb": "Database error: {detail}"
   }
 }

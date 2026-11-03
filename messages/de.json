@@ -1102,5 +1102,22 @@
     "errCollectionDate": "Das Einzugsdatum muss in der Zukunft liegen (maximal 90 Tage).",
     "errNothing": "Keine offene Rechnung mit gültigem Mandat gefunden.",
     "errDb": "Datenbankfehler: {detail}"
+  },
+  "missedLessons": {
+    "title": "Nachzutragende Unterrichtsstunden ({count})",
+    "subtitle": "Diese Termine laut Kursplan haben stattgefunden, wurden aber noch nicht erfasst.",
+    "selectAll": "Alle auswählen ({selected} von {total})",
+    "substitute": "Vertretung",
+    "moved": "Verschoben",
+    "recordCompleted": "Als gehalten erfassen",
+    "recordCancelled": "Als ausgefallen markieren",
+    "noneSelected": "Bitte mindestens einen Termin auswählen.",
+    "recorded": "{count} Unterrichtsstunden erfasst.",
+    "skipped": "{count} Termine waren bereits erfasst und wurden übersprungen.",
+    "hint": "Es werden nur vergangene Termine der letzten 30 Tage nach Kursplan angezeigt. „Gehalten“ wird vergütet, „ausgefallen“ nicht. Anwesenheiten werden dabei nicht erfasst.",
+    "errForbidden": "Keine Berechtigung.",
+    "errNothing": "Die ausgewählten Termine sind nicht mehr offen.",
+    "errInvalid": "Ungültige Auswahl.",
+    "errDb": "Datenbankfehler: {detail}"
   }
 }
