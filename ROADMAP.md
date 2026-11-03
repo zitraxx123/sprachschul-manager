@@ -27,7 +27,7 @@
 ## План (по порядку)
 
 ### Этап A. Готовность к запуску
-1. Сброс пароля («Passwort vergessen»): сейчас есть только вход, регистрация, выход.
+1. ~~Сброс пароля~~ СДЕЛАНО 03.11.2026: `/forgot-password`, `/auth/callback`, `/reset-password`. Нужно один раз в Supabase: Authentication → URL Configuration → Redirect URLs добавить `https://<домен>/auth/callback` (и localhost для разработки), проверить шаблон письма Reset Password.
 2. Приглашение учителя: сейчас учитель связывается с аккаунтом только по совпадению email при самостоятельной регистрации.
 3. Автотесты (Vitest) на чистые функции: payroll, schedule, contracts, sepa, missed-lessons, invoice-generation. В них деньги.
 4. Мониторинг ошибок (Sentry).

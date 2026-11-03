@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = {
@@ -117,6 +118,65 @@ export async function signUp(
         role: "owner",
       });
     }
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+// Error values are i18n keys under "auth" (translated in the client components).
+export async function requestPasswordReset(
+  prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState> {
+  const email = (formData.get("email") as string)?.trim();
+  if (!email) {
+    return { error: "errorEmailRequired" };
+  }
+
+  const h = await headers();
+  const host = h.get("x-forwarded-host") || h.get("host");
+  const proto = h.get("x-forwarded-proto") || (host?.startsWith("localhost") ? "http" : "https");
+  const origin = h.get("origin") || `${proto}://${host}`;
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/reset-password`,
+  });
+
+  // Do not reveal whether the address exists; only surface rate limits.
+  if (error && error.status === 429) {
+    return { error: "errorRateLimit" };
+  }
+
+  return { success: true };
+}
+
+export async function updatePassword(
+  prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState> {
+  const password = formData.get("password") as string;
+  const confirm = formData.get("confirmPassword") as string;
+
+  if (!password || password.length < 6) {
+    return { error: "errorPasswordShort" };
+  }
+  if (password !== confirm) {
+    return { error: "errorPasswordMismatch" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "errorLinkExpired" };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return { error: "errorUpdateFailed" };
   }
 
   revalidatePath("/", "layout");

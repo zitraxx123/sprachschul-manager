@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
+import Link from "next/link";
 import { signIn, signUp, AuthState } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,6 +144,16 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
                 placeholder="••••••••"
                 required
               />
+              {mode === "login" && (
+                <div className="text-right">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    {t("forgotLink")}
+                  </Link>
+                </div>
+              )}
             </div>
 
             <Button type="submit" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white" disabled={isPending}>
