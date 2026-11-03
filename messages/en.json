@@ -336,7 +336,15 @@
     "signatureSchool": "School Management Signature",
     "currentMonthSummary": "Current Month",
     "ongoingPayout": "Ongoing Fee",
-    "listSearchPlaceholder": "Search name, email or phone…"
+    "listSearchPlaceholder": "Search name, email or phone…",
+    "employmentType": "Employment type",
+    "employmentHonorar": "Freelancer (Honorarkraft)",
+    "employmentMinijob": "Mini-job",
+    "employmentTeilzeit": "Part-time / employed",
+    "taxId": "Tax ID",
+    "minijobOf": "{amount} of {limit} (mini-job limit)",
+    "minijobNear": "{amount} of {limit}: limit almost reached",
+    "minijobOver": "Mini-job limit of {limit} exceeded"
   },
   "courses": {
     "title": "Course Management & Groups",
@@ -893,7 +901,11 @@
     "billingVatRateHelp": "Course prices are treated as net amounts. 0 % = no VAT shown.",
     "billingTaxNote": "Tax note on the invoice",
     "billingTaxNoteHelp": "Optional, e.g. a note about a tax exemption. Please clarify with your tax advisor.",
-    "daysUnit": "days"
+    "daysUnit": "days",
+    "staffTitle": "Teachers",
+    "staffDesc": "Settings for evaluating teacher fees.",
+    "minijobLimitLabel": "Mini-job limit per month",
+    "minijobLimitHelp": "For teachers with the employment type Mini-job, the monthly earnings are compared with this limit. A warning appears from 80 %. Please check the current value and adjust it when it changes."
   },
   "schedule": {
     "monday": "Monday",

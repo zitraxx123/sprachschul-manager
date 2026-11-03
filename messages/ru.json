@@ -336,7 +336,15 @@
     "signatureSchool": "Подпись руководства школы",
     "currentMonthSummary": "Текущий месяц",
     "ongoingPayout": "Текущий гонорар",
-    "listSearchPlaceholder": "Поиск по имени, email или телефону…"
+    "listSearchPlaceholder": "Поиск по имени, email или телефону…",
+    "employmentType": "Тип занятости",
+    "employmentHonorar": "Фрилансер (Honorarkraft)",
+    "employmentMinijob": "Minijob",
+    "employmentTeilzeit": "Неполный день / штат",
+    "taxId": "Налоговый ID (Steuer-ID)",
+    "minijobOf": "{amount} из {limit} (лимит Minijob)",
+    "minijobNear": "{amount} из {limit}: лимит почти достигнут",
+    "minijobOver": "Лимит Minijob {limit} превышен"
   },
   "courses": {
     "title": "Управление курсами и группами",
@@ -893,7 +901,11 @@
     "billingVatRateHelp": "Цены курсов считаются суммами без НДС. 0 % = НДС в счёте не указывается.",
     "billingTaxNote": "Налоговая пометка в счёте",
     "billingTaxNoteHelp": "Необязательно, например пометка об освобождении от налога. Уточните у налогового консультанта.",
-    "daysUnit": "дн."
+    "daysUnit": "дн.",
+    "staffTitle": "Учителя",
+    "staffDesc": "Настройки для расчёта гонораров учителей.",
+    "minijobLimitLabel": "Лимит Minijob в месяц",
+    "minijobLimitHelp": "Для учителей с типом занятости Minijob месячный заработок сравнивается с этим лимитом. С 80 % появляется предупреждение. Проверьте актуальное значение и меняйте его при изменении."
   },
   "schedule": {
     "monday": "Понедельник",

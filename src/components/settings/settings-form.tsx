@@ -20,7 +20,8 @@ import {
   UploadCloud,
   Trash2,
   GraduationCap,
-  Receipt
+  Receipt,
+  UserCheck
 } from "lucide-react";
 
 interface SettingsFormProps {
@@ -436,6 +437,47 @@ export function SettingsForm({ organization }: SettingsFormProps) {
               />
               <p className="text-[11px] text-slate-500 dark:text-slate-400">{tSettings("billingTaxNoteHelp")}</p>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 4. Lehrkräfte: Minijob-Grenze */}
+      <Card>
+        <CardHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center space-x-2">
+            <UserCheck strokeWidth={1.5} className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div>
+              <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                {tSettings("staffTitle")}
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {tSettings("staffDesc")}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="space-y-2 max-w-xs">
+            <Label htmlFor="minijob_monthly_limit" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {tSettings("minijobLimitLabel")}
+            </Label>
+            <div className="relative">
+              <Input
+                id="minijob_monthly_limit"
+                name="minijob_monthly_limit"
+                type="number"
+                step="0.01"
+                min="0"
+                defaultValue={organization.minijob_monthly_limit ?? 603}
+                required
+                disabled={isPending}
+                className="h-10 text-sm pr-10 font-mono"
+              />
+              <span className="absolute right-3 top-2.5 text-xs text-slate-400 dark:text-slate-500 font-bold">€</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              {tSettings("minijobLimitHelp")}
+            </p>
           </div>
         </CardContent>
       </Card>

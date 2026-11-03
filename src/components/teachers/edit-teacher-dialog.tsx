@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import { EmploymentFields } from "@/components/teachers/employment-fields";
 import { updateTeacher, TeacherActionState } from "@/actions/teachers";
 import { Teacher } from "@/types/database";
 import { toast } from "@/components/ui/toast";
@@ -188,6 +189,13 @@ export function EditTeacherDialog({ teacher, variant = "icon" }: EditTeacherDial
                       disabled={isPending}
                     />
                   </div>
+
+                  <EmploymentFields
+                    idPrefix="edit_t"
+                    defaultType={teacher.employment_type}
+                    defaultTaxId={teacher.tax_id}
+                    disabled={isPending}
+                  />
                 </div>
               </div>
 

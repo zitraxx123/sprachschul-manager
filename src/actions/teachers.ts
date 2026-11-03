@@ -30,6 +30,14 @@ function parseGermanOrIsoDate(value: FormDataEntryValue | null): string | null {
   return null;
 }
 
+const EMPLOYMENT_TYPES = ["honorar", "minijob", "teilzeit"] as const;
+type EmploymentType = (typeof EMPLOYMENT_TYPES)[number];
+
+function parseEmploymentType(value: FormDataEntryValue | null): EmploymentType {
+  const str = String(value || "").trim();
+  return (EMPLOYMENT_TYPES as readonly string[]).includes(str) ? (str as EmploymentType) : "honorar";
+}
+
 export async function createTeacher(
   prevState: TeacherActionState | null,
   formData: FormData
@@ -54,6 +62,8 @@ export async function createTeacher(
   const rate45 = parseOptionalRate(formData.get("rate_45"));
   const rate60 = parseOptionalRate(formData.get("rate_60"));
   const rate90 = parseOptionalRate(formData.get("rate_90"));
+  const employmentType = parseEmploymentType(formData.get("employment_type"));
+  const taxId = ((formData.get("tax_id") as string | null) || "").replace(/\s+/g, "") || null;
 
   const organization = await getActiveOrganization();
   if (!organization) {
@@ -74,6 +84,8 @@ export async function createTeacher(
     rate_45: rate45,
     rate_60: rate60,
     rate_90: rate90,
+    employment_type: employmentType,
+    tax_id: taxId,
   });
 
   if (error) {
@@ -114,6 +126,8 @@ export async function updateTeacher(
   const rate45 = parseOptionalRate(formData.get("rate_45"));
   const rate60 = parseOptionalRate(formData.get("rate_60"));
   const rate90 = parseOptionalRate(formData.get("rate_90"));
+  const employmentType = parseEmploymentType(formData.get("employment_type"));
+  const taxId = ((formData.get("tax_id") as string | null) || "").replace(/\s+/g, "") || null;
 
   const organization = await getActiveOrganization();
   if (!organization) {
@@ -135,6 +149,8 @@ export async function updateTeacher(
       rate_45: rate45,
       rate_60: rate60,
       rate_90: rate90,
+      employment_type: employmentType,
+      tax_id: taxId,
     })
     .eq("id", teacherId)
     .eq("organization_id", organization.id);

@@ -27,6 +27,7 @@ export type Database = {
           invoice_payment_days: number;
           invoice_vat_rate: number;
           invoice_tax_note: string | null;
+          minijob_monthly_limit: number;
           created_at: string;
           updated_at: string;
         };
@@ -47,6 +48,7 @@ export type Database = {
           invoice_payment_days?: number;
           invoice_vat_rate?: number;
           invoice_tax_note?: string | null;
+          minijob_monthly_limit?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -67,6 +69,7 @@ export type Database = {
           invoice_payment_days?: number;
           invoice_vat_rate?: number;
           invoice_tax_note?: string | null;
+          minijob_monthly_limit?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -119,6 +122,8 @@ export type Database = {
           rate_45: number | null;
           rate_60: number | null;
           rate_90: number | null;
+          employment_type: "honorar" | "minijob" | "teilzeit";
+          tax_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -136,6 +141,8 @@ export type Database = {
           rate_45?: number | null;
           rate_60?: number | null;
           rate_90?: number | null;
+          employment_type?: "honorar" | "minijob" | "teilzeit";
+          tax_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -153,6 +160,8 @@ export type Database = {
           rate_45?: number | null;
           rate_60?: number | null;
           rate_90?: number | null;
+          employment_type?: "honorar" | "minijob" | "teilzeit";
+          tax_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };

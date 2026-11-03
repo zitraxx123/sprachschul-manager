@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import { EmploymentFields } from "@/components/teachers/employment-fields";
 import { createTeacher, TeacherActionState } from "@/actions/teachers";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -154,6 +155,8 @@ export function AddTeacherDialog() {
                       disabled={isPending}
                     />
                   </div>
+
+                  <EmploymentFields idPrefix="t" disabled={isPending} />
                 </div>
               </div>
 

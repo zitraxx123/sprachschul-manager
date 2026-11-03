@@ -336,7 +336,15 @@
     "signatureSchool": "Unterschrift Schulleitung",
     "currentMonthSummary": "Laufender Monat",
     "ongoingPayout": "Lfd. Honorar",
-    "listSearchPlaceholder": "Name, E-Mail oder Telefon suchen…"
+    "listSearchPlaceholder": "Name, E-Mail oder Telefon suchen…",
+    "employmentType": "Beschäftigungsart",
+    "employmentHonorar": "Honorarkraft (freiberuflich)",
+    "employmentMinijob": "Minijob",
+    "employmentTeilzeit": "Teilzeit / Festanstellung",
+    "taxId": "Steuer-ID",
+    "minijobOf": "{amount} von {limit} (Minijob-Grenze)",
+    "minijobNear": "{amount} von {limit}: Grenze fast erreicht",
+    "minijobOver": "Minijob-Grenze von {limit} überschritten"
   },
   "courses": {
     "title": "Kurse & Gruppen",
@@ -893,7 +901,11 @@
     "billingVatRateHelp": "Beträge der Kurse werden als Nettobeträge behandelt. 0 % = keine Umsatzsteuer ausgewiesen.",
     "billingTaxNote": "Steuerhinweis auf der Rechnung",
     "billingTaxNoteHelp": "Optional, z. B. ein Hinweis zur Steuerbefreiung. Bitte mit Ihrem Steuerberater klären.",
-    "daysUnit": "Tage"
+    "daysUnit": "Tage",
+    "staffTitle": "Lehrkräfte",
+    "staffDesc": "Einstellungen für die Auswertung der Honorare.",
+    "minijobLimitLabel": "Minijob-Grenze pro Monat",
+    "minijobLimitHelp": "Bei Lehrkräften mit der Beschäftigungsart Minijob wird der Monatsverdienst mit dieser Grenze verglichen. Ab 80 % erscheint eine Warnung. Bitte den aktuellen Wert prüfen und bei Änderungen anpassen."
   },
   "schedule": {
     "monday": "Montag",

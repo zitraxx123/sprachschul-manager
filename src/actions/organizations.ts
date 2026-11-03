@@ -127,6 +127,14 @@ export async function updateOrganizationSettings(
     updateData.invoice_vat_rate = rate;
   }
 
+  if (formData.has("minijob_monthly_limit")) {
+    const limit = parseFloat(((formData.get("minijob_monthly_limit") as string) || "0").replace(",", "."));
+    if (isNaN(limit) || limit < 0 || limit > 100000) {
+      return { error: "Ungültige Minijob-Grenze." };
+    }
+    updateData.minijob_monthly_limit = limit;
+  }
+
   // Handle Logo Upload / Removal
   const removeLogo = formData.get("remove_logo") as string | null;
   const logoFile = formData.get("logo") as File | null;
@@ -181,6 +189,7 @@ export async function updateOrganizationSettings(
 
   revalidatePath("/settings");
   revalidatePath("/invoices");
+  revalidatePath("/teachers");
   revalidatePath("/", "layout");
   revalidatePath("/login");
   revalidatePath("/my-portal");

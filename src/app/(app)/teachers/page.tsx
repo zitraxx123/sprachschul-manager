@@ -18,6 +18,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Users, Mail, Phone, Cake, ArrowRight } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ListFilters } from "@/components/ui/list-filters";
+import { MinijobMeter } from "@/components/teachers/minijob-meter";
+import { calculateLessonPayroll } from "@/lib/payroll";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +63,7 @@ export default async function TeachersPage({
       .order("name", { ascending: true }),
     supabase
       .from("lessons")
-      .select("teacher_id, duration_hours, lesson_date")
+      .select("teacher_id, duration_hours, lesson_date, status, courses(course_type)")
       .eq("organization_id", organization.id)
       .gte("lesson_date", `${currentYearMonth}-01`),
   ]);
@@ -78,11 +80,23 @@ export default async function TeachersPage({
       )
     : teachers;
 
-  // Map monthly hours per teacher
+  // Map monthly hours and earnings per teacher (earnings follow the same payroll rules as the lessons page)
+  const teacherById = new Map(teachers.map((tc) => [tc.id, tc]));
+  const minijobLimit = Number(organization.minijob_monthly_limit ?? 603);
   const monthlyHoursMap = new Map<string, number>();
+  const monthlyEarningsMap = new Map<string, number>();
   (lessons || []).forEach((l) => {
     const current = monthlyHoursMap.get(l.teacher_id) || 0;
     monthlyHoursMap.set(l.teacher_id, current + Number(l.duration_hours || 0));
+
+    const payroll = calculateLessonPayroll(
+      Number(l.duration_hours || 0),
+      (l as unknown as { courses?: { course_type?: string } | null }).courses?.course_type,
+      teacherById.get(l.teacher_id),
+      l.status,
+      organization.late_cancellation_pay_percent ?? 50
+    );
+    monthlyEarningsMap.set(l.teacher_id, (monthlyEarningsMap.get(l.teacher_id) || 0) + payroll.totalAmount);
   });
 
   return (
@@ -146,7 +160,7 @@ export default async function TeachersPage({
                   <TableBody>
                     {filteredTeachers.map((t) => {
                       const monthHours = monthlyHoursMap.get(t.id) || 0;
-                      const monthEarnings = monthHours * Number(t.hourly_rate);
+                      const monthEarnings = monthlyEarningsMap.get(t.id) || 0;
 
                       return (
                         <TableRow key={t.id}>
@@ -215,6 +229,9 @@ export default async function TeachersPage({
                           </TableCell>
                           <TableCell className="text-right font-bold text-slate-900 dark:text-slate-100">
                             {formatCurrency(monthEarnings)}
+                            {t.employment_type === "minijob" && (
+                              <MinijobMeter earnings={monthEarnings} limit={minijobLimit} className="mt-2 min-w-40 font-normal" />
+                            )}
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end space-x-2">
@@ -238,7 +255,7 @@ export default async function TeachersPage({
               <div className="md:hidden space-y-3">
                 {filteredTeachers.map((t) => {
                   const monthHours = monthlyHoursMap.get(t.id) || 0;
-                  const monthEarnings = monthHours * Number(t.hourly_rate);
+                  const monthEarnings = monthlyEarningsMap.get(t.id) || 0;
 
                   return (
                     <div 
@@ -302,6 +319,10 @@ export default async function TeachersPage({
                           <span className="font-bold text-blue-900 dark:text-blue-200 text-sm">{formatCurrency(monthEarnings)}</span>
                         </div>
                       </div>
+
+                      {t.employment_type === "minijob" && (
+                        <MinijobMeter earnings={monthEarnings} limit={minijobLimit} />
+                      )}
 
                       {/* Action */}
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
