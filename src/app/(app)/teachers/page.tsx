@@ -241,6 +241,9 @@ export default async function TeachersPage({
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end space-x-2">
                               {t.email && !t.user_id && <InviteTeacherButton teacherId={t.id} />}
+                              {!t.email && !t.user_id && (
+                                <span className="text-[11px] text-slate-400 dark:text-slate-500 max-w-32 leading-tight">{tTeachers("inviteNeedsEmail")}</span>
+                              )}
                               <EditTeacherDialog teacher={t} variant="icon" />
                               <Link href={`/teachers/${t.id}`}>
                                 <Button variant="outline" size="sm" className="space-x-1 text-xs">
@@ -333,6 +336,9 @@ export default async function TeachersPage({
                       {/* Action */}
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                         {t.email && !t.user_id && <InviteTeacherButton teacherId={t.id} />}
+                        {!t.email && !t.user_id && (
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500 max-w-32 leading-tight">{tTeachers("inviteNeedsEmail")}</span>
+                        )}
                         <EditTeacherDialog teacher={t} variant="button" />
                         <Link href={`/teachers/${t.id}`} className="flex-1">
                           <Button variant="outline" className="w-full justify-between h-9 text-xs font-semibold">

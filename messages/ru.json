@@ -399,7 +399,8 @@
     "inviteErrorNotFound": "Учитель не найден.",
     "inviteErrorNoEmail": "Сначала укажите email учителя.",
     "inviteErrorAlreadyLinked": "У учителя уже есть доступ.",
-    "inviteErrorServer": "Не удалось создать приглашение."
+    "inviteErrorServer": "Не удалось создать приглашение.",
+    "inviteNeedsEmail": "Для приглашения укажите e-mail"
   },
   "courses": {
     "title": "Управление курсами и группами",

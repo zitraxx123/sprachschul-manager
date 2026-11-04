@@ -399,7 +399,8 @@
     "inviteErrorNotFound": "Teacher not found.",
     "inviteErrorNoEmail": "Please add an email address to the teacher first.",
     "inviteErrorAlreadyLinked": "The teacher already has access.",
-    "inviteErrorServer": "The invitation could not be created."
+    "inviteErrorServer": "The invitation could not be created.",
+    "inviteNeedsEmail": "Add an e-mail to invite"
   },
   "courses": {
     "title": "Course Management & Groups",

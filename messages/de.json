@@ -399,7 +399,8 @@
     "inviteErrorNotFound": "Lehrkraft nicht gefunden.",
     "inviteErrorNoEmail": "Bitte zuerst eine E-Mail-Adresse bei der Lehrkraft hinterlegen.",
     "inviteErrorAlreadyLinked": "Die Lehrkraft hat bereits Zugang.",
-    "inviteErrorServer": "Einladung konnte nicht erstellt werden."
+    "inviteErrorServer": "Einladung konnte nicht erstellt werden.",
+    "inviteNeedsEmail": "Für die Einladung E-Mail eintragen"
   },
   "courses": {
     "title": "Kurse & Gruppen",
