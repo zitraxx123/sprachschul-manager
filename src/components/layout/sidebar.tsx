@@ -71,7 +71,7 @@ export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeac
   const navItems = isTeacher ? teacherNavItems : isAssistant ? assistantNavItems : adminNavItems;
 
   return (
-    <aside className="hidden md:flex w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-col h-screen sticky top-0 shrink-0 print:hidden transition-colors">
+    <aside className="hidden md:flex w-64 border-r border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur flex-col h-screen sticky top-0 shrink-0 print:hidden transition-colors">
       {/* Brand / Organization Header */}
       <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
         <Logo size="sm" showText={false} logoUrl={logoUrl} />
@@ -96,9 +96,9 @@ export function Sidebar({ organizationName, logoUrl, userEmail, userName, isTeac
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+                "flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold shadow-sm"
+                  ? "bg-gradient-to-r from-blue-50 to-white dark:from-blue-950/70 dark:to-transparent text-blue-700 dark:text-blue-300 font-semibold shadow-sm ring-1 ring-blue-100 dark:ring-blue-900/50"
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
               )}
             >

@@ -32,7 +32,8 @@ export default async function AppLayout({
   const orgName = organization?.name || "Meine Sprachschule";
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
+    <div className="relative flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-blue-600/[0.07] via-[#00C2FF]/[0.03] to-transparent dark:from-blue-500/10 print:hidden" />
       <Sidebar 
         organizationName={orgName} 
         logoUrl={organization?.logo_url || null}

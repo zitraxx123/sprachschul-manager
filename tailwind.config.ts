@@ -10,6 +10,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        blue: {
+          50: "#F3F2FF", 100: "#E7E5FF", 200: "#CFCBFF", 300: "#B0AAFF", 400: "#8F88FF",
+          500: "#7770FF", 600: "#635BFF", 700: "#5249E6", 800: "#4239BD", 900: "#352E94", 950: "#221D63",
+        },
+        slate: {
+          50: "#F6F9FC", 100: "#EDF1F7", 200: "#E3E8EE", 300: "#C8D1DE", 400: "#8A97AB",
+          500: "#5B6B80", 600: "#425466", 700: "#2B3C53", 800: "#18263D", 900: "#0F1B2F", 950: "#0A1220",
+        },
         background: "var(--background)",
         foreground: "var(--foreground)",
         card: {
@@ -38,12 +46,17 @@ export default {
           "0%, 100%": { transform: "translate3d(0, 0, 0)" },
           "50%": { transform: "translate3d(40px, 30px, 0)" },
         },
+        "fade-up": {
+          from: { opacity: "0", transform: "translate3d(0, 10px, 0)" },
+          to: { opacity: "1", transform: "none" },
+        },
         "drift-b": {
           "0%, 100%": { transform: "translate3d(0, 0, 0)" },
           "50%": { transform: "translate3d(-40px, 30px, 0)" },
         },
       },
       animation: {
+        "fade-up": "fade-up 0.45s cubic-bezier(0.23, 1, 0.32, 1) backwards",
         float: "float-y var(--float-dur, 5s) ease-in-out var(--float-delay, 0s) infinite",
         "drift-a": "drift-a 16s ease-in-out infinite",
         "drift-b": "drift-b 19s ease-in-out infinite",

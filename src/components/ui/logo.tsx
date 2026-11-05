@@ -19,9 +19,9 @@ export function Logo({
   logoUrl,
 }: LogoProps) {
   const iconSizes = {
-    sm: "w-8 h-8 rounded-lg",
-    md: "w-10 h-10 rounded-lg",
-    lg: "w-12 h-12 rounded-lg",
+    sm: "w-8 h-8 rounded-xl",
+    md: "w-10 h-10 rounded-xl",
+    lg: "w-12 h-12 rounded-xl",
   };
 
   const capSizes = {
@@ -51,7 +51,7 @@ export function Logo({
         </div>
       ) : (
         <div
-          className={`${iconSizes[size]} bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm`}
+          className={`${iconSizes[size]} bg-gradient-to-br from-blue-600 to-[#00B8D9] text-white flex items-center justify-center shrink-0 shadow-[0_6px_14px_-6px_rgba(99,91,255,0.6)]`}
         >
           <GraduationCap className={capSizes[size]} strokeWidth={1.5} />
         </div>

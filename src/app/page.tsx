@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Inter, Manrope } from "next/font/google";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser, getCurrentTeacher, getCurrentMembership } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
@@ -25,9 +24,6 @@ import {
   UserCog,
   Users,
 } from "lucide-react";
-
-const heading = Manrope({ subsets: ["latin", "cyrillic"], variable: "--font-heading", display: "swap" });
-const body = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-body", display: "swap" });
 
 const CONTACT_EMAIL = "studiowebnord@gmail.com";
 
@@ -76,7 +72,7 @@ export default async function HomePage() {
 
   return (
     <div
-      className={`${heading.variable} ${body.variable} flex min-h-screen flex-col bg-[#F6F9FC] text-[#0A2540] selection:bg-[#635BFF] selection:text-white dark:bg-[#0A1220] dark:text-white`}
+      className={`flex min-h-screen flex-col bg-[#F6F9FC] text-[#0A2540] selection:bg-[#635BFF] selection:text-white dark:bg-[#0A1220] dark:text-white`}
       style={{ fontFamily: "var(--font-body), system-ui, sans-serif" }}
     >
       {/* Header */}

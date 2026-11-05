@@ -147,7 +147,7 @@ export function MobileNav({
                     className={cn(
                       "flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98] select-none touch-manipulation",
                       isActive
-                        ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold"
+                        ? "bg-gradient-to-r from-blue-50 to-white dark:from-blue-950/70 dark:to-transparent text-blue-700 dark:text-blue-300 font-semibold ring-1 ring-blue-100 dark:ring-blue-900/50"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
                     )}
                   >
