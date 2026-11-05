@@ -70,8 +70,8 @@ export default function DatenschutzPage() {
         <section className="space-y-3 text-sm leading-relaxed text-slate-700">
           <h2 className="text-base font-bold text-slate-900">4. Hosting und Auftragsverarbeitung</h2>
           <p>
-            Diese Anwendung und die zugehörigen Datenbanken werden in zertifizierten Rechenzentren innerhalb der Europäischen Union 
-            (Frankfurt am Main, Deutschland) gehostet. Ein Vertrag zur Auftragsverarbeitung (AVV) gemäß Art. 28 DSGVO wird für Bildungsträger bereitgestellt.
+            Die Datenbank (Supabase) und die Anwendung (Vercel) werden in Rechenzentren innerhalb der Europäischen Union 
+            (Irland) betrieben. Ein Vertrag zur Auftragsverarbeitung (AVV) gemäß Art. 28 DSGVO wird auf Anfrage bereitgestellt.
           </p>
         </section>
 

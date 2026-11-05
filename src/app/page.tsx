@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser, getCurrentTeacher, getCurrentMembership } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LANDING_VIDEOS, isVideoFile, youtubeId, type LandingVideo } from "@/lib/landing-videos";
 import {
   Banknote,
   CalendarClock,
@@ -19,6 +20,13 @@ import {
   Smartphone,
   UserCog,
   Check,
+  Server,
+  Lock,
+  History,
+  KeyRound,
+  Play,
+  Users,
+  ChevronDown,
 } from "lucide-react";
 
 const display = Geologica({ subsets: ["latin", "cyrillic"], variable: "--font-display", display: "swap" });
@@ -85,10 +93,59 @@ const GROUPS = [
   },
 ] as const;
 
+const TRUST = [
+  { id: "eu", icon: Server },
+  { id: "gdpr", icon: ShieldCheck },
+  { id: "iso", icon: Users },
+  { id: "tls", icon: Lock },
+] as const;
+
+const SECURITY = [
+  { id: "eu", icon: Server },
+  { id: "isolation", icon: Users },
+  { id: "roles", icon: UserCog },
+  { id: "log", icon: History },
+  { id: "gdpr", icon: ShieldCheck },
+  { id: "login", icon: KeyRound },
+] as const;
+
+const STEPS = ["s1", "s2", "s3", "s4"] as const;
+const FAQ = ["1", "2", "3", "4", "5", "6"] as const;
+
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F4A3D] dark:focus-visible:outline-[#F3C63D]";
 const BTN_PRIMARY = `inline-flex items-center justify-center gap-2 rounded-lg bg-[#F3C63D] px-6 h-12 text-base font-semibold text-[#13201B] hover:bg-[#E6B72A] transition-colors ${FOCUS}`;
 const BTN_SECONDARY = `inline-flex items-center justify-center gap-2 rounded-lg border border-[#13201B]/25 dark:border-white/25 px-6 h-12 text-base font-medium text-[#13201B] dark:text-[#E7ECE4] hover:bg-[#13201B]/5 dark:hover:bg-white/10 transition-colors ${FOCUS}`;
+
+function VideoSlot({ video, title, soon }: { video: LandingVideo; title: string; soon: string }) {
+  const yt = video.src ? youtubeId(video.src) : null;
+  return (
+    <figure>
+      <div className="aspect-video rounded-xl overflow-hidden bg-[#1F4A3D] dark:bg-[#16342B] ring-1 ring-black/10">
+        {video.src && yt ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${yt}`}
+            title={title}
+            className="w-full h-full"
+            loading="lazy"
+            allow="accelerometer; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        ) : video.src && isVideoFile(video.src) ? (
+          <video src={video.src} poster={video.poster} controls preload="metadata" playsInline className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[#E7EFE6]/80">
+            <span className="w-12 h-12 rounded-full bg-[#F3C63D] text-[#13201B] flex items-center justify-center">
+              <Play strokeWidth={1.5} className="w-5 h-5" />
+            </span>
+            <span className="text-sm">{soon}</span>
+          </div>
+        )}
+      </div>
+      <figcaption className="mt-3 text-sm font-semibold">{title}</figcaption>
+    </figure>
+  );
+}
 
 export default async function HomePage() {
   const [t, user] = await Promise.all([getTranslations("landing"), getCurrentUser()]);
@@ -118,6 +175,7 @@ export default async function HomePage() {
 
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#13201B]/75 dark:text-[#E7ECE4]/75">
             <a href="#funktionen" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_features")}</a>
+            <a href="#sicherheit" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_security")}</a>
             <a href="#kostenlos" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_free")}</a>
             <a href="#hilfe" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_help")}</a>
           </nav>
@@ -204,6 +262,24 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Trust bar */}
+        <section className="border-t border-[#13201B]/10 dark:border-white/10">
+          <ul className="max-w-6xl mx-auto px-4 sm:px-6 py-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {TRUST.map((it) => {
+              const Icon = it.icon;
+              return (
+                <li key={it.id} className="flex items-start gap-3">
+                  <Icon strokeWidth={1.5} className="w-6 h-6 mt-0.5 shrink-0 text-[#1F4A3D] dark:text-[#F3C63D]" />
+                  <div>
+                    <div className="font-semibold text-[15px]">{t(`trust_${it.id}_t`)}</div>
+                    <div className="text-sm text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`trust_${it.id}_d`)}</div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
         {/* Audience */}
         <section className="border-y border-[#13201B]/10 dark:border-white/10">
           <p className="max-w-6xl mx-auto px-4 sm:px-6 py-5 text-sm sm:text-base text-[#13201B]/75 dark:text-[#E7ECE4]/75">
@@ -243,6 +319,69 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Steps: a real sequence, so numbered */}
+        <section className="bg-[#E9ECE4] dark:bg-[#121E19]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+              {t("steps_title")}
+            </h2>
+            <ol className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {STEPS.map((k, i) => (
+                <li key={k} className="flex gap-4 lg:block">
+                  <span
+                    className="w-10 h-10 shrink-0 rounded-full bg-[#1F4A3D] text-[#F3C63D] flex items-center justify-center font-semibold"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div className="lg:mt-4">
+                    <div className="font-semibold">{t(`steps_${k}_t`)}</div>
+                    <div className="mt-1 text-sm leading-relaxed text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`steps_${k}_d`)}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* Videos (set the links in src/lib/landing-videos.ts) */}
+        <section id="videos" className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 scroll-mt-16">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            {t("videos_title")}
+          </h2>
+          <p className="mt-3 text-lg text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-xl">{t("videos_intro")}</p>
+          <div className="mt-10 grid md:grid-cols-3 gap-6">
+            {LANDING_VIDEOS.map((v) => (
+              <VideoSlot key={v.id} video={v} title={t(`videos_${v.id}`)} soon={t("videos_soon")} />
+            ))}
+          </div>
+        </section>
+
+        {/* Security and privacy */}
+        <section id="sicherheit" className="border-t border-[#13201B]/10 dark:border-white/10 scroll-mt-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+              {t("security_title")}
+            </h2>
+            <p className="mt-3 text-lg text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-2xl">{t("security_intro")}</p>
+            <ul className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
+              {SECURITY.map((it) => {
+                const Icon = it.icon;
+                return (
+                  <li key={it.id} className="border-t border-[#13201B]/20 dark:border-white/20 pt-5">
+                    <Icon strokeWidth={1.5} className="w-6 h-6 text-[#1F4A3D] dark:text-[#F3C63D]" />
+                    <div className="mt-3 font-semibold">{t(`security_${it.id}_t`)}</div>
+                    <div className="mt-1 text-sm leading-relaxed text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`security_${it.id}_d`)}</div>
+                  </li>
+                );
+              })}
+            </ul>
+            <Link href="/datenschutz" className={`mt-8 inline-block text-sm font-semibold underline underline-offset-4 ${FOCUS}`}>
+              {t("security_link")}
+            </Link>
+          </div>
+        </section>
+
         {/* Free */}
         <section id="kostenlos" className="bg-[#1F4A3D] dark:bg-[#16342B] text-[#E7EFE6] scroll-mt-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20 grid md:grid-cols-[1.2fr_1fr] gap-10 items-center">
@@ -263,6 +402,24 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 pt-16 md:pt-24">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            {t("faq_title")}
+          </h2>
+          <div className="mt-8 divide-y divide-[#13201B]/15 dark:divide-white/15 border-y border-[#13201B]/15 dark:border-white/15">
+            {FAQ.map((n) => (
+              <details key={n} className="group py-4">
+                <summary className={`flex items-center justify-between gap-4 cursor-pointer list-none font-semibold rounded ${FOCUS}`}>
+                  <span>{t(`faq_q${n}`)}</span>
+                  <ChevronDown strokeWidth={1.5} className="w-5 h-5 shrink-0 transition-transform group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 leading-relaxed text-[#13201B]/75 dark:text-[#E7ECE4]/75">{t(`faq_a${n}`)}</p>
+              </details>
+            ))}
           </div>
         </section>
 
