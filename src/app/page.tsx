@@ -185,7 +185,7 @@ export default async function HomePage() {
             <p className={`${LEAD} max-w-2xl`}>{t("workflow_intro")}</p>
           </Reveal>
           <Reveal delay={0.1} className="mt-10">
-            <div className="rounded-3xl border border-[#E3E8EE] bg-white p-5 shadow-[0_30px_60px_-30px_rgba(50,50,93,0.3)] dark:border-white/10 dark:bg-white/5 sm:p-8">
+            <div className="rounded-3xl border border-[#E3E8EE] bg-white bg-[radial-gradient(#CBD5E1_1.2px,transparent_1.2px)] [background-size:22px_22px] p-5 shadow-[0_30px_60px_-30px_rgba(50,50,93,0.3)] dark:border-white/10 dark:bg-[#0F1A2E] dark:bg-[radial-gradient(rgba(255,255,255,0.12)_1.2px,transparent_1.2px)] sm:p-8">
               <HubDiagram />
             </div>
           </Reveal>
