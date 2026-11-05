@@ -1,36 +1,41 @@
 import Link from "next/link";
-import { Geologica, Manrope } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser, getCurrentTeacher, getCurrentMembership } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { LANDING_VIDEOS, isVideoFile, youtubeId, type LandingVideo } from "@/lib/landing-videos";
+import { LANDING_VIDEOS } from "@/lib/landing-videos";
+import { Reveal } from "@/components/landing/reveal";
+import { HeroBackdrop } from "@/components/landing/hero-backdrop";
+import { HeroMockup } from "@/components/landing/hero-mockup";
+import { WorkflowDiagram } from "@/components/landing/workflow-diagram";
+import { VideoSlot } from "@/components/landing/video-slot";
 import {
   Banknote,
   CalendarClock,
   CalendarDays,
+  Check,
+  ChevronDown,
   ClipboardCheck,
   FileSpreadsheet,
   GraduationCap,
+  History,
   Hourglass,
+  KeyRound,
   Landmark,
+  Lock,
   Mail,
   Receipt,
+  Server,
   ShieldCheck,
   Smartphone,
+  Sparkles,
   UserCog,
-  Check,
-  Server,
-  Lock,
-  History,
-  KeyRound,
-  Play,
   Users,
-  ChevronDown,
 } from "lucide-react";
 
-const display = Geologica({ subsets: ["latin", "cyrillic"], variable: "--font-display", display: "swap" });
-const body = Manrope({ subsets: ["latin", "cyrillic"], variable: "--font-body", display: "swap" });
+const heading = Manrope({ subsets: ["latin", "cyrillic"], variable: "--font-heading", display: "swap" });
+const body = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-body", display: "swap" });
 
 const CONTACT_EMAIL = "studiowebnord@gmail.com";
 
@@ -39,28 +44,12 @@ export async function generateMetadata() {
   return { title: t("meta_title"), description: t("meta_description") };
 }
 
-type Kind = "language" | "dance" | "music";
-
-const KIND_STYLE: Record<Kind, string> = {
-  language: "bg-[#CFE6D9] text-[#13201B]",
-  dance: "bg-[#F3C63D] text-[#13201B]",
-  music: "bg-[#F2A98E] text-[#13201B]",
-};
-
-// Illustrative week plan for the hero board (course names come from the translations)
-const WEEK: Array<Array<{ time: string; course: "c1" | "c2" | "c3" | "c4" | "c5"; room: number; kind: Kind; clash?: boolean }>> = [
-  [
-    { time: "16:00", course: "c1", room: 1, kind: "language" },
-    { time: "18:00", course: "c4", room: 2, kind: "dance" },
-  ],
-  [{ time: "17:00", course: "c3", room: 2, kind: "music", clash: true }],
-  [
-    { time: "16:00", course: "c2", room: 1, kind: "language" },
-    { time: "18:00", course: "c5", room: 2, kind: "music" },
-  ],
-  [{ time: "17:00", course: "c1", room: 1, kind: "language" }],
-  [{ time: "16:00", course: "c4", room: 2, kind: "dance" }],
-];
+const TRUST = [
+  { id: "eu", icon: Server },
+  { id: "gdpr", icon: ShieldCheck },
+  { id: "iso", icon: Users },
+  { id: "tls", icon: Lock },
+] as const;
 
 const GROUPS = [
   {
@@ -93,13 +82,6 @@ const GROUPS = [
   },
 ] as const;
 
-const TRUST = [
-  { id: "eu", icon: Server },
-  { id: "gdpr", icon: ShieldCheck },
-  { id: "iso", icon: Users },
-  { id: "tls", icon: Lock },
-] as const;
-
 const SECURITY = [
   { id: "eu", icon: Server },
   { id: "isolation", icon: Users },
@@ -113,39 +95,15 @@ const STEPS = ["s1", "s2", "s3", "s4"] as const;
 const FAQ = ["1", "2", "3", "4", "5", "6"] as const;
 
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F4A3D] dark:focus-visible:outline-[#F3C63D]";
-const BTN_PRIMARY = `inline-flex items-center justify-center gap-2 rounded-lg bg-[#F3C63D] px-6 h-12 text-base font-semibold text-[#13201B] hover:bg-[#E6B72A] transition-colors ${FOCUS}`;
-const BTN_SECONDARY = `inline-flex items-center justify-center gap-2 rounded-lg border border-[#13201B]/25 dark:border-white/25 px-6 h-12 text-base font-medium text-[#13201B] dark:text-[#E7ECE4] hover:bg-[#13201B]/5 dark:hover:bg-white/10 transition-colors ${FOCUS}`;
-
-function VideoSlot({ video, title, soon }: { video: LandingVideo; title: string; soon: string }) {
-  const yt = video.src ? youtubeId(video.src) : null;
-  return (
-    <figure>
-      <div className="aspect-video rounded-xl overflow-hidden bg-[#1F4A3D] dark:bg-[#16342B] ring-1 ring-black/10">
-        {video.src && yt ? (
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${yt}`}
-            title={title}
-            className="w-full h-full"
-            loading="lazy"
-            allow="accelerometer; encrypted-media; picture-in-picture"
-            allowFullScreen
-          />
-        ) : video.src && isVideoFile(video.src) ? (
-          <video src={video.src} poster={video.poster} controls preload="metadata" playsInline className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[#E7EFE6]/80">
-            <span className="w-12 h-12 rounded-full bg-[#F3C63D] text-[#13201B] flex items-center justify-center">
-              <Play strokeWidth={1.5} className="w-5 h-5" />
-            </span>
-            <span className="text-sm">{soon}</span>
-          </div>
-        )}
-      </div>
-      <figcaption className="mt-3 text-sm font-semibold">{title}</figcaption>
-    </figure>
-  );
-}
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#635BFF]";
+const BTN_PRIMARY = `inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#635BFF] to-[#7A73FF] px-7 h-12 text-base font-semibold text-white shadow-[0_8px_20px_-6px_rgba(99,91,255,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(99,91,255,0.7)] ${FOCUS}`;
+const BTN_SECONDARY = `inline-flex items-center justify-center gap-2 rounded-xl border border-[#D5DBE5] dark:border-white/25 bg-white dark:bg-white/5 px-7 h-12 text-base font-semibold text-[#0A2540] dark:text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-[#635BFF] hover:shadow-md ${FOCUS}`;
+const SECTION_TITLE = "text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0A2540] dark:text-white";
+const LEAD = "mt-3 text-lg leading-relaxed text-[#425466] dark:text-white/70";
+const CARD =
+  "h-full rounded-2xl border border-[#E3E8EE] dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#635BFF]/10";
+const ICON_BOX =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#635BFF] to-[#00C2FF] text-white";
 
 export default async function HomePage() {
   const [t, user] = await Promise.all([getTranslations("landing"), getCurrentUser()]);
@@ -154,45 +112,51 @@ export default async function HomePage() {
   const isTeacher = !!(teacher && membership?.role === "teacher");
   const portalHref = isTeacher ? "/my-portal" : "/dashboard";
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t("help_mailSubject"))}`;
-  const days = ["d1", "d2", "d3", "d4", "d5"] as const;
+  const [mainVideo, ...otherVideos] = LANDING_VIDEOS;
 
   return (
     <div
-      className={`${display.variable} ${body.variable} min-h-screen bg-[#F5F6F1] dark:bg-[#0E1713] text-[#13201B] dark:text-[#E7ECE4] selection:bg-[#F3C63D] selection:text-[#13201B] flex flex-col`}
+      className={`${heading.variable} ${body.variable} flex min-h-screen flex-col bg-[#F6F9FC] text-[#0A2540] selection:bg-[#635BFF] selection:text-white dark:bg-[#0A1220] dark:text-white`}
       style={{ fontFamily: "var(--font-body), system-ui, sans-serif" }}
     >
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-[#13201B]/10 dark:border-white/10 bg-[#F5F6F1]/90 dark:bg-[#0E1713]/90 backdrop-blur">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <header className="sticky top-0 z-30 border-b border-[#E3E8EE]/80 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-[#0A1220]/80">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link href="/" className={`flex items-center gap-2 rounded-md ${FOCUS}`}>
-            <span className="w-8 h-8 rounded-md bg-[#1F4A3D] text-[#F3C63D] flex items-center justify-center">
-              <GraduationCap strokeWidth={1.5} className="w-5 h-5" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#635BFF] to-[#00C2FF] text-white">
+              <GraduationCap strokeWidth={1.5} className="h-5 w-5" />
             </span>
-            <span className="text-lg font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            <span className="text-lg font-extrabold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
               Klasswerk
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#13201B]/75 dark:text-[#E7ECE4]/75">
-            <a href="#funktionen" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_features")}</a>
-            <a href="#sicherheit" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_security")}</a>
-            <a href="#kostenlos" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_free")}</a>
-            <a href="#hilfe" className="hover:text-[#13201B] dark:hover:text-white">{t("nav_help")}</a>
+          <nav className="hidden items-center gap-7 text-sm font-medium text-[#425466] dark:text-white/70 md:flex">
+            {[
+              ["#funktionen", "nav_features"],
+              ["#sicherheit", "nav_security"],
+              ["#kostenlos", "nav_free"],
+              ["#hilfe", "nav_help"],
+            ].map(([href, key]) => (
+              <a key={href} href={href} className="transition-colors duration-200 hover:text-[#635BFF] dark:hover:text-white">
+                {t(key)}
+              </a>
+            ))}
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
             <ThemeToggle />
             {user ? (
-              <Link href={portalHref} className={`inline-flex items-center rounded-lg bg-[#1F4A3D] px-4 h-10 text-sm font-semibold text-white hover:bg-[#173A30] ${FOCUS}`}>
+              <Link href={portalHref} className={`inline-flex h-10 items-center rounded-lg bg-[#635BFF] px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#5249E6] ${FOCUS}`}>
                 {t("nav_dashboard")}
               </Link>
             ) : (
               <>
-                <Link href="/login" className={`hidden sm:inline-flex items-center rounded-lg px-3 h-10 text-sm font-medium hover:bg-[#13201B]/5 dark:hover:bg-white/10 ${FOCUS}`}>
+                <Link href="/login" className={`hidden h-10 items-center rounded-lg px-3 text-sm font-medium transition-colors duration-200 hover:bg-[#635BFF]/10 sm:inline-flex ${FOCUS}`}>
                   {t("nav_login")}
                 </Link>
-                <Link href="/login" className={`inline-flex items-center rounded-lg bg-[#1F4A3D] px-4 h-10 text-sm font-semibold text-white hover:bg-[#173A30] dark:bg-[#F3C63D] dark:text-[#13201B] dark:hover:bg-[#E6B72A] ${FOCUS}`}>
+                <Link href="/login" className={`inline-flex h-10 items-center rounded-lg bg-[#635BFF] px-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#5249E6] hover:shadow-[0_0_24px_rgba(99,91,255,0.6)] ${FOCUS}`}>
                   {t("nav_start")}
                 </Link>
               </>
@@ -203,259 +167,275 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-16 md:pt-20 md:pb-24 grid lg:grid-cols-[1fr_1.05fr] gap-12 lg:gap-14 items-center">
-          <div>
-            <h1
-              className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.08]"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {t("hero_title")}
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-[34rem]">
-              {t("hero_subtitle")}
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link href="/login" className={BTN_PRIMARY}>
-                {t("hero_ctaPrimary")}
-              </Link>
-              <a href={mailHref} className={BTN_SECONDARY}>
-                <Mail strokeWidth={1.5} className="w-5 h-5" />
-                {t("hero_ctaSecondary")}
-              </a>
-            </div>
-            <p className="mt-4 text-sm text-[#13201B]/60 dark:text-[#E7ECE4]/60">{t("hero_fine")}</p>
-          </div>
-
-          {/* The board: an illustrative week plan, one booking clash is prevented */}
-          <div>
-            <div className="rounded-2xl bg-[#1F4A3D] dark:bg-[#16342B] text-[#E7EFE6] p-4 sm:p-6 shadow-xl ring-1 ring-black/10">
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/15">
-                <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-                  {t("mock_title")}
-                </span>
-                <CalendarDays strokeWidth={1.5} className="w-4 h-4 text-[#F3C63D]" />
+        <section className="relative overflow-hidden">
+          <HeroBackdrop />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-24 pt-14 sm:px-6 md:pt-20 lg:grid-cols-[1fr_1.05fr]">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#635BFF]/20 bg-white/80 px-3 py-1 text-sm font-semibold text-[#635BFF] backdrop-blur dark:bg-white/10 dark:text-[#B4AFFF]">
+                <Sparkles strokeWidth={1.5} className="h-4 w-4" />
+                {t("hero_badge")}
+              </span>
+              <h1
+                className="mt-5 text-4xl font-extrabold leading-[1.08] tracking-tight text-[#0A2540] dark:text-white sm:text-5xl lg:text-[3.5rem]"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                {t("hero_title")}
+              </h1>
+              <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-[#425466] dark:text-white/75">{t("hero_subtitle")}</p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/login" className={BTN_PRIMARY}>
+                  {t("hero_ctaPrimary")}
+                </Link>
+                <a href={mailHref} className={BTN_SECONDARY}>
+                  <Mail strokeWidth={1.5} className="h-5 w-5" />
+                  {t("hero_ctaSecondary")}
+                </a>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-x-2 gap-y-4">
-                {WEEK.map((slots, i) => (
-                  <div key={days[i]} className="space-y-2 min-w-0">
-                    <div className="text-xs font-semibold text-[#E7EFE6]/70">{t(`mock_days_${days[i]}`)}</div>
-                    {slots.map((s) => (
-                      <div
-                        key={s.time + s.course}
-                        className={`rounded-md px-2 py-1.5 text-[11px] leading-tight ${KIND_STYLE[s.kind]} ${
-                          s.clash ? "ring-2 ring-offset-2 ring-offset-[#1F4A3D] dark:ring-offset-[#16342B] ring-white" : ""
-                        }`}
-                      >
-                        <div className="font-bold">{s.time}</div>
-                        <div className="font-semibold truncate">{t(`mock_courses_${s.course}`)}</div>
-                        <div className="opacity-75">{t("mock_room", { n: s.room })}</div>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
+              <p className="mt-4 text-sm text-[#425466] dark:text-white/60">{t("hero_fine")}</p>
             </div>
-            <p className="mt-4 text-sm text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-md border-l-4 border-[#F3C63D] pl-3">
-              {t("mock_note")}
-            </p>
+            <HeroMockup />
           </div>
         </section>
 
         {/* Trust bar */}
-        <section className="border-t border-[#13201B]/10 dark:border-white/10">
-          <ul className="max-w-6xl mx-auto px-4 sm:px-6 py-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <section className="border-y border-[#E3E8EE] bg-white dark:border-white/10 dark:bg-[#0D182B]">
+          <ul className="mx-auto grid max-w-6xl gap-5 px-4 py-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
             {TRUST.map((it) => {
               const Icon = it.icon;
               return (
                 <li key={it.id} className="flex items-start gap-3">
-                  <Icon strokeWidth={1.5} className="w-6 h-6 mt-0.5 shrink-0 text-[#1F4A3D] dark:text-[#F3C63D]" />
+                  <Icon strokeWidth={1.5} className="mt-0.5 h-6 w-6 shrink-0 text-[#635BFF] dark:text-[#9C97FF]" />
                   <div>
-                    <div className="font-semibold text-[15px]">{t(`trust_${it.id}_t`)}</div>
-                    <div className="text-sm text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`trust_${it.id}_d`)}</div>
+                    <div className="text-[15px] font-semibold">{t(`trust_${it.id}_t`)}</div>
+                    <div className="text-sm text-[#425466] dark:text-white/65">{t(`trust_${it.id}_d`)}</div>
                   </div>
                 </li>
               );
             })}
           </ul>
+          <p className="mx-auto max-w-6xl px-4 pb-5 text-sm text-[#425466] dark:text-white/65 sm:px-6">{t("audience")}</p>
         </section>
 
-        {/* Audience */}
-        <section className="border-y border-[#13201B]/10 dark:border-white/10">
-          <p className="max-w-6xl mx-auto px-4 sm:px-6 py-5 text-sm sm:text-base text-[#13201B]/75 dark:text-[#E7ECE4]/75">
-            {t("audience")}
-          </p>
+        {/* How it works: animated scheme */}
+        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
+          <Reveal>
+            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+              {t("workflow_title")}
+            </h2>
+            <p className={`${LEAD} max-w-2xl`}>{t("workflow_intro")}</p>
+          </Reveal>
+          <Reveal delay={0.1} className="mt-10">
+            <div className="rounded-3xl border border-[#E3E8EE] bg-white p-5 shadow-[0_30px_60px_-30px_rgba(50,50,93,0.3)] dark:border-white/10 dark:bg-white/5 sm:p-8">
+              <WorkflowDiagram />
+            </div>
+          </Reveal>
         </section>
 
-        {/* Features: three groups, divided by rules, not cards */}
-        <section id="funktionen" className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 scroll-mt-20">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight max-w-xl" style={{ fontFamily: "var(--font-display)" }}>
-            {t("features_title")}
-          </h2>
-          <div className="mt-12 grid md:grid-cols-3 gap-10 md:gap-0 md:divide-x divide-[#13201B]/12 dark:divide-white/12">
-            {GROUPS.map((g) => (
-              <div key={g.id} className="md:px-8 md:first:pl-0 md:last:pr-0">
-                <h3 className="text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-                  {t(`features_${g.id}_title`)}
-                </h3>
-                <ul className="mt-5 space-y-5">
-                  {g.items.map((it) => {
-                    const Icon = it.icon;
-                    return (
-                      <li key={it.key} className="flex gap-3">
-                        <Icon strokeWidth={1.5} className="w-5 h-5 mt-0.5 shrink-0 text-[#1F4A3D] dark:text-[#F3C63D]" />
-                        <div>
-                          <div className="font-semibold text-[15px]">{t(`features_${g.id}_items_${it.key}_t`)}</div>
-                          <div className="text-sm leading-relaxed text-[#13201B]/70 dark:text-[#E7ECE4]/70">
-                            {t(`features_${g.id}_items_${it.key}_d`)}
+        {/* Features */}
+        <section id="funktionen" className="scroll-mt-20 border-y border-[#E3E8EE] bg-white py-20 dark:border-white/10 dark:bg-[#0D182B] md:py-28">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <Reveal>
+              <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+                {t("features_title")}
+              </h2>
+            </Reveal>
+            <div className="mt-12 space-y-14">
+              {GROUPS.map((g) => (
+                <div key={g.id}>
+                  <Reveal>
+                    <h3 className="text-xl font-bold" style={{ fontFamily: "var(--font-heading)" }}>
+                      {t(`features_${g.id}_title`)}
+                    </h3>
+                  </Reveal>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {g.items.map((it, i) => {
+                      const Icon = it.icon;
+                      return (
+                        <Reveal key={it.key} delay={i * 0.07} className="h-full">
+                          <div className={CARD}>
+                            <span className={ICON_BOX}>
+                              <Icon strokeWidth={1.5} className="h-5 w-5" />
+                            </span>
+                            <div className="mt-4 text-base font-bold">{t(`features_${g.id}_items_${it.key}_t`)}</div>
+                            <p className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">
+                              {t(`features_${g.id}_items_${it.key}_d`)}
+                            </p>
                           </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+                        </Reveal>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Demo (set the links in src/lib/landing-videos.ts) */}
+        <section id="demo" className="mx-auto max-w-6xl scroll-mt-16 px-4 py-20 sm:px-6 md:py-28">
+          <Reveal>
+            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+              {t("demo_title")}
+            </h2>
+            <p className={`${LEAD} max-w-2xl`}>{t("videos_intro")}</p>
+          </Reveal>
+          <Reveal delay={0.1} className="mx-auto mt-10 max-w-4xl">
+            <VideoSlot video={mainVideo} title={t(`videos_${mainVideo.id}`)} soon={t("videos_soon")} large />
+          </Reveal>
+          <div className="mx-auto mt-8 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {otherVideos.map((v, i) => (
+              <Reveal key={v.id} delay={i * 0.08}>
+                <VideoSlot video={v} title={t(`videos_${v.id}`)} soon={t("videos_soon")} />
+              </Reveal>
             ))}
           </div>
         </section>
 
         {/* Steps: a real sequence, so numbered */}
-        <section className="bg-[#E9ECE4] dark:bg-[#121E19]">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              {t("steps_title")}
-            </h2>
-            <ol className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section className="border-y border-[#E3E8EE] bg-white dark:border-white/10 dark:bg-[#0D182B]">
+          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+            <Reveal>
+              <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+                {t("steps_title")}
+              </h2>
+            </Reveal>
+            <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((k, i) => (
-                <li key={k} className="flex gap-4 lg:block">
-                  <span
-                    className="w-10 h-10 shrink-0 rounded-full bg-[#1F4A3D] text-[#F3C63D] flex items-center justify-center font-semibold"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {i + 1}
-                  </span>
-                  <div className="lg:mt-4">
-                    <div className="font-semibold">{t(`steps_${k}_t`)}</div>
-                    <div className="mt-1 text-sm leading-relaxed text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`steps_${k}_d`)}</div>
-                  </div>
+                <li key={k}>
+                  <Reveal delay={i * 0.08}>
+                    <span
+                      className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#635BFF] to-[#00C2FF] text-lg font-extrabold text-white"
+                      style={{ fontFamily: "var(--font-heading)" }}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="mt-4 text-lg font-bold">{t(`steps_${k}_t`)}</div>
+                    <div className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">{t(`steps_${k}_d`)}</div>
+                  </Reveal>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
-        {/* Videos (set the links in src/lib/landing-videos.ts) */}
-        <section id="videos" className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 scroll-mt-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-            {t("videos_title")}
-          </h2>
-          <p className="mt-3 text-lg text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-xl">{t("videos_intro")}</p>
-          <div className="mt-10 grid md:grid-cols-3 gap-6">
-            {LANDING_VIDEOS.map((v) => (
-              <VideoSlot key={v.id} video={v} title={t(`videos_${v.id}`)} soon={t("videos_soon")} />
-            ))}
-          </div>
-        </section>
-
         {/* Security and privacy */}
-        <section id="sicherheit" className="border-t border-[#13201B]/10 dark:border-white/10 scroll-mt-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+        <section id="sicherheit" className="mx-auto max-w-6xl scroll-mt-16 px-4 py-20 sm:px-6 md:py-28">
+          <Reveal>
+            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
               {t("security_title")}
             </h2>
-            <p className="mt-3 text-lg text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-2xl">{t("security_intro")}</p>
-            <ul className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
-              {SECURITY.map((it) => {
-                const Icon = it.icon;
-                return (
-                  <li key={it.id} className="border-t border-[#13201B]/20 dark:border-white/20 pt-5">
-                    <Icon strokeWidth={1.5} className="w-6 h-6 text-[#1F4A3D] dark:text-[#F3C63D]" />
-                    <div className="mt-3 font-semibold">{t(`security_${it.id}_t`)}</div>
-                    <div className="mt-1 text-sm leading-relaxed text-[#13201B]/70 dark:text-[#E7ECE4]/70">{t(`security_${it.id}_d`)}</div>
-                  </li>
-                );
-              })}
-            </ul>
-            <Link href="/datenschutz" className={`mt-8 inline-block text-sm font-semibold underline underline-offset-4 ${FOCUS}`}>
-              {t("security_link")}
-            </Link>
+            <p className={`${LEAD} max-w-2xl`}>{t("security_intro")}</p>
+          </Reveal>
+          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {SECURITY.map((it, i) => {
+              const Icon = it.icon;
+              return (
+                <Reveal key={it.id} delay={(i % 3) * 0.08} className="h-full">
+                  <div className={CARD}>
+                    <span className={ICON_BOX}>
+                      <Icon strokeWidth={1.5} className="h-5 w-5" />
+                    </span>
+                    <div className="mt-4 text-base font-bold">{t(`security_${it.id}_t`)}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">{t(`security_${it.id}_d`)}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
+          <Link href="/datenschutz" className={`mt-8 inline-block text-sm font-semibold text-[#635BFF] underline underline-offset-4 transition-colors hover:text-[#4F46E5] dark:text-[#B4AFFF] ${FOCUS}`}>
+            {t("security_link")}
+          </Link>
         </section>
 
         {/* Free */}
-        <section id="kostenlos" className="bg-[#1F4A3D] dark:bg-[#16342B] text-[#E7EFE6] scroll-mt-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20 grid md:grid-cols-[1.2fr_1fr] gap-10 items-center">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+        <section id="kostenlos" className="scroll-mt-16 bg-gradient-to-br from-[#4F46E5] via-[#635BFF] to-[#0099CC] text-white">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 md:grid-cols-[1.2fr_1fr]">
+            <Reveal>
+              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
                 {t("free_title")}
               </h2>
-              <p className="mt-4 text-lg text-[#E7EFE6]/80 max-w-xl leading-relaxed">{t("free_body")}</p>
-              <Link href="/login" className={`${BTN_PRIMARY} mt-8`}>
+              <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/85">{t("free_body")}</p>
+              <Link
+                href="/login"
+                className={`mt-8 inline-flex h-12 items-center justify-center rounded-xl bg-white px-7 text-base font-semibold text-[#4F46E5] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(255,255,255,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white`}
+              >
                 {t("free_cta")}
               </Link>
-            </div>
-            <ul className="space-y-3">
-              {(["p1", "p2", "p3"] as const).map((k) => (
-                <li key={k} className="flex items-start gap-3 text-base">
-                  <Check strokeWidth={2} className="w-5 h-5 mt-0.5 shrink-0 text-[#F3C63D]" />
-                  <span>{t(`free_${k}`)}</span>
-                </li>
-              ))}
-            </ul>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <ul className="space-y-3">
+                {(["p1", "p2", "p3"] as const).map((k) => (
+                  <li key={k} className="flex items-start gap-3 text-base">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20">
+                      <Check strokeWidth={2.5} className="h-4 w-4" />
+                    </span>
+                    <span>{t(`free_${k}`)}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="max-w-3xl mx-auto px-4 sm:px-6 pt-16 md:pt-24">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-            {t("faq_title")}
-          </h2>
-          <div className="mt-8 divide-y divide-[#13201B]/15 dark:divide-white/15 border-y border-[#13201B]/15 dark:border-white/15">
+        <section className="mx-auto max-w-3xl px-4 pt-20 sm:px-6 md:pt-28">
+          <Reveal>
+            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+              {t("faq_title")}
+            </h2>
+          </Reveal>
+          <div className="mt-8 space-y-3">
             {FAQ.map((n) => (
-              <details key={n} className="group py-4">
-                <summary className={`flex items-center justify-between gap-4 cursor-pointer list-none font-semibold rounded ${FOCUS}`}>
+              <details key={n} className="group rounded-xl border border-[#E3E8EE] bg-white px-5 py-4 transition-shadow duration-300 open:shadow-md dark:border-white/10 dark:bg-white/5">
+                <summary className={`flex cursor-pointer list-none items-center justify-between gap-4 rounded font-semibold ${FOCUS}`}>
                   <span>{t(`faq_q${n}`)}</span>
-                  <ChevronDown strokeWidth={1.5} className="w-5 h-5 shrink-0 transition-transform group-open:rotate-180" />
+                  <ChevronDown strokeWidth={1.5} className="h-5 w-5 shrink-0 text-[#635BFF] transition-transform duration-300 group-open:rotate-180" />
                 </summary>
-                <p className="mt-3 leading-relaxed text-[#13201B]/75 dark:text-[#E7ECE4]/75">{t(`faq_a${n}`)}</p>
+                <p className="mt-3 leading-relaxed text-[#425466] dark:text-white/75">{t(`faq_a${n}`)}</p>
               </details>
             ))}
           </div>
         </section>
 
         {/* Personal help */}
-        <section id="hilfe" className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 md:gap-16 scroll-mt-16">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              {t("help_title")}
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-[#13201B]/75 dark:text-[#E7ECE4]/75 max-w-xl">{t("help_body")}</p>
-          </div>
-          <div className="space-y-6">
-            <ul className="space-y-3">
-              {(["h1", "h2", "h3"] as const).map((k) => (
-                <li key={k} className="flex items-start gap-3">
-                  <Check strokeWidth={2} className="w-5 h-5 mt-0.5 shrink-0 text-[#1F4A3D] dark:text-[#F3C63D]" />
-                  <span>{t(`help_${k}`)}</span>
-                </li>
-              ))}
-            </ul>
-            <a href={mailHref} className={BTN_PRIMARY}>
-              <Mail strokeWidth={1.5} className="w-5 h-5" />
-              {t("help_cta")}
-            </a>
-            <p className="text-sm text-[#13201B]/60 dark:text-[#E7ECE4]/60 break-all">{CONTACT_EMAIL}</p>
-          </div>
+        <section id="hilfe" className="mx-auto max-w-6xl scroll-mt-16 px-4 py-20 sm:px-6 md:py-28">
+          <Reveal>
+            <div className="grid gap-10 rounded-3xl border border-[#E3E8EE] bg-white p-8 shadow-[0_30px_60px_-30px_rgba(50,50,93,0.25)] dark:border-white/10 dark:bg-white/5 md:grid-cols-2 md:gap-14 md:p-12">
+              <div>
+                <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+                  {t("help_title")}
+                </h2>
+                <p className={`${LEAD} max-w-xl`}>{t("help_body")}</p>
+              </div>
+              <div className="space-y-6">
+                <ul className="space-y-3">
+                  {(["h1", "h2", "h3"] as const).map((k) => (
+                    <li key={k} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#635BFF]/10 text-[#635BFF] dark:text-[#B4AFFF]">
+                        <Check strokeWidth={2.5} className="h-4 w-4" />
+                      </span>
+                      <span>{t(`help_${k}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href={mailHref} className={BTN_PRIMARY}>
+                  <Mail strokeWidth={1.5} className="h-5 w-5" />
+                  {t("help_cta")}
+                </a>
+                <p className="break-all text-sm text-[#425466] dark:text-white/60">{CONTACT_EMAIL}</p>
+              </div>
+            </div>
+          </Reveal>
         </section>
       </main>
 
-      <footer className="border-t border-[#13201B]/10 dark:border-white/10 py-8 text-sm text-[#13201B]/65 dark:text-[#E7ECE4]/65">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-[#E3E8EE] bg-white py-8 text-sm text-[#425466] dark:border-white/10 dark:bg-[#0D182B] dark:text-white/65">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6">
           <span>{t("footer_rights")}</span>
           <div className="flex flex-wrap items-center justify-center gap-6 font-medium">
-            <Link href="/impressum" className="hover:text-[#13201B] dark:hover:text-white">{t("footer_imprint")}</Link>
-            <Link href="/datenschutz" className="hover:text-[#13201B] dark:hover:text-white">{t("footer_privacy")}</Link>
-            <Link href="/login" className="hover:text-[#13201B] dark:hover:text-white">{t("footer_login")}</Link>
+            <Link href="/impressum" className="transition-colors hover:text-[#635BFF] dark:hover:text-white">{t("footer_imprint")}</Link>
+            <Link href="/datenschutz" className="transition-colors hover:text-[#635BFF] dark:hover:text-white">{t("footer_privacy")}</Link>
+            <Link href="/login" className="transition-colors hover:text-[#635BFF] dark:hover:text-white">{t("footer_login")}</Link>
           </div>
         </div>
       </footer>
