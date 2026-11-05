@@ -29,6 +29,25 @@ export default {
         input: "var(--input)",
         ring: "var(--ring)",
       },
+      keyframes: {
+        "float-y": {
+          "0%, 100%": { transform: "translate3d(0, 0, 0)" },
+          "50%": { transform: "translate3d(0, var(--float-amp, -15px), 0)" },
+        },
+        "drift-a": {
+          "0%, 100%": { transform: "translate3d(0, 0, 0)" },
+          "50%": { transform: "translate3d(40px, 30px, 0)" },
+        },
+        "drift-b": {
+          "0%, 100%": { transform: "translate3d(0, 0, 0)" },
+          "50%": { transform: "translate3d(-40px, 30px, 0)" },
+        },
+      },
+      animation: {
+        float: "float-y var(--float-dur, 5s) ease-in-out var(--float-delay, 0s) infinite",
+        "drift-a": "drift-a 16s ease-in-out infinite",
+        "drift-b": "drift-b 19s ease-in-out infinite",
+      },
       borderRadius: {
         lg: "0.75rem",
         md: "0.5rem",

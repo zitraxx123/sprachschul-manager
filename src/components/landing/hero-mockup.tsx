@@ -31,10 +31,9 @@ export function HeroMockup() {
   const reduce = useReducedMotion();
 
   return (
-    <motion.div
-      animate={reduce ? undefined : { y: [0, -12, 0] }}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      className="relative"
+    <div
+      style={{ "--float-amp": "-12px", "--float-dur": "6s" } as React.CSSProperties}
+      className="relative animate-float will-change-transform motion-reduce:animate-none"
     >
       <div
         className="absolute -inset-4 rounded-[2rem] bg-gradient-to-tr from-[#635BFF]/30 via-[#00C2FF]/20 to-[#2DD4BF]/30 blur-2xl"
@@ -111,6 +110,6 @@ export function HeroMockup() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

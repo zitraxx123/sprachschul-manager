@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {
   Calculator,
@@ -19,10 +18,10 @@ import {
 type Icon = React.ComponentType<{ className?: string; strokeWidth?: number }>;
 
 const CARDS: Array<{ id: "c1" | "c2" | "c3" | "c4"; icon: Icon; pos: string; delay: number }> = [
-  { id: "c1", icon: Calculator, pos: "lg:left-0 lg:top-[14%]", delay: 0 },
-  { id: "c2", icon: Smartphone, pos: "lg:left-[3%] lg:bottom-[9%]", delay: 0.9 },
-  { id: "c3", icon: DoorOpen, pos: "lg:right-0 lg:top-[8%]", delay: 0.45 },
-  { id: "c4", icon: ShieldCheck, pos: "lg:right-[3%] lg:bottom-[15%]", delay: 1.3 },
+  { id: "c1", icon: Calculator, pos: "lg:left-[4%] lg:top-[16%]", delay: 0 },
+  { id: "c2", icon: Smartphone, pos: "lg:left-[6%] lg:bottom-[12%]", delay: 0.9 },
+  { id: "c3", icon: DoorOpen, pos: "lg:right-[4%] lg:top-[12%]", delay: 0.45 },
+  { id: "c4", icon: ShieldCheck, pos: "lg:right-[6%] lg:bottom-[16%]", delay: 1.3 },
 ];
 
 const SIDE = [LayoutDashboard, Layers, Users, Receipt, DoorOpen, Settings];
@@ -105,52 +104,51 @@ function AppMockup() {
 
 function FloatingCard({ card, index }: { card: (typeof CARDS)[number]; index: number }) {
   const t = useTranslations("landing");
-  const reduce = useReducedMotion();
-  const [hover, setHover] = useState(false);
   const Icon = card.icon;
+  const floatVars = {
+    "--float-amp": "-15px",
+    "--float-dur": `${5 + index * 0.6}s`,
+    "--float-delay": `${card.delay}s`,
+  } as React.CSSProperties;
 
   return (
     <div className={`${card.pos} lg:absolute lg:z-10 lg:w-64`}>
-      <motion.div
-        animate={reduce ? undefined : { y: [0, -15, 0] }}
-        transition={{ duration: hover ? 2.2 : 5 + index * 0.4, repeat: Infinity, ease: "easeInOut", delay: card.delay }}
-        whileHover={{ scale: 1.05 }}
-        onHoverStart={() => setHover(true)}
-        onHoverEnd={() => setHover(false)}
-        className="rounded-2xl bg-white p-5 shadow-xl shadow-[#3C1464]/20 transition-shadow duration-300 hover:shadow-2xl dark:bg-[#16233A] dark:shadow-black/40"
-      >
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#635BFF] to-[#FF6AA2] text-white">
-          <Icon strokeWidth={1.5} className="h-5 w-5" />
-        </span>
-        <div className="mt-3 text-base font-extrabold leading-snug text-[#0A2540] dark:text-white">{t(`hl_${card.id}_t`)}</div>
-        <p className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">{t(`hl_${card.id}_d`)}</p>
-      </motion.div>
+      <div style={floatVars} className="animate-float will-change-transform motion-reduce:animate-none">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300, damping: 22 }}
+          className="rounded-2xl bg-white p-5 shadow-xl shadow-[#3C1464]/20 transition-shadow duration-300 hover:shadow-2xl dark:bg-[#16233A] dark:shadow-black/40"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#635BFF] to-[#FF6AA2] text-white">
+            <Icon strokeWidth={1.5} className="h-5 w-5" />
+          </span>
+          <div className="mt-3 text-base font-extrabold leading-snug text-[#0A2540] dark:text-white">{t(`hl_${card.id}_t`)}</div>
+          <p className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">{t(`hl_${card.id}_d`)}</p>
+        </motion.div>
+      </div>
     </div>
   );
 }
 
 /** Bright gradient stage with a floating app window and four floating feature cards (stacked below it on phones). */
 export function HighlightsStage() {
-  const reduce = useReducedMotion();
-
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#FF7EB3] via-[#B57BFF] to-[#FFB347] px-4 py-10 dark:from-[#7A2A5C] dark:via-[#3E2A7A] dark:to-[#8A4B12] sm:px-8 lg:min-h-[680px] lg:px-0 lg:py-0">
-      {/* Blurred colour blobs: pink, violet, orange, yellow */}
+      {/* Blurred colour blobs: pink, violet, orange, yellow (static, so the blur is painted only once) */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <motion.div animate={reduce ? undefined : { x: [0, 30, 0], y: [0, 20, 0] }} transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }} className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-[#FF4D94]/60 blur-3xl" />
-        <motion.div animate={reduce ? undefined : { x: [0, -30, 0], y: [0, 25, 0] }} transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-16 top-0 h-80 w-80 rounded-full bg-[#8B5CFF]/60 blur-3xl" />
-        <motion.div animate={reduce ? undefined : { x: [0, 25, 0], y: [0, -25, 0] }} transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-24 left-1/4 h-96 w-96 rounded-full bg-[#FF9A3D]/70 blur-3xl" />
-        <motion.div animate={reduce ? undefined : { x: [0, -20, 0], y: [0, -20, 0] }} transition={{ duration: 19, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-20 right-10 h-72 w-72 rounded-full bg-[#FFE066]/70 blur-3xl" />
+        <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-[#FF4D94]/60 blur-3xl" />
+        <div className="absolute -right-16 top-0 h-80 w-80 rounded-full bg-[#8B5CFF]/60 blur-3xl" />
+        <div className="absolute -bottom-24 left-1/4 h-96 w-96 rounded-full bg-[#FF9A3D]/70 blur-3xl" />
+        <div className="absolute -bottom-20 right-10 h-72 w-72 rounded-full bg-[#FFE066]/70 blur-3xl" />
       </div>
 
       <div className="relative lg:flex lg:min-h-[680px] lg:items-center lg:justify-center">
-        <motion.div
-          animate={reduce ? undefined : { y: [0, -8, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          className="mx-auto w-full max-w-3xl lg:w-[62%] lg:max-w-none"
+        <div
+          style={{ "--float-amp": "-8px", "--float-dur": "7s" } as React.CSSProperties}
+          className="mx-auto w-full max-w-3xl animate-float will-change-transform motion-reduce:animate-none lg:w-[62%] lg:max-w-none"
         >
           <AppMockup />
-        </motion.div>
+        </div>
 
         {/* Cards: absolutely placed around the window on large screens, a column / two columns below it on phones */}
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:contents">
