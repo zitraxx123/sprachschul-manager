@@ -50,8 +50,7 @@ export default function ImpressumPage() {
           <h2 className="text-base font-bold text-slate-900">Kontakt</h2>
           <p>
             Telefon: +49 (0) 30 12345678<br />
-            E-Mail: kontakt@sprachschul-manager.de<br />
-            Web: https://sprachschul-manager.de
+            E-Mail: studiowebnord@gmail.com
           </p>
         </section>
 

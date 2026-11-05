@@ -55,7 +55,7 @@ export default function DatenschutzPage() {
             <strong>Klasswerk SaaS</strong><br />
             Musterstraße 42<br />
             10115 Berlin, Deutschland<br />
-            E-Mail: datenschutz@sprachschul-manager.de
+            E-Mail: studiowebnord@gmail.com
           </p>
         </section>
 

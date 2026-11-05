@@ -28,11 +28,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   applicationName: "Klasswerk",
-  appleWebApp: { capable: true, title: "Schul-Manager", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Klasswerk", statusBarStyle: "default" },
   icons: { icon: "/pwa-icon/192", apple: "/pwa-icon/180" },
-  title: "Klasswerk • SaaS für Sprachschulen in Deutschland",
+  title: "Klasswerk • Schulverwaltung, kostenlos",
   description:
-    "Multi-Tenant Verwaltungssoftware für Sprachschulen: Dozentenverwaltung, Unterrichtsstunden und automatische Honorarabrechnung.",
+    "Kurse, Stundenplan, Anwesenheit, Monatsabos und Rechnungen für kleine Sprach-, Tanz- und Musikschulen.",
 };
 
 export default async function RootLayout({
