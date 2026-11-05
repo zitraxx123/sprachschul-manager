@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const tNav = await getTranslations("nav");
-  return { title: `${tNav("invoices")} • Sprachschul-Manager` };
+  return { title: `${tNav("invoices")} • Klasswerk` };
 }
 
 type InvoiceStatus = "open" | "paid" | "cancelled";

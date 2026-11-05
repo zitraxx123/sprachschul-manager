@@ -26,7 +26,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("common");
-  return { title: `${t("courses")} • Sprachschul-Manager` };
+  return { title: `${t("courses")} • Klasswerk` };
 }
 
 interface CoursesPageProps {

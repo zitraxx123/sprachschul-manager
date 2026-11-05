@@ -23,7 +23,7 @@ import { getTranslations } from "next-intl/server";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Räume & Unterrichtsorte • Sprachschul-Manager",
+  title: "Räume & Unterrichtsorte • Klasswerk",
 };
 
 export default async function RoomsPage({

@@ -2,7 +2,7 @@ import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export const metadata = {
-  title: "Passwort vergessen • Sprachschul-Manager",
+  title: "Passwort vergessen • Klasswerk",
 };
 
 export default async function ForgotPasswordPage({

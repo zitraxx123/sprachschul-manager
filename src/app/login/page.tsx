@@ -3,7 +3,7 @@ import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { createClient, getActiveOrganization } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "Anmelden • Sprachschul-Manager",
+  title: "Anmelden • Klasswerk",
   description: "Melden Sie sich bei Ihrer Sprachschul-Verwaltung an.",
 };
 

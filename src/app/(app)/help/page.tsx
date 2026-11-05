@@ -5,7 +5,7 @@ import { HelpCenterView } from "@/components/help/help-center-view";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("help");
   return {
-    title: `${t("title")} • Sprachschul-Manager`,
+    title: `${t("title")} • Klasswerk`,
     description: t("metaDescription"),
   };
 }

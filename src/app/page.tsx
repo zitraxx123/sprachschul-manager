@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Sprachschul-Manager • Die Verwaltungssoftware für Ihre Sprachschule",
+  title: "Klasswerk • Die Verwaltungssoftware für Ihre Sprachschule",
   description:
     "Einfach. Digital. DSGVO-konform. Automatisieren Sie die Honorarabrechnung Ihrer Lehrkräfte und verwalten Sie Kurse sowie Anwesenheiten an einem Ort.",
 };
@@ -39,7 +39,7 @@ export default async function HomePage() {
             </div>
             <div className="leading-tight">
               <span className="font-bold text-slate-900 text-lg tracking-tight block">
-                Sprachschul-Manager
+                Klasswerk
               </span>
               <span className="text-[11px] font-medium text-slate-400 block">
                 B2B-Schulverwaltung
@@ -389,7 +389,7 @@ export default async function HomePage() {
                 <GraduationCap strokeWidth={1.5} className="w-5 h-5" />
               </div>
               <span className="font-bold text-slate-900 text-base">
-                Sprachschul-Manager
+                Klasswerk
               </span>
             </div>
 
@@ -408,7 +408,7 @@ export default async function HomePage() {
           </div>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
-            <p>© 2026 Sprachschul-Manager. Alle Rechte vorbehalten.</p>
+            <p>© 2026 Klasswerk. Alle Rechte vorbehalten.</p>
             <p className="flex items-center space-x-2">
               <span>Entwickelt &amp; gehostet in Deutschland</span>
               <span>🇩🇪</span>

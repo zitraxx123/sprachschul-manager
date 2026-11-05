@@ -26,7 +26,7 @@ import type { ContractEnrollment } from "@/components/students/contract-dialog";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Schüler & Monatsabos • Sprachschul-Manager",
+  title: "Schüler & Monatsabos • Klasswerk",
 };
 
 function buildContractEnrollments(student: unknown): ContractEnrollment[] {

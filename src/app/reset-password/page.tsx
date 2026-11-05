@@ -4,7 +4,7 @@ import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "Neues Passwort • Sprachschul-Manager",
+  title: "Neues Passwort • Klasswerk",
 };
 
 export default async function ResetPasswordPage() {

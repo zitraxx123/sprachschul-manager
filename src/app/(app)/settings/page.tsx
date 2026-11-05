@@ -17,7 +17,7 @@ import { getTranslations } from "next-intl/server";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Einstellungen • Sprachschul-Manager",
+  title: "Einstellungen • Klasswerk",
 };
 
 export default async function SettingsPage({

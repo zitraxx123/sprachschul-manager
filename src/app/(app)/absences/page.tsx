@@ -38,7 +38,7 @@ interface AbsencesPageProps {
 }
 
 export const metadata = {
-  title: "Fehlzeiten & Abwesenheitsbericht • Sprachschul-Manager",
+  title: "Fehlzeiten & Abwesenheitsbericht • Klasswerk",
 };
 
 export default async function AbsencesPage({ searchParams }: AbsencesPageProps) {

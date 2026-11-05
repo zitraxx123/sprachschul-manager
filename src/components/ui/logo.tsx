@@ -61,7 +61,7 @@ export function Logo({
         <div className="leading-tight overflow-hidden">
           <div className="flex items-center space-x-1">
             <span className={`font-bold tracking-tight text-slate-900 dark:text-slate-100 ${textSizes[size]}`}>
-              Sprachschul<span className="text-blue-600 dark:text-blue-400">-Manager</span>
+              Klass<span className="text-blue-600 dark:text-blue-400">werk</span>
             </span>
           </div>
           {subtitle && (

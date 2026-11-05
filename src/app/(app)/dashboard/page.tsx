@@ -31,7 +31,7 @@ import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Dashboard • Sprachschul-Manager",
+  title: "Dashboard • Klasswerk",
 };
 
 export default async function DashboardPage() {

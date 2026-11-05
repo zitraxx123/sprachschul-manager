@@ -1,4 +1,4 @@
-# Allgemeine Geschäftsbedingungen (AGB) für die Nutzung von „Sprachschul-Manager“
+# Allgemeine Geschäftsbedingungen (AGB) für die Nutzung von „Klasswerk“
 
 > **ENTWURF, keine Rechtsberatung.** Vor der Verwendung rechtlich prüfen lassen (insbesondere Haftung, Laufzeit / Kündigung, Preisanpassung, Verbraucher- vs. Unternehmerabgrenzung). Platzhalter in `[eckigen Klammern]` ausfüllen. Die Software richtet sich nur an Unternehmer (B2B), das ist in Ziff. 1 festgehalten.
 
@@ -6,7 +6,7 @@ Stand: [Datum]
 
 ## 1. Geltungsbereich
 
-1.1 Diese AGB gelten für die Nutzung der Online-Software „Sprachschul-Manager“ (nachfolgend „Dienst“) von [Name des Anbieters, Anschrift] (nachfolgend „Anbieter“) durch Schulen und andere Bildungseinrichtungen (nachfolgend „Kunde“).
+1.1 Diese AGB gelten für die Nutzung der Online-Software „Klasswerk“ (nachfolgend „Dienst“) von [Name des Anbieters, Anschrift] (nachfolgend „Anbieter“) durch Schulen und andere Bildungseinrichtungen (nachfolgend „Kunde“).
 
 1.2 Der Dienst richtet sich ausschließlich an Unternehmer im Sinne von § 14 BGB. Abweichende Bedingungen des Kunden gelten nicht, auch wenn der Anbieter nicht widerspricht.
 

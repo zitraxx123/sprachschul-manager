@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("invoices");
-  return { title: `${t("docTitle")} • Sprachschul-Manager` };
+  return { title: `${t("docTitle")} • Klasswerk` };
 }
 
 export default async function InvoiceDocumentPage({ params }: { params: Promise<{ id: string }> }) {

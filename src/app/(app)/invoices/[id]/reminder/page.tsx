@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("reminder");
-  return { title: `${t("level0")} • Sprachschul-Manager` };
+  return { title: `${t("level0")} • Klasswerk` };
 }
 
 function berlinToday(): string {

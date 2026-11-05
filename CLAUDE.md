@@ -1,4 +1,4 @@
-# Sprachschul-Manager — ERP для языковых школ
+# Klasswerk — ERP для языковых школ
 
 ## Стек
 Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Supabase (БД и Auth), next-intl (DE/EN/RU), recharts.

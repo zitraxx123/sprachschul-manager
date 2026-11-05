@@ -12,7 +12,7 @@ und
 
 ## 1. Gegenstand und Dauer
 
-1.1 Der Auftragsverarbeiter stellt dem Verantwortlichen die Software „Sprachschul-Manager“ als Online-Dienst (SaaS) zur Verwaltung von Schülern, Kursen, Lehrkräften, Stundenplänen, Rechnungen und Honorarabrechnungen bereit (Hauptvertrag / Nutzungsbedingungen).
+1.1 Der Auftragsverarbeiter stellt dem Verantwortlichen die Software „Klasswerk“ als Online-Dienst (SaaS) zur Verwaltung von Schülern, Kursen, Lehrkräften, Stundenplänen, Rechnungen und Honorarabrechnungen bereit (Hauptvertrag / Nutzungsbedingungen).
 
 1.2 Dabei verarbeitet der Auftragsverarbeiter personenbezogene Daten im Auftrag und nach Weisung des Verantwortlichen.
 

@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("auditLog");
-  return { title: `${t("title")} • Sprachschul-Manager` };
+  return { title: `${t("title")} • Klasswerk` };
 }
 
 const TABLES = ["invoices", "monthly_payments", "students", "teachers", "student_courses", "student_sepa_mandates"] as const;

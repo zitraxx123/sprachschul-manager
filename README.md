@@ -1,4 +1,4 @@
-# 🇩🇪 Sprachschul-Manager — Multi-Tenant SaaS Boilerplate
+# 🇩🇪 Klasswerk — Multi-Tenant SaaS Boilerplate
 
 Moderne, erweiterbare SaaS-Vorlage für das Management von Sprachschulen (*Sprachschulen*) und Nachhilfeinstituten in Deutschland. 
 

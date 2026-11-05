@@ -111,7 +111,7 @@
     "auditLog": "Änderungsprotokoll"
   },
   "auth": {
-    "title": "Sprachschul-Manager",
+    "title": "Klasswerk",
     "subtitle": "Die Verwaltungssoftware für Ihre Sprachschule",
     "loginTab": "Anmelden",
     "signupTab": "Registrieren",
@@ -837,7 +837,7 @@
     "emailLabel": "E-Mail",
     "availableLabel": "Erreichbar",
     "availableHours": "Mo–Fr 09:00–18:00",
-    "supportMailSubject": "Hilfe-Anfrage Sprachschul-Manager",
+    "supportMailSubject": "Hilfe-Anfrage Klasswerk",
     "topicsLabel": "Themen",
     "faq": {
       "createCourse": {

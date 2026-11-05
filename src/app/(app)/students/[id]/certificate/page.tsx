@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("certificate");
-  return { title: `${t("title")} • Sprachschul-Manager` };
+  return { title: `${t("title")} • Klasswerk` };
 }
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;

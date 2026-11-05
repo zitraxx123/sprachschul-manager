@@ -35,7 +35,7 @@ interface MyPortalPageProps {
 
 export async function generateMetadata() {
   const t = await getTranslations("common");
-  return { title: `${t("myPortal")} • Sprachschul-Manager` };
+  return { title: `${t("myPortal")} • Klasswerk` };
 }
 
 export default async function MyPortalPage({ searchParams }: MyPortalPageProps) {

@@ -25,7 +25,7 @@ import { calculateLessonPayroll } from "@/lib/payroll";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Lehrkräfte • Sprachschul-Manager",
+  title: "Lehrkräfte • Klasswerk",
 };
 
 export default async function TeachersPage({

@@ -3,7 +3,7 @@ import { GraduationCap, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Impressum • Sprachschul-Manager",
+  title: "Impressum • Klasswerk",
   description: "Impressum und rechtliche Angaben gemäß § 5 TMG.",
 };
 
@@ -17,7 +17,7 @@ export default function ImpressumPage() {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
               <GraduationCap strokeWidth={1.5} className="w-5 h-5" />
             </div>
-            <span className="font-bold text-slate-900 text-base">Sprachschul-Manager</span>
+            <span className="font-bold text-slate-900 text-base">Klasswerk</span>
           </Link>
 
           <Link href="/">
@@ -39,7 +39,7 @@ export default function ImpressumPage() {
         <section className="space-y-3 text-sm leading-relaxed text-slate-700">
           <h2 className="text-base font-bold text-slate-900">Diensteanbieter &amp; Betreiber</h2>
           <p>
-            <strong>Sprachschul-Manager SaaS</strong><br />
+            <strong>Klasswerk SaaS</strong><br />
             Musterstraße 42<br />
             10115 Berlin<br />
             Deutschland
