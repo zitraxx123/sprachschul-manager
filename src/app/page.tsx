@@ -4,31 +4,22 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser, getCurrentTeacher, getCurrentMembership } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { LANDING_VIDEOS } from "@/lib/landing-videos";
 import { Reveal } from "@/components/landing/reveal";
 import { HeroBackdrop } from "@/components/landing/hero-backdrop";
 import { HeroMockup } from "@/components/landing/hero-mockup";
-import { WorkflowDiagram } from "@/components/landing/workflow-diagram";
-import { VideoSlot } from "@/components/landing/video-slot";
+import { HubDiagram } from "@/components/landing/hub-diagram";
+import { ParticleField } from "@/components/landing/particle-field";
+import { ProductShowcase } from "@/components/landing/product-showcase";
 import {
-  Banknote,
-  CalendarClock,
-  CalendarDays,
   Check,
   ChevronDown,
-  ClipboardCheck,
-  FileSpreadsheet,
   GraduationCap,
   History,
-  Hourglass,
   KeyRound,
-  Landmark,
   Lock,
   Mail,
-  Receipt,
   Server,
   ShieldCheck,
-  Smartphone,
   Sparkles,
   UserCog,
   Users,
@@ -49,37 +40,6 @@ const TRUST = [
   { id: "gdpr", icon: ShieldCheck },
   { id: "iso", icon: Users },
   { id: "tls", icon: Lock },
-] as const;
-
-const GROUPS = [
-  {
-    id: "g1",
-    items: [
-      { key: "schedule", icon: CalendarDays },
-      { key: "attendance", icon: ClipboardCheck },
-      { key: "shifts", icon: CalendarClock },
-      { key: "waitlist", icon: Hourglass },
-    ],
-  },
-  {
-    id: "g2",
-    items: [
-      { key: "plans", icon: Banknote },
-      { key: "invoices", icon: Receipt },
-      { key: "sepa", icon: Landmark },
-      { key: "payroll", icon: Banknote },
-      { key: "export", icon: FileSpreadsheet },
-    ],
-  },
-  {
-    id: "g3",
-    items: [
-      { key: "portal", icon: GraduationCap },
-      { key: "assistant", icon: UserCog },
-      { key: "privacy", icon: ShieldCheck },
-      { key: "devices", icon: Smartphone },
-    ],
-  },
 ] as const;
 
 const SECURITY = [
@@ -112,7 +72,6 @@ export default async function HomePage() {
   const isTeacher = !!(teacher && membership?.role === "teacher");
   const portalHref = isTeacher ? "/my-portal" : "/dashboard";
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t("help_mailSubject"))}`;
-  const [mainVideo, ...otherVideos] = LANDING_VIDEOS;
 
   return (
     <div
@@ -169,6 +128,7 @@ export default async function HomePage() {
         {/* Hero */}
         <section className="relative overflow-hidden">
           <HeroBackdrop />
+          <ParticleField />
           <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-24 pt-14 sm:px-6 md:pt-20 lg:grid-cols-[1fr_1.05fr]">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-[#635BFF]/20 bg-white/80 px-3 py-1 text-sm font-semibold text-[#635BFF] backdrop-blur dark:bg-white/10 dark:text-[#B4AFFF]">
@@ -226,68 +186,23 @@ export default async function HomePage() {
           </Reveal>
           <Reveal delay={0.1} className="mt-10">
             <div className="rounded-3xl border border-[#E3E8EE] bg-white p-5 shadow-[0_30px_60px_-30px_rgba(50,50,93,0.3)] dark:border-white/10 dark:bg-white/5 sm:p-8">
-              <WorkflowDiagram />
+              <HubDiagram />
             </div>
           </Reveal>
         </section>
 
-        {/* Features */}
+        {/* Product in detail: three interactive cards */}
         <section id="funktionen" className="scroll-mt-20 border-y border-[#E3E8EE] bg-white py-20 dark:border-white/10 dark:bg-[#0D182B] md:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <Reveal>
               <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
-                {t("features_title")}
+                {t("showcase_title")}
               </h2>
+              <p className={`${LEAD} max-w-2xl`}>{t("showcase_intro")}</p>
             </Reveal>
-            <div className="mt-12 space-y-14">
-              {GROUPS.map((g) => (
-                <div key={g.id}>
-                  <Reveal>
-                    <h3 className="text-xl font-bold" style={{ fontFamily: "var(--font-heading)" }}>
-                      {t(`features_${g.id}_title`)}
-                    </h3>
-                  </Reveal>
-                  <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {g.items.map((it, i) => {
-                      const Icon = it.icon;
-                      return (
-                        <Reveal key={it.key} delay={i * 0.07} className="h-full">
-                          <div className={CARD}>
-                            <span className={ICON_BOX}>
-                              <Icon strokeWidth={1.5} className="h-5 w-5" />
-                            </span>
-                            <div className="mt-4 text-base font-bold">{t(`features_${g.id}_items_${it.key}_t`)}</div>
-                            <p className="mt-1 text-sm leading-relaxed text-[#425466] dark:text-white/70">
-                              {t(`features_${g.id}_items_${it.key}_d`)}
-                            </p>
-                          </div>
-                        </Reveal>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+            <div className="mt-12">
+              <ProductShowcase />
             </div>
-          </div>
-        </section>
-
-        {/* Demo (set the links in src/lib/landing-videos.ts) */}
-        <section id="demo" className="mx-auto max-w-6xl scroll-mt-16 px-4 py-20 sm:px-6 md:py-28">
-          <Reveal>
-            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
-              {t("demo_title")}
-            </h2>
-            <p className={`${LEAD} max-w-2xl`}>{t("videos_intro")}</p>
-          </Reveal>
-          <Reveal delay={0.1} className="mx-auto mt-10 max-w-4xl">
-            <VideoSlot video={mainVideo} title={t(`videos_${mainVideo.id}`)} soon={t("videos_soon")} large />
-          </Reveal>
-          <div className="mx-auto mt-8 grid max-w-4xl gap-6 sm:grid-cols-2">
-            {otherVideos.map((v, i) => (
-              <Reveal key={v.id} delay={i * 0.08}>
-                <VideoSlot video={v} title={t(`videos_${v.id}`)} soon={t("videos_soon")} />
-              </Reveal>
-            ))}
           </div>
         </section>
 
