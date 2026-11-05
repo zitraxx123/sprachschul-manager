@@ -13,6 +13,7 @@ import {
   GraduationCap,
   Hourglass,
   Landmark,
+  Lightbulb,
   Receipt,
   ShieldCheck,
   UserCog,
@@ -248,16 +249,30 @@ function ExpandedCard({ card, onClose }: { card: CardDef; onClose: () => void })
                   {t(`features_${card.group}_items_${active.key}_d`)}
                 </p>
 
-                {/* Decorative interface preview */}
-                <div className="mt-8 max-w-xl space-y-2.5 rounded-2xl border border-[#E3E8EE] bg-[#F6F9FC] p-4 dark:border-white/10 dark:bg-white/5" aria-hidden>
-                  {[78, 62, 88].map((w, i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-xl bg-white px-3 py-2.5 shadow-sm dark:bg-white/10">
-                      <span className={`flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br ${card.gradient} text-white`}>
-                        <Check strokeWidth={2.5} className="h-4 w-4" />
+                <h5 className="mt-8 text-sm font-bold text-[#0A2540] dark:text-white">{t("showcase_do")}</h5>
+                <ul className="mt-3 max-w-2xl space-y-2.5">
+                  {(["b1", "b2", "b3"] as const).map((b, i) => (
+                    <motion.li
+                      key={b}
+                      initial={{ opacity: 0, x: 12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.08 + i * 0.07, duration: 0.3 }}
+                      className="flex items-start gap-3 rounded-xl border border-[#E3E8EE] bg-[#F6F9FC] px-4 py-3 text-[15px] leading-relaxed text-[#0A2540] dark:border-white/10 dark:bg-white/5 dark:text-white/90"
+                    >
+                      <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${card.gradient} text-white`}>
+                        <Check strokeWidth={2.5} className="h-3.5 w-3.5" />
                       </span>
-                      <span className="h-2.5 rounded-full bg-[#E3E8EE] dark:bg-white/20" style={{ width: `${w}%` }} />
-                    </div>
+                      <span>{t(`fd_${active.key}_${b}`)}</span>
+                    </motion.li>
                   ))}
+                </ul>
+
+                <div className="mt-6 flex max-w-2xl items-start gap-3 rounded-xl border border-dashed border-[#635BFF]/40 bg-[#635BFF]/5 px-4 py-3.5 text-[15px] leading-relaxed text-[#0A2540] dark:border-[#B4AFFF]/40 dark:bg-[#635BFF]/10 dark:text-white/90">
+                  <Lightbulb strokeWidth={1.5} className="mt-0.5 h-5 w-5 shrink-0 text-[#635BFF] dark:text-[#B4AFFF]" />
+                  <p>
+                    <span className="font-bold">{t("showcase_example")}: </span>
+                    {t(`fd_${active.key}_ex`)}
+                  </p>
                 </div>
               </motion.div>
             </AnimatePresence>
