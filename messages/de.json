@@ -1496,6 +1496,20 @@
     "hub2_courses": "Kurse & Schüler",
     "hub2_lessons": "Unterricht & Fehlzeiten",
     "hub2_finance": "Finanzen & Rechnungen",
-    "hub2_rooms": "Räume"
+    "hub2_rooms": "Räume",
+    "hl_title": "Produkt-Highlights",
+    "hl_intro": "Die wichtigsten Funktionen auf einen Blick.",
+    "hl_mock_schedule": "Stundenplan",
+    "hl_mock_finance": "Finanzen",
+    "hl_mock_revenue": "Einnahmen im Monat",
+    "hl_mock_open": "Offen",
+    "hl_c1_t": "Automatische Gehaltsabrechnung",
+    "hl_c1_d": "Honorare der Lehrkräfte werden aus den gehaltenen Stunden berechnet.",
+    "hl_c2_t": "Lehrer-Portal",
+    "hl_c2_d": "Lehrkräfte tragen Stunden und Anwesenheit bequem am Handy ein.",
+    "hl_c3_t": "Konfliktfreie Räume",
+    "hl_c3_d": "Keine Doppelbelegung: Überschneidungen werden verhindert.",
+    "hl_c4_t": "DSGVO-Werkzeuge",
+    "hl_c4_d": "Daten in der EU, strikte Trennung der Schulen, Export und Anonymisierung."
   }
 }

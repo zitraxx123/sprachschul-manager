@@ -10,6 +10,7 @@ import { HeroMockup } from "@/components/landing/hero-mockup";
 import { HubDiagram } from "@/components/landing/hub-diagram";
 import { ParticleField } from "@/components/landing/particle-field";
 import { ProductShowcase } from "@/components/landing/product-showcase";
+import { HighlightsStage } from "@/components/landing/highlights-stage";
 import {
   Check,
   ChevronDown,
@@ -189,6 +190,19 @@ export default async function HomePage() {
               <HubDiagram />
             </div>
           </Reveal>
+        </section>
+
+        {/* Product highlights: app window with floating cards on a bright gradient */}
+        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 md:pb-28">
+          <Reveal>
+            <h2 className={SECTION_TITLE} style={{ fontFamily: "var(--font-heading)" }}>
+              {t("hl_title")}
+            </h2>
+            <p className={`${LEAD} max-w-2xl`}>{t("hl_intro")}</p>
+          </Reveal>
+          <div className="mt-10">
+            <HighlightsStage />
+          </div>
         </section>
 
         {/* Product in detail: three interactive cards */}

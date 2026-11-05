@@ -1496,6 +1496,20 @@
     "hub2_courses": "Courses & students",
     "hub2_lessons": "Lessons & absences",
     "hub2_finance": "Finance & invoices",
-    "hub2_rooms": "Rooms"
+    "hub2_rooms": "Rooms",
+    "hl_title": "Product highlights",
+    "hl_intro": "The most important features at a glance.",
+    "hl_mock_schedule": "Timetable",
+    "hl_mock_finance": "Finance",
+    "hl_mock_revenue": "Revenue this month",
+    "hl_mock_open": "Open",
+    "hl_c1_t": "Automatic pay calculation",
+    "hl_c1_d": "Teacher pay is calculated from the lessons held.",
+    "hl_c2_t": "Teacher portal",
+    "hl_c2_d": "Teachers record lessons and attendance right from their phone.",
+    "hl_c3_t": "Conflict-free rooms",
+    "hl_c3_d": "No double booking: overlaps are prevented.",
+    "hl_c4_t": "GDPR tools",
+    "hl_c4_d": "Data in the EU, strict separation of schools, export and anonymisation."
   }
 }
