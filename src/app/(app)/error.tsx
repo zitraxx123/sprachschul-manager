@@ -27,7 +27,7 @@ export default function AppError({
         {t("errorTitle")}
       </h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mb-6">
-        {error.message || t("errorDesc")}
+        {t("errorDesc")}
       </p>
       <Button onClick={() => reset()} variant="default">
         {t("retry")}

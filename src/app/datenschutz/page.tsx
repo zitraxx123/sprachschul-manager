@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GraduationCap, ArrowLeft, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LEGAL } from "@/lib/legal";
 
 export const metadata = {
   title: "Datenschutzerklärung • Klasswerk",
@@ -34,7 +35,7 @@ export default function DatenschutzPage() {
         <div>
           <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-3">
             <ShieldCheck strokeWidth={1.5} className="w-4 h-4" />
-            <span>100% DSGVO-konform • Serverstandort Deutschland</span>
+            <span>Datenverarbeitung in der EU (Irland)</span>
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Datenschutzerklärung</h1>
           <p className="text-sm text-slate-500 mt-1">Stand: Oktober 2026</p>
@@ -52,10 +53,10 @@ export default function DatenschutzPage() {
           <h2 className="text-base font-bold text-slate-900">2. Verantwortliche Stelle</h2>
           <p>
             Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br /><br />
-            <strong>Klasswerk SaaS</strong><br />
-            Musterstraße 42<br />
-            10115 Berlin, Deutschland<br />
-            E-Mail: studiowebnord@gmail.com
+            <strong>{LEGAL.company}</strong><br />
+            {LEGAL.street}<br />
+            {LEGAL.zip} {LEGAL.city}, {LEGAL.country}<br />
+            E-Mail: {LEGAL.email}
           </p>
         </section>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import { DOCUMENT_LOCALE, getDocumentTranslator } from "@/lib/document-translations";
 import { ArrowLeft } from "lucide-react";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
 import { PrintButton } from "@/components/invoices/print-button";
@@ -33,15 +34,18 @@ export default async function ReminderPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ level?: string; fee?: string; days?: string }>;
 }) {
-  const [{ id }, sp, organization, membership, t, tInv, locale] = await Promise.all([
+  const [{ id }, sp, organization, membership, t, tInv] = await Promise.all([
     params,
     searchParams,
     getActiveOrganization(),
     getCurrentMembership(),
     getTranslations("reminder"),
     getTranslations("invoices"),
-    getLocale(),
   ]);
+
+  const locale: string = DOCUMENT_LOCALE;
+  const tDoc = getDocumentTranslator("reminder");
+  const tInvDoc = getDocumentTranslator("invoices");
 
   if (membership?.role === "teacher") redirect("/my-portal");
   if (membership?.role === "assistant") redirect("/students");
@@ -130,20 +134,20 @@ export default async function ReminderPage({
         </header>
 
         <div className="mt-10 flex items-end justify-between gap-4">
-          <h1 className="text-2xl font-bold text-slate-900">{t(`level${level}`)}</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{tDoc(`level${level}`)}</h1>
           <p className="text-xs text-slate-600">{formatDate(today, locale)}</p>
         </div>
 
         <div className="mt-6 text-sm text-slate-800 space-y-3">
-          <p>{t("salutation")}</p>
-          <p>{t(`body${level}`, { date: formatDate(payBy, locale) })}</p>
+          <p>{tDoc("salutation")}</p>
+          <p>{tDoc(`body${level}`, { date: formatDate(payBy, locale) })}</p>
         </div>
 
         <table className="mt-6 w-full text-sm">
           <tbody className="divide-y divide-slate-200">
             <tr>
               <td className="py-2 pr-2">
-                {t("invoiceLine", {
+                {tDoc("invoiceLine", {
                   number: invoice.invoice_number,
                   date: formatDate(invoice.issue_date, locale),
                   due: formatDate(invoice.due_date, locale),
@@ -153,38 +157,38 @@ export default async function ReminderPage({
             </tr>
             {fee > 0 && (
               <tr>
-                <td className="py-2 pr-2">{t("feeLine")}</td>
+                <td className="py-2 pr-2">{tDoc("feeLine")}</td>
                 <td className="py-2 text-right whitespace-nowrap">{formatCurrency(fee)}</td>
               </tr>
             )}
             <tr className="font-bold border-t-2 border-slate-300">
-              <td className="py-2 pr-2">{t("totalDue")}</td>
+              <td className="py-2 pr-2">{tDoc("totalDue")}</td>
               <td className="py-2 text-right whitespace-nowrap">{formatCurrency(total)}</td>
             </tr>
           </tbody>
         </table>
 
         <div className="mt-6 text-sm text-slate-700 space-y-2">
-          <p>{t("payBy", { date: formatDate(payBy, locale) })}</p>
+          <p>{tDoc("payBy", { date: formatDate(payBy, locale) })}</p>
           {organization.iban && (
             <dl className="text-xs grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 max-w-sm">
               {organization.bank_name && (
                 <>
-                  <dt className="text-slate-500">{tInv("docBank")}</dt>
+                  <dt className="text-slate-500">{tInvDoc("docBank")}</dt>
                   <dd className="font-semibold">{organization.bank_name}</dd>
                 </>
               )}
-              <dt className="text-slate-500">{tInv("docIban")}</dt>
+              <dt className="text-slate-500">{tInvDoc("docIban")}</dt>
               <dd className="font-semibold font-mono break-all">{organization.iban}</dd>
               {organization.bic && (
                 <>
-                  <dt className="text-slate-500">{tInv("docBic")}</dt>
+                  <dt className="text-slate-500">{tInvDoc("docBic")}</dt>
                   <dd className="font-semibold font-mono">{organization.bic}</dd>
                 </>
               )}
             </dl>
           )}
-          <p className="pt-4">{t("closing")}</p>
+          <p className="pt-4">{tDoc("closing")}</p>
           <p className="font-semibold">{organization.name}</p>
         </div>
 
@@ -192,12 +196,12 @@ export default async function ReminderPage({
           <span>{organization.name}</span>
           {organization.tax_number && (
             <span>
-              {tInv("docTaxNumber")}: {organization.tax_number}
+              {tInvDoc("docTaxNumber")}: {organization.tax_number}
             </span>
           )}
           {organization.vat_id && (
             <span>
-              {tInv("docVatId")}: {organization.vat_id}
+              {tInvDoc("docVatId")}: {organization.vat_id}
             </span>
           )}
         </footer>

@@ -4,7 +4,7 @@ import { createClient, getActiveOrganization } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Anmelden • Klasswerk",
-  description: "Melden Sie sich bei Ihrer Sprachschul-Verwaltung an.",
+  description: "Melden Sie sich bei Klasswerk an.",
 };
 
 export default async function LoginPage() {

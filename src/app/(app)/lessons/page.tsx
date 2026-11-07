@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 import { 
   createClient, 
   getActiveOrganization, 
@@ -64,16 +65,24 @@ export default async function LessonsPage({
       .select("*")
       .eq("organization_id", organization.id)
       .order("name", { ascending: true }),
-    supabase
-      .from("students")
-      .select("*")
-      .eq("organization_id", organization.id)
-      .order("first_name", { ascending: true }),
-    supabase
-      .from("lessons")
-      .select("*, teachers!lessons_teacher_id_fkey(*), courses(*), attendance(*, students(*))")
-      .eq("organization_id", organization.id)
-      .order("lesson_date", { ascending: false }),
+    fetchAll((from, to) =>
+      supabase
+        .from("students")
+        .select("*")
+        .eq("organization_id", organization.id)
+        .order("first_name", { ascending: true })
+        .order("id")
+        .range(from, to)
+    ),
+    fetchAll((from, to) =>
+      supabase
+        .from("lessons")
+        .select("*, teachers!lessons_teacher_id_fkey(*), courses(*), attendance(*, students(*))")
+        .eq("organization_id", organization.id)
+        .order("lesson_date", { ascending: false })
+        .order("id")
+        .range(from, to)
+    ),
   ]);
 
   const teachers = teachersResult.data || [];

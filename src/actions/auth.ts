@@ -6,6 +6,9 @@ import { getRequestOrigin } from "@/lib/origin";
 import { isOrgType } from "@/lib/terminology";
 import { createClient } from "@/lib/supabase/server";
 
+/** Minimum password length for new passwords (the school stores personal data of minors). */
+const MIN_PASSWORD_LENGTH = 10;
+
 export type AuthState = {
   /** i18n key under "auth" */
   error?: string;
@@ -91,8 +94,12 @@ export async function signUp(
     return { error: "errorFieldsRequired" };
   }
 
-  if (password.length < 6) {
+  if (password.length < MIN_PASSWORD_LENGTH) {
     return { error: "errorPasswordShort" };
+  }
+
+  if (formData.get("consent") !== "on") {
+    return { error: "errorConsentRequired" };
   }
 
   const supabase = await createClient();
@@ -183,7 +190,7 @@ export async function updatePassword(
   const password = formData.get("password") as string;
   const confirm = formData.get("confirmPassword") as string;
 
-  if (!password || password.length < 6) {
+  if (!password || password.length < MIN_PASSWORD_LENGTH) {
     return { error: "errorPasswordShort" };
   }
   if (password !== confirm) {

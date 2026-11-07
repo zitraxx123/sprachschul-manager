@@ -146,7 +146,7 @@ export function CourseCombobox({
                 type="button"
                 onClick={() => handleRemove(c.id)}
                 disabled={disabled}
-                className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30/50 rounded-md p-0.5 transition-colors"
+                className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md p-0.5 transition-colors"
                 title={`${c.name} entfernen`}
               >
                 <X className="w-4 h-4" strokeWidth={1.5} />

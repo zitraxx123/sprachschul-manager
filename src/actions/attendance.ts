@@ -72,6 +72,23 @@ export async function recordCourseLesson(
     }
   }
 
+  // Guard against double booking (double click, two staff members, admin + teacher): the lessons of a
+  // course on one day may not outnumber its occurrences that day, otherwise the payroll would be paid twice.
+  if (occurrences.length > 0) {
+    const { count: recordedCount, error: countErr } = await supabase
+      .from("lessons")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organization.id)
+      .eq("course_id", courseId)
+      .eq("lesson_date", lessonDate);
+    if (countErr) {
+      return { error: `Fehler beim Prüfen vorhandener Einträge: ${countErr.message}` };
+    }
+    if ((recordedCount ?? 0) >= occurrences.length) {
+      return { error: "Dieser Termin wurde bereits erfasst." };
+    }
+  }
+
   const teacherId = occurrence?.teacherId || course.teacher_id;
   const originalTeacherId =
     occurrence?.isSubstituted && occurrence.originalTeacherId !== teacherId
@@ -128,7 +145,23 @@ export async function recordCourseLesson(
 
     const { error: aErr } = await supabase.from("attendance").insert(attendanceInserts);
     if (aErr) {
+      // Do not keep a lesson (and its payroll) without the attendance marks: undo and report the failure
       console.error("Attendance insert error:", aErr);
+      // (teachers and assistants may not delete lessons: then the lesson stays and the message says so)
+      const { data: removed } = await supabase
+        .from("lessons")
+        .delete()
+        .eq("id", lesson.id)
+        .eq("organization_id", organization.id)
+        .select("id");
+      if (!removed || removed.length === 0) {
+        revalidatePath("/lessons");
+        revalidatePath("/my-portal");
+        return {
+          error: "Die Stunde wurde gespeichert, die Anwesenheit jedoch nicht. Bitte wenden Sie sich an die Schulleitung.",
+        };
+      }
+      return { error: `Fehler beim Speichern der Anwesenheit: ${aErr.message}` };
     }
   }
 

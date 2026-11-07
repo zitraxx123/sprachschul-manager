@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import { DOCUMENT_LOCALE, getDocumentTranslator } from "@/lib/document-translations";
 import { ArrowLeft } from "lucide-react";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
 import { PrintButton } from "@/components/invoices/print-button";
@@ -16,13 +17,15 @@ export async function generateMetadata() {
 }
 
 export default async function InvoiceDocumentPage({ params }: { params: Promise<{ id: string }> }) {
-  const [{ id }, organization, membership, t, locale] = await Promise.all([
+  const [{ id }, organization, membership, t] = await Promise.all([
     params,
     getActiveOrganization(),
     getCurrentMembership(),
     getTranslations("invoices"),
-    getLocale(),
   ]);
+
+  const locale: string = DOCUMENT_LOCALE;
+  const tDoc = getDocumentTranslator("invoices");
 
   if (membership?.role === "teacher") redirect("/my-portal");
   if (membership?.role === "assistant") redirect("/students");
@@ -68,7 +71,7 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
         {isCancelled && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <span className="-rotate-12 border-4 border-red-500/60 text-red-500/60 text-5xl sm:text-7xl font-black tracking-widest px-6 py-2 rounded-lg">
-              {t("docCancelled")}
+              {tDoc("docCancelled")}
             </span>
           </div>
         )}
@@ -96,15 +99,15 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
 
         {/* Title + meta */}
         <div className="mt-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <h1 className="text-2xl font-bold text-slate-900">{t("docTitle")}</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{tDoc("docTitle")}</h1>
           <dl className="text-xs grid grid-cols-[auto_auto] gap-x-4 gap-y-1 sm:text-right">
-            <dt className="text-slate-500">{t("docNumber")}</dt>
+            <dt className="text-slate-500">{tDoc("docNumber")}</dt>
             <dd className="font-semibold font-mono">{invoice.invoice_number}</dd>
-            <dt className="text-slate-500">{t("docDate")}</dt>
+            <dt className="text-slate-500">{tDoc("docDate")}</dt>
             <dd className="font-semibold">{formatDate(invoice.issue_date, locale)}</dd>
-            <dt className="text-slate-500">{t("docPeriod")}</dt>
+            <dt className="text-slate-500">{tDoc("docPeriod")}</dt>
             <dd className="font-semibold">{periodLabel}</dd>
-            <dt className="text-slate-500">{t("docStudent")}</dt>
+            <dt className="text-slate-500">{tDoc("docStudent")}</dt>
             <dd className="font-semibold">{invoice.student_name}</dd>
           </dl>
         </div>
@@ -114,11 +117,11 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b-2 border-slate-300 text-left text-xs uppercase tracking-wider text-slate-500">
-                <th className="py-2 pr-2 font-semibold w-10">{t("docPosition")}</th>
-                <th className="py-2 pr-2 font-semibold">{t("docDescription")}</th>
-                <th className="py-2 pr-2 font-semibold text-right">{t("docQty")}</th>
-                <th className="py-2 pr-2 font-semibold text-right whitespace-nowrap">{t("docUnitPrice")}</th>
-                <th className="py-2 font-semibold text-right">{t("docTotal")}</th>
+                <th className="py-2 pr-2 font-semibold w-10">{tDoc("docPosition")}</th>
+                <th className="py-2 pr-2 font-semibold">{tDoc("docDescription")}</th>
+                <th className="py-2 pr-2 font-semibold text-right">{tDoc("docQty")}</th>
+                <th className="py-2 pr-2 font-semibold text-right whitespace-nowrap">{tDoc("docUnitPrice")}</th>
+                <th className="py-2 font-semibold text-right">{tDoc("docTotal")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
@@ -138,17 +141,17 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
         {/* Totals */}
         <div className="mt-4 ml-auto w-full sm:w-72 text-sm space-y-1">
           <div className="flex justify-between">
-            <span className="text-slate-600">{t("docNet")}</span>
+            <span className="text-slate-600">{tDoc("docNet")}</span>
             <span>{formatCurrency(Number(invoice.net_amount))}</span>
           </div>
           {Number(invoice.vat_rate) > 0 && (
             <div className="flex justify-between">
-              <span className="text-slate-600">{t("docVat", { rate: String(Number(invoice.vat_rate)) })}</span>
+              <span className="text-slate-600">{tDoc("docVat", { rate: String(Number(invoice.vat_rate)) })}</span>
               <span>{formatCurrency(Number(invoice.vat_amount))}</span>
             </div>
           )}
           <div className="flex justify-between border-t-2 border-slate-300 pt-2 text-base font-bold">
-            <span>{t("docGross")}</span>
+            <span>{tDoc("docGross")}</span>
             <span>{formatCurrency(Number(invoice.total_amount))}</span>
           </div>
         </div>
@@ -160,23 +163,23 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
         {/* Payment */}
         <div className="mt-8 text-sm text-slate-700 space-y-2">
           {isPaid ? (
-            <p>{t("docPaidNote")}</p>
+            <p>{tDoc("docPaidNote")}</p>
           ) : (
             <>
-              <p>{t("docPayText", { date: formatDate(invoice.due_date, locale) })}</p>
+              <p>{tDoc("docPayText", { date: formatDate(invoice.due_date, locale) })}</p>
               {organization.iban && (
                 <dl className="text-xs grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 max-w-sm">
                   {organization.bank_name && (
                     <>
-                      <dt className="text-slate-500">{t("docBank")}</dt>
+                      <dt className="text-slate-500">{tDoc("docBank")}</dt>
                       <dd className="font-semibold">{organization.bank_name}</dd>
                     </>
                   )}
-                  <dt className="text-slate-500">{t("docIban")}</dt>
+                  <dt className="text-slate-500">{tDoc("docIban")}</dt>
                   <dd className="font-semibold font-mono break-all">{organization.iban}</dd>
                   {organization.bic && (
                     <>
-                      <dt className="text-slate-500">{t("docBic")}</dt>
+                      <dt className="text-slate-500">{tDoc("docBic")}</dt>
                       <dd className="font-semibold font-mono">{organization.bic}</dd>
                     </>
                   )}
@@ -191,12 +194,12 @@ export default async function InvoiceDocumentPage({ params }: { params: Promise<
           <span>{organization.name}</span>
           {organization.tax_number && (
             <span>
-              {t("docTaxNumber")}: {organization.tax_number}
+              {tDoc("docTaxNumber")}: {organization.tax_number}
             </span>
           )}
           {organization.vat_id && (
             <span>
-              {t("docVatId")}: {organization.vat_id}
+              {tDoc("docVatId")}: {organization.vat_id}
             </span>
           )}
         </footer>

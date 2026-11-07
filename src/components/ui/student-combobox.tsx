@@ -164,7 +164,7 @@ export function StudentCombobox({
                 type="button"
                 onClick={() => handleRemove(s.id)}
                 disabled={disabled}
-                className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30/50 rounded-md p-0.5 transition-colors disabled:pointer-events-none"
+                className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md p-0.5 transition-colors disabled:pointer-events-none"
                 title={`${s.first_name} ${s.last_name} entfernen`}
                 aria-label={`Entfernen`}
               >

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
 import { calculateLessonPayroll } from "@/lib/payroll";
 import { csvDate, csvMoney, toCsv } from "@/lib/csv";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
 
@@ -32,13 +33,18 @@ export async function GET(request: NextRequest) {
   let csv: string;
 
   if (type === "invoices") {
-    const { data, error } = await supabase
-      .from("invoices")
-      .select("invoice_number, issue_date, due_date, month_year, recipient_name, student_name, net_amount, vat_rate, vat_amount, total_amount, status, paid_at")
-      .eq("organization_id", organization.id)
-      .gte("month_year", from)
-      .lte("month_year", to)
-      .order("invoice_seq", { ascending: true });
+    const { data, error } = await fetchAll((rangeFrom, rangeTo) =>
+      supabase
+        .from("invoices")
+        .select("invoice_number, issue_date, due_date, month_year, recipient_name, student_name, net_amount, vat_rate, vat_amount, total_amount, status, paid_at")
+        .eq("organization_id", organization.id)
+        .gte("month_year", from)
+        .lte("month_year", to)
+        .order("issue_date", { ascending: true })
+        .order("invoice_number", { ascending: true })
+        .order("id")
+        .range(rangeFrom, rangeTo)
+    );
     if (error) return new NextResponse("Error", { status: 500 });
 
     const statusLabel = { open: "offen", paid: "bezahlt", cancelled: "storniert" } as Record<string, string>;
@@ -61,12 +67,17 @@ export async function GET(request: NextRequest) {
     );
   } else {
     const [lessonsRes, teachersRes] = await Promise.all([
-      supabase
-        .from("lessons")
-        .select("teacher_id, duration_hours, lesson_date, status, courses(course_type)")
-        .eq("organization_id", organization.id)
-        .gte("lesson_date", `${from}-01`)
-        .lte("lesson_date", monthEnd(to)),
+      fetchAll((rangeFrom, rangeTo) =>
+        supabase
+          .from("lessons")
+          .select("teacher_id, duration_hours, lesson_date, status, courses(course_type)")
+          .eq("organization_id", organization.id)
+          .gte("lesson_date", `${from}-01`)
+          .lte("lesson_date", monthEnd(to))
+          .order("lesson_date", { ascending: true })
+          .order("id")
+          .range(rangeFrom, rangeTo)
+      ),
       supabase.from("teachers").select("*").eq("organization_id", organization.id).order("name", { ascending: true }),
     ]);
     if (lessonsRes.error || teachersRes.error) return new NextResponse("Error", { status: 500 });

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 import { 
   createClient, 
   getActiveOrganization, 
@@ -90,11 +91,15 @@ export default async function StudentsPage({
 
   // Parallel fetch: Students, Courses, and Monthly Payments
   const [studentsResult, coursesResult, paymentsResult] = await Promise.all([
-    supabase
-      .from("students")
-      .select("*, student_courses(*, courses(*, teachers(*), course_schedules(*)))")
-      .eq("organization_id", organization.id)
-      .order("first_name", { ascending: true }),
+    fetchAll((from, to) =>
+      supabase
+        .from("students")
+        .select("*, student_courses(*, courses(*, teachers(*), course_schedules(*)))")
+        .eq("organization_id", organization.id)
+        .order("first_name", { ascending: true })
+        .order("id")
+        .range(from, to)
+    ),
     supabase
       .from("courses")
       .select("*, teachers(*), rooms(*), course_schedules(*)")

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, InvoiceItem, Organization } from "@/types/database";
 import { contractCoversMonth } from "@/lib/contracts";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 export interface InvoiceGenerationResult {
   errorCode?: "billingIncomplete" | "db";
@@ -61,23 +62,35 @@ export async function generateInvoicesCore(params: {
   if (!isBillingComplete(org)) return { errorCode: "billingIncomplete", created: 0, skipped: 0, failed: 0 };
 
   const [studentsRes, invoicesRes, paymentsRes] = await Promise.all([
-    supabase
-      .from("students")
-      .select("id, first_name, last_name, parent_name, custom_monthly_price, student_courses(status, contract_start, contract_end, courses(name, monthly_price))")
-      .eq("organization_id", org.id)
-      .order("last_name", { ascending: true })
-      .order("first_name", { ascending: true }),
-    supabase
-      .from("invoices")
-      .select("student_id")
-      .eq("organization_id", org.id)
-      .eq("month_year", monthYear)
-      .neq("status", "cancelled"),
-    supabase
-      .from("monthly_payments")
-      .select("student_id, is_paid")
-      .eq("organization_id", org.id)
-      .eq("month_year", monthYear),
+    fetchAll((from, to) =>
+      supabase
+        .from("students")
+        .select("id, first_name, last_name, parent_name, custom_monthly_price, student_courses(status, contract_start, contract_end, courses(name, monthly_price))")
+        .eq("organization_id", org.id)
+        .order("last_name", { ascending: true })
+        .order("first_name", { ascending: true })
+        .order("id")
+        .range(from, to)
+    ),
+    fetchAll((from, to) =>
+      supabase
+        .from("invoices")
+        .select("student_id")
+        .eq("organization_id", org.id)
+        .eq("month_year", monthYear)
+        .neq("status", "cancelled")
+        .order("id")
+        .range(from, to)
+    ),
+    fetchAll((from, to) =>
+      supabase
+        .from("monthly_payments")
+        .select("student_id, is_paid")
+        .eq("organization_id", org.id)
+        .eq("month_year", monthYear)
+        .order("id")
+        .range(from, to)
+    ),
   ]);
 
   const loadError = studentsRes.error || invoicesRes.error || paymentsRes.error;

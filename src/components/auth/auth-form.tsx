@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Layers, CheckCircle2, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import { Layers, CheckCircle2, Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Logo } from "@/components/ui/logo";
 
 interface AuthFormProps {
   logoUrl?: string | null;
@@ -49,9 +50,7 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
             />
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm mb-3">
-            <GraduationCap strokeWidth={1.5} className="w-6 h-6" />
-          </div>
+          <Logo size="lg" showText={false} className="mb-3" />
         )}
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           {organizationName || t("title")}
@@ -171,8 +170,12 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
                 type="password"
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
                 placeholder="••••••••"
+                minLength={mode === "signup" ? 10 : undefined}
                 required
               />
+              {mode === "signup" && (
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t("passwordHint")}</p>
+              )}
               {mode === "login" && (
                 <div className="text-right">
                   <Link
@@ -184,6 +187,30 @@ export function AuthForm({ logoUrl, organizationName }: AuthFormProps = {}) {
                 </div>
               )}
             </div>
+
+            {mode === "signup" && (
+              <label className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="consent"
+                  required
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-slate-300 dark:border-slate-600 accent-blue-600"
+                />
+                <span>
+                  {t.rich("consent", {
+                    privacy: (chunks) => (
+                      <Link
+                        href="/datenschutz"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline underline-offset-2"
+                      >
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </span>
+              </label>
+            )}
 
             <Button type="submit" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white" disabled={isPending}>
               {isPending ? (

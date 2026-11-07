@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import { DOCUMENT_LOCALE, getDocumentTranslator } from "@/lib/document-translations";
 import { ArrowLeft } from "lucide-react";
 import { createClient, getActiveOrganization, getCurrentMembership } from "@/lib/supabase/server";
 import { PrintButton } from "@/components/invoices/print-button";
@@ -39,14 +40,16 @@ export default async function CertificatePage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ from?: string; to?: string }>;
 }) {
-  const [{ id }, sp, organization, membership, t, locale] = await Promise.all([
+  const [{ id }, sp, organization, membership, t] = await Promise.all([
     params,
     searchParams,
     getActiveOrganization(),
     getCurrentMembership(),
     getTranslations("certificate"),
-    getLocale(),
   ]);
+
+  const locale: string = DOCUMENT_LOCALE;
+  const tDoc = getDocumentTranslator("certificate");
 
   if (membership?.role === "teacher") redirect("/my-portal");
   if (!organization) notFound();
@@ -130,10 +133,10 @@ export default async function CertificatePage({
           )}
         </header>
 
-        <h1 className="mt-12 text-center text-2xl font-bold tracking-wide text-slate-900">{t("title")}</h1>
+        <h1 className="mt-12 text-center text-2xl font-bold tracking-wide text-slate-900">{tDoc("title")}</h1>
 
         <p className="mt-10 text-sm leading-relaxed text-slate-800">
-          {t("text", {
+          {tDoc("text", {
             name: `${student.first_name} ${student.last_name}`,
             from: formatDate(from, locale),
             to: formatDate(to, locale),
@@ -141,14 +144,14 @@ export default async function CertificatePage({
         </p>
 
         {courseRows.length === 0 ? (
-          <p className="mt-8 text-sm text-slate-500">{t("noAttendance")}</p>
+          <p className="mt-8 text-sm text-slate-500">{tDoc("noAttendance")}</p>
         ) : (
           <table className="mt-8 w-full text-sm">
             <thead>
               <tr className="border-b-2 border-slate-300 text-left text-xs uppercase tracking-wider text-slate-500">
-                <th className="py-2 pr-2 font-semibold">{t("course")}</th>
-                <th className="py-2 pr-2 font-semibold text-right">{t("lessons")}</th>
-                <th className="py-2 font-semibold text-right">{t("hours")}</th>
+                <th className="py-2 pr-2 font-semibold">{tDoc("course")}</th>
+                <th className="py-2 pr-2 font-semibold text-right">{tDoc("lessons")}</th>
+                <th className="py-2 font-semibold text-right">{tDoc("hours")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
@@ -160,7 +163,7 @@ export default async function CertificatePage({
                 </tr>
               ))}
               <tr className="font-bold border-t-2 border-slate-300">
-                <td className="py-2 pr-2">{t("total")}</td>
+                <td className="py-2 pr-2">{tDoc("total")}</td>
                 <td className="py-2 pr-2 text-right">{totalCount}</td>
                 <td className="py-2 text-right">{hoursFmt(totalHours)}</td>
               </tr>
@@ -175,7 +178,7 @@ export default async function CertificatePage({
               {formatDate(today, locale)}
             </p>
           </div>
-          <div className="border-t border-slate-400 pt-1 text-center">{t("signature")}</div>
+          <div className="border-t border-slate-400 pt-1 text-center">{tDoc("signature")}</div>
         </div>
       </article>
     </div>

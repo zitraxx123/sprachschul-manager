@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Klasswerk",
-    short_name: "Schul-Manager",
-    description: "Verwaltung für Sprachschulen und Kursanbieter",
+    short_name: "Klasswerk",
+    description: "Verwaltung für Schulen und Kursanbieter",
     start_url: "/dashboard",
     scope: "/",
     display: "standalone",

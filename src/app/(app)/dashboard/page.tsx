@@ -8,6 +8,8 @@ import {
 } from "@/lib/supabase/server";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { calculateLessonPayroll } from "@/lib/payroll";
+import { fetchAll } from "@/lib/supabase/fetch-all";
+import { contractCoversMonth } from "@/lib/contracts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -60,6 +62,12 @@ export default async function DashboardPage() {
 
   const supabase = await createClient();
 
+  // Lessons and payments are only needed for the 6-month trend (this month + 5 earlier ones)
+  const trendStartDate = new Date();
+  trendStartDate.setDate(1);
+  trendStartDate.setMonth(trendStartDate.getMonth() - 5);
+  const trendStartMonth = `${trendStartDate.getFullYear()}-${String(trendStartDate.getMonth() + 1).padStart(2, "0")}`;
+
   // Parallel fetch all dashboard data via Promise.all
   const [
     teachersResult,
@@ -75,11 +83,16 @@ export default async function DashboardPage() {
       .select("*")
       .eq("organization_id", organization.id)
       .order("name", { ascending: true }),
-    supabase
-      .from("lessons")
-      .select("*, teachers!lessons_teacher_id_fkey(*), courses(*)")
-      .eq("organization_id", organization.id)
-      .order("lesson_date", { ascending: false }),
+    fetchAll((from, to) =>
+      supabase
+        .from("lessons")
+        .select("*, teachers!lessons_teacher_id_fkey(*), courses(*)")
+        .eq("organization_id", organization.id)
+        .gte("lesson_date", `${trendStartMonth}-01`)
+        .order("lesson_date", { ascending: false })
+        .order("id")
+        .range(from, to)
+    ),
     supabase
       .from("courses")
       .select("*, teachers(*), rooms(*), course_schedules(*), student_courses(*, students(id, first_name, last_name, email, phone, parent_name, parent_phone))")
@@ -95,20 +108,33 @@ export default async function DashboardPage() {
         }
         return res;
       }),
-    supabase
-      .from("attendance")
-      .select("lesson_id, student_id, status, students(id, first_name, last_name, phone, email), lessons(lesson_date, course_id)")
-      .eq("organization_id", organization.id)
-      .eq("status", "absent"),
-    supabase
-      .from("monthly_payments")
-      .select("*")
-      .eq("organization_id", organization.id),
-    supabase
-      .from("students")
-      .select("id, first_name, last_name, email, phone, custom_monthly_price, student_courses(course_id, courses(id, name, monthly_price))")
-      .eq("organization_id", organization.id)
-      .order("first_name", { ascending: true }),
+    fetchAll((from, to) =>
+      supabase
+        .from("attendance")
+        .select("lesson_id, student_id, status, students(id, first_name, last_name, phone, email), lessons(lesson_date, course_id)")
+        .eq("organization_id", organization.id)
+        .eq("status", "absent")
+        .order("id")
+        .range(from, to)
+    ),
+    fetchAll((from, to) =>
+      supabase
+        .from("monthly_payments")
+        .select("*")
+        .eq("organization_id", organization.id)
+        .gte("month_year", trendStartMonth)
+        .order("id")
+        .range(from, to)
+    ),
+    fetchAll((from, to) =>
+      supabase
+        .from("students")
+        .select("id, first_name, last_name, email, phone, custom_monthly_price, student_courses(course_id, status, contract_start, contract_end, courses(id, name, monthly_price))")
+        .eq("organization_id", organization.id)
+        .order("first_name", { ascending: true })
+        .order("id")
+        .range(from, to)
+    ),
     // One-off schedule exceptions (moved lessons / substitutes): last 90 days and all future
     supabase
       .from("lesson_overrides")
@@ -275,17 +301,33 @@ export default async function DashboardPage() {
       .map((p) => [p.student_id, p])
   );
 
+  // Only students that actually owe money this month: an active enrollment whose contract runs in the month
+  // (trial / waiting-list / ended contracts do not count), or an already issued, unpaid payment record.
+  type DebtorEnrollment = {
+    status?: string | null;
+    contract_start?: string | null;
+    contract_end?: string | null;
+    courses?: { id: string; name: string; monthly_price?: number | null } | null;
+  };
+
   const debtors: DebtorStudent[] = students
     .filter((s) => !paidStudentIds.has(s.id))
     .map((s) => {
-      const scList = (s as unknown as { student_courses?: Array<{ courses?: { id: string; name: string; monthly_price?: number } }> }).student_courses || [];
-      const courseNames = scList.map((sc) => sc.courses?.name).filter(Boolean) as string[];
+      const scList = ((s as unknown as { student_courses?: DebtorEnrollment[] }).student_courses || []);
+      const billable = scList.filter(
+        (sc) =>
+          sc.status === "active" &&
+          sc.courses &&
+          contractCoversMonth({ contractStart: sc.contract_start ?? null, contractEnd: sc.contract_end ?? null }, currentYearMonth)
+      );
+      const courseNames = billable.map((sc) => sc.courses!.name);
 
       let amountDue = 0;
-      if (s.custom_monthly_price !== null && s.custom_monthly_price !== undefined) {
-        amountDue = Number(s.custom_monthly_price);
-      } else {
-        amountDue = scList.reduce((sum, sc) => sum + Number(sc.courses?.monthly_price || 0), 0);
+      if (billable.length > 0) {
+        amountDue =
+          s.custom_monthly_price !== null && s.custom_monthly_price !== undefined
+            ? Number(s.custom_monthly_price)
+            : billable.reduce((sum, sc) => sum + Number(sc.courses?.monthly_price || 0), 0);
       }
 
       const existingPayment = currentMonthPaymentMap.get(s.id);
@@ -302,7 +344,8 @@ export default async function DashboardPage() {
         courses: courseNames,
         amountDue,
       };
-    });
+    })
+    .filter((d) => d.amountDue > 0);
 
   return (
     <div className="space-y-8 max-w-[1600px] w-full">

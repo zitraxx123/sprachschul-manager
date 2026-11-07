@@ -13,10 +13,19 @@ function fakeSupabase(students: unknown[], invoices: unknown[] = [], payments: u
   const result = (table: string) => (table === "students" ? students : table === "invoices" ? invoices : payments);
   const from = (table: string) => {
     const q: Record<string, unknown> = {};
+    let window: [number, number] | null = null;
     const chain = () => q;
     for (const m of ["select", "eq", "neq", "order"]) q[m] = chain;
+    // like PostgREST: a range returns only that slice (the real server also caps one request at 1000 rows)
+    q.range = (from: number, to: number) => {
+      window = [from, to];
+      return q;
+    };
     q.upsert = upsert;
-    q.then = (res: (v: unknown) => void) => res({ data: result(table), error: null });
+    q.then = (res: (v: unknown) => void) => {
+      const rows = result(table);
+      res({ data: window ? rows.slice(window[0], window[1] + 1) : rows, error: null });
+    };
     return q;
   };
   return { client: { from, rpc } as never, rpc, upsert };
@@ -68,6 +77,13 @@ describe("generateInvoicesCore", () => {
     const r = await generateInvoicesCore({ supabase: client, org, monthYear: "2026-11", rpc: "create_invoice" });
     expect(r).toMatchObject({ created: 1, skipped: 3 });
     expect(rpc.mock.calls[0][1].p_student).toBe("s4");
+  });
+  it("bills every student when there are more than 1000 (one request returns at most 1000 rows)", async () => {
+    const many = Array.from({ length: 1205 }, (_, i) => student({ id: `s${i}` }));
+    const { client, rpc } = fakeSupabase(many);
+    const r = await generateInvoicesCore({ supabase: client, org, monthYear: "2026-11", rpc: "create_invoice" });
+    expect(r).toMatchObject({ created: 1205, failed: 0 });
+    expect(rpc).toHaveBeenCalledTimes(1205);
   });
   it("marks the invoice paid when the month is already paid", async () => {
     const { client, rpc } = fakeSupabase([student()], [], [{ student_id: "s1", is_paid: true }]);

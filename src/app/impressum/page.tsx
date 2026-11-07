@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GraduationCap, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LEGAL } from "@/lib/legal";
 
 export const metadata = {
   title: "Impressum • Klasswerk",
@@ -39,35 +40,37 @@ export default function ImpressumPage() {
         <section className="space-y-3 text-sm leading-relaxed text-slate-700">
           <h2 className="text-base font-bold text-slate-900">Diensteanbieter &amp; Betreiber</h2>
           <p>
-            <strong>Klasswerk SaaS</strong><br />
-            Musterstraße 42<br />
-            10115 Berlin<br />
-            Deutschland
+            <strong>{LEGAL.company}</strong><br />
+            {LEGAL.street}<br />
+            {LEGAL.zip} {LEGAL.city}<br />
+            {LEGAL.country}
           </p>
         </section>
 
         <section className="space-y-3 text-sm leading-relaxed text-slate-700">
           <h2 className="text-base font-bold text-slate-900">Kontakt</h2>
           <p>
-            Telefon: +49 (0) 30 12345678<br />
-            E-Mail: studiowebnord@gmail.com
+            {LEGAL.phone && (<>Telefon: {LEGAL.phone}<br /></>)}
+            E-Mail: {LEGAL.email}
           </p>
         </section>
 
-        <section className="space-y-3 text-sm leading-relaxed text-slate-700">
-          <h2 className="text-base font-bold text-slate-900">Umsatzsteuer-Identifikationsnummer</h2>
-          <p>
-            Gemäß § 27 a Umsatzsteuergesetz:<br />
-            DE 123 456 789
-          </p>
-        </section>
+        {LEGAL.vatId && (
+          <section className="space-y-3 text-sm leading-relaxed text-slate-700">
+            <h2 className="text-base font-bold text-slate-900">Umsatzsteuer-Identifikationsnummer</h2>
+            <p>
+              Gemäß § 27 a Umsatzsteuergesetz:<br />
+              {LEGAL.vatId}
+            </p>
+          </section>
+        )}
 
         <section className="space-y-3 text-sm leading-relaxed text-slate-700">
           <h2 className="text-base font-bold text-slate-900">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
           <p>
-            Max Mustermann<br />
-            Musterstraße 42<br />
-            10115 Berlin
+            {LEGAL.responsible}<br />
+            {LEGAL.street}<br />
+            {LEGAL.zip} {LEGAL.city}
           </p>
         </section>
 

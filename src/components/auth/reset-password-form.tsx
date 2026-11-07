@@ -53,7 +53,7 @@ export function ResetPasswordForm() {
                 type="password"
                 autoComplete="new-password"
                 placeholder="••••••••"
-                minLength={6}
+                minLength={10}
                 required
               />
             </div>
@@ -68,7 +68,7 @@ export function ResetPasswordForm() {
                 type="password"
                 autoComplete="new-password"
                 placeholder="••••••••"
-                minLength={6}
+                minLength={10}
                 required
               />
             </div>
